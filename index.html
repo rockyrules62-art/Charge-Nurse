@@ -543,30 +543,168 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .flog{display:flex;flex-direction:column;gap:3px;margin-top:10px;font-size:12.5px;color:var(--muted)}
 .flog b{color:var(--ink)}
 @media (max-width:430px){.fnurse svg{height:120px}.foe{width:120px;height:120px}.fhp{width:100px}}
+/* ---- the corridor ---------------------------------------------------------- */
+.corridorhead{display:flex;align-items:flex-end;gap:14px;margin:-6px 0 10px 4px}
+.corridorhead .fnurse.sm svg{height:120px}
+.corridorsign{padding:8px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:10px}
+.corridorsign b{display:block;font-family:"IBM Plex Mono",monospace;font-size:12px}
+.corridorsign i{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+.corridor{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px 10px;padding:16px 12px 10px;border-radius:16px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--cc) 10%,var(--surface)) 0 68%,color-mix(in srgb,var(--cc) 26%,var(--surface)) 68%);
+  border:1px solid var(--line);box-shadow:var(--shadow)}
+.hroom{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;border:0;background:none;cursor:pointer;
+  font:inherit;color:var(--ink);text-align:center;transition:transform .15s}
+.hroom:hover{transform:translateY(-3px)}
+.hroom:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:12px}
+.hrframe{position:relative;width:84px;height:118px;border-radius:10px 10px 3px 3px;background:#243B37;padding:5px 5px 0;
+  box-shadow:0 8px 0 -3px rgba(16,30,28,.25),0 10px 16px rgba(16,30,28,.18);perspective:520px}
+.hrpanel{position:absolute;left:5px;right:5px;top:5px;bottom:0;border-radius:7px 7px 2px 2px;transform-origin:left center;
+  background:linear-gradient(180deg,#DCEDE9,#B9DCD3);transition:transform .45s cubic-bezier(.4,0,.2,1);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.hrpanel.l{right:50%;margin-right:1px;transform-origin:left center}
+.hrpanel.r{left:50%;margin-left:1px;transform-origin:right center}
+.hrwin{position:absolute;left:50%;top:14px;width:22px;height:30px;margin-left:-11px;border-radius:5px;
+  background:linear-gradient(160deg,#C8F1EA,#0E7C70);box-shadow:inset 0 0 0 2px rgba(16,30,28,.35)}
+.hrhandle{position:absolute;right:9px;top:60px;width:5px;height:14px;border-radius:3px;background:#243B37}
+.hrplate{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);padding:2px 7px;border-radius:4px;background:#F2FBF7;color:#111B19;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:800;letter-spacing:.08em;box-shadow:0 1px 0 rgba(16,30,28,.35)}
+.hrtag{position:absolute;left:50%;top:-8px;transform:translateX(-50%);padding:2px 6px;border-radius:99px;background:#FF3B5C;color:#fff;
+  font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:800;letter-spacing:.12em;white-space:nowrap}
+.hroom.crit .hrplate{background:#FF3B5C;color:#fff}
+.hroom.done .hrpanel{background:linear-gradient(180deg,#CFF3DE,#8BE6B8)}
+.hroom.done .hrframe::after{content:"\2713";position:absolute;right:-6px;top:-6px;width:22px;height:22px;border-radius:50%;background:#2FA36B;color:#fff;
+  font-size:13px;font-weight:800;display:grid;place-items:center;box-shadow:0 2px 6px rgba(16,30,28,.3)}
+.hroom.ward .hrframe{width:110px}
+.hrname{font-size:12px;font-weight:700;line-height:1.25;max-width:126px;margin-top:6px}
+.hrname.pend{color:var(--faint);font-style:italic;font-weight:600}
+.hrstat{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted)}
+/* opening: the panel swings in and light spills out, then the fight zooms up */
+.hroom.opening .hrpanel{transform:perspective(520px) rotateY(-78deg)}
+.hroom.opening .hrpanel.r{transform:perspective(520px) rotateY(78deg)}
+.hroom.opening .hrframe{background:radial-gradient(circle at 50% 60%,#CFF3EA,#243B37 70%)}
+.hroom.opening{transform:scale(1.12)}
+@keyframes roomin{from{transform:scale(.55);opacity:0;border-radius:60px}60%{opacity:1}to{transform:scale(1);opacity:1}}
+.farena.onfloor{animation:roomin .55s cubic-bezier(.2,.8,.3,1)}
+/* the stage: everything that stands on the floor, so an effect can move it all at once */
+.fstage{position:absolute;inset:0;z-index:2;transform-origin:50% 100%}
+.sfx{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.sfx i{position:absolute;display:block;transition:opacity .6s,transform .6s,filter .6s,height .6s,background-color .6s}
+/* the disease before it has a name: out of focus, being scanned */
+.foe.unresolved svg{filter:blur(7px) saturate(.2) brightness(.85)}
+.foe.unresolved::after{content:"";position:absolute;left:-8%;right:-8%;top:10%;height:3px;border-radius:2px;background:rgba(74,222,155,.9);
+  box-shadow:0 0 12px #4ADE9B;animation:scan 1.5s ease-in-out infinite}
+@keyframes scan{0%,100%{top:8%}50%{top:88%}}
+.foe.resolving svg{animation:focus 1s ease-out forwards}
+@keyframes focus{from{filter:blur(7px) saturate(.2) brightness(.85)}60%{filter:blur(0) saturate(1.6) brightness(1.3)}to{filter:none}}
+.fmontxt b.pending{color:#9FC9BD;font-style:italic;font-weight:600}
+/* ---- scene effects: each one reads --dh (1 = full presentation, 0 = resolved) ---- */
+.sfx-halo .sfx i{width:260px;height:260px;border-radius:50%;opacity:calc(var(--dh)*.9);filter:blur(4px);
+  background:radial-gradient(circle,transparent 36%,rgba(255,80,80,.6) 42%,rgba(255,200,60,.55) 48%,rgba(80,220,120,.5) 54%,rgba(80,150,255,.55) 60%,rgba(180,80,255,.45) 66%,transparent 72%)}
+.sfx-halo .sfx i.a{left:-30px;top:-100px}.sfx-halo .sfx i.b{right:-50px;top:-110px;width:320px;height:320px}
+.sfx-tunnel .sfx i.a{inset:0;background:radial-gradient(circle at 50% 58%,transparent calc(20% + 62%*(1 - var(--dh))),rgba(6,14,13,.95) calc(56% + 44%*(1 - var(--dh))))}
+.sfx-fog .sfx i.a{inset:0;opacity:calc(var(--dh)*.82);background:radial-gradient(ellipse at 30% 40%,rgba(255,255,255,.98),rgba(230,240,238,.7) 45%,rgba(255,255,255,.95) 100%)}
+.sfx-fog .sfx i.b{inset:0;opacity:calc(var(--dh)*.5);background:radial-gradient(ellipse at 72% 72%,rgba(255,255,255,.95),transparent 55%);animation:fogdrift 6s ease-in-out infinite alternate}
+@keyframes fogdrift{to{transform:translateX(-30px)}}
+.sfx-curtain .sfx i.a{left:0;right:0;top:0;height:calc(var(--dh)*80%);background:linear-gradient(180deg,rgba(6,14,13,.97) 65%,transparent)}
+.sfx-warp.onfloor::before{transform:perspective(420px) rotateX(48deg) skewX(calc(var(--dh)*-18deg))}
+.sfx-warp .sfx i.a{inset:0;opacity:calc(var(--dh)*.5);background:repeating-radial-gradient(circle at 50% 50%,transparent 0 15px,rgba(16,30,28,.2) 15px 17px)}
+.sfx-spots .sfx i{inset:0;opacity:var(--dh);animation:drift 8s ease-in-out infinite alternate;
+  background:radial-gradient(circle at 18% 28%,#0b1615 0 16px,transparent 24px),radial-gradient(circle at 52% 20%,#0b1615 0 10px,transparent 18px),
+    radial-gradient(circle at 78% 34%,#0b1615 0 20px,transparent 28px),radial-gradient(circle at 34% 64%,#0b1615 0 12px,transparent 20px),
+    radial-gradient(circle at 64% 70%,#0b1615 0 15px,transparent 23px),radial-gradient(circle at 88% 78%,#0b1615 0 9px,transparent 16px)}
+.sfx-spots .sfx i.b{animation-duration:11s;animation-direction:alternate-reverse;opacity:calc(var(--dh)*.6)}
+@keyframes drift{to{transform:translate(24px,14px)}}
+.sfx-glow .sfx i.a{inset:0;opacity:calc(var(--dh)*.85);animation:throb 1.5s ease-in-out infinite;
+  background:radial-gradient(circle at 78% 62%,rgba(255,60,60,.8),rgba(255,120,80,.4) 32%,transparent 60%)}
+@keyframes throb{50%{transform:scale(1.06)}}
+.sfx-seep .sfx i.a{left:0;right:0;bottom:0;height:calc(var(--dh)*48%);background:linear-gradient(0deg,rgba(150,20,40,.88),rgba(150,20,40,.4) 60%,transparent)}
+.sfx-seep .sfx i.b{left:0;right:0;top:0;height:calc(var(--dh)*20%);background:linear-gradient(180deg,rgba(150,20,40,.5),transparent)}
+.sfx-muffle .sfx i{right:calc(9% - 62px);bottom:-14px;width:256px;height:256px;border-radius:50%;
+  background:repeating-radial-gradient(circle,transparent 0 18px,rgba(17,27,25,.4) 18px 21px,transparent 21px 40px);
+  filter:blur(calc(var(--dh)*5px));opacity:calc(.3 + .55*(1 - var(--dh)))}
+.sfx-muffle .sfx i.b{display:none}
+.sfx-sway .fstage{animation:sway 2.8s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(calc(var(--dh)*-3deg)) translateX(calc(var(--dh)*-8px))}50%{transform:rotate(calc(var(--dh)*3deg)) translateX(calc(var(--dh)*8px))}}
+.sfx-haze .fstage{filter:blur(calc(var(--dh)*2.4px))}
+.sfx-haze .sfx i.a{inset:0;opacity:calc(var(--dh)*.5);background:linear-gradient(180deg,rgba(245,194,66,.6),rgba(168,102,11,.4))}
+.sfx-dim .sfx i.a{inset:0;background-color:rgba(4,10,9,calc(var(--dh)*.74))}
+.sfx-fade .fstage{filter:saturate(calc(1 - var(--dh)*.92)) contrast(calc(1 - var(--dh)*.25))}
+.sfx-fade .sfx i.a{inset:0;opacity:calc(var(--dh)*.35);background:#6B7C78;mix-blend-mode:saturation}
+.sfx-rain .sfx i.a{inset:-60px 0 0;opacity:var(--dh);animation:rainfall .5s linear infinite;
+  background:repeating-linear-gradient(112deg,transparent 0 11px,rgba(110,170,215,.6) 11px 13px)}
+@keyframes rainfall{to{transform:translate(-14px,44px)}}
+.sfx-rain .sfx i.b{left:0;right:0;bottom:0;height:calc(var(--dh)*40%);background:linear-gradient(0deg,rgba(60,130,190,.7),rgba(60,130,190,.3) 70%,transparent)}
+.sfx-rings .sfx i{left:50%;top:56%;width:380px;height:380px;margin:-190px 0 0 -190px;border-radius:50%;border:16px solid rgba(17,27,25,.38);
+  transform:scale(calc(.42 + .6*(1 - var(--dh))));opacity:calc(.2 + .7*var(--dh))}
+.sfx-rings .sfx i.b{width:520px;height:520px;margin:-260px 0 0 -260px;border-width:22px;transform:scale(calc(.5 + .55*(1 - var(--dh))))}
+@media (prefers-reduced-motion:reduce){.sfx-sway .fstage,.sfx i,.foe.unresolved::after{animation:none}}
 /* ---- the battle screen ---------------------------------------------------- */
-.farena.pk{display:block;position:relative;height:320px;padding:0;overflow:hidden;
-  background:linear-gradient(180deg,#A9E3DC 0%,#C9EDE4 48%,#8FD3C4 100%)}
-.farena.pk::after{display:none}
-.farena.pk .fground{position:absolute;border-radius:50%;background:rgba(16,30,28,.13)}
-.farena.pk .fground.gfoe{right:22px;top:118px;width:170px;height:38px}
-.farena.pk .fground.gme{left:14px;bottom:8px;width:190px;height:40px}
-.farena.pk .foe{position:absolute;right:42px;top:14px;width:130px;height:130px;z-index:2}
-.farena.pk .fnurse{position:absolute;left:28px;bottom:14px;z-index:2;transform-origin:50% 100%}
-.farena.pk .fnurse svg{height:190px;width:auto}
-.farena.pk .fnurse.cast{animation:cast .5s ease-in-out infinite alternate}
+/* The floor. A ward at night: a pale wall up top, a tiled floor coming forward
+   under the two of them, a pool of shadow where each one stands. Nothing here
+   is a lawn or a stadium. */
+.farena.onfloor{display:block;position:relative;height:320px;padding:0;overflow:hidden;
+  background:
+    radial-gradient(120% 60% at 50% 0%,rgba(255,255,255,.55),transparent 60%),
+    linear-gradient(180deg,#BFE9E1 0%,#D3F0E9 42%,#9BD8CB 62%,#7CC6B6 100%)}
+.farena.onfloor::after{display:none}
+.farena.onfloor::before{content:"";position:absolute;left:-10%;right:-10%;bottom:0;height:58%;z-index:0;
+  background:
+    repeating-linear-gradient(90deg,rgba(16,30,28,.09) 0 1.5px,transparent 1.5px 46px),
+    repeating-linear-gradient(0deg,rgba(16,30,28,.08) 0 1.5px,transparent 1.5px 30px);
+  -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,.9),transparent);
+  mask-image:linear-gradient(to top,rgba(0,0,0,.9),transparent);
+  transform:perspective(420px) rotateX(48deg);transform-origin:50% 100%}
+.farena.onfloor .fground{position:absolute;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(16,30,28,.26),rgba(16,30,28,.1) 58%,transparent 74%)}
+.farena.onfloor .fground.gfoe{right:calc(9% - 22px);bottom:12px;width:174px;height:40px}
+.farena.onfloor .fground.gme{left:calc(9% - 24px);bottom:8px;width:190px;height:40px}
+/* Face to face on one floor line, like two people on a unit - not one above
+   the other on separate ledges. Monitors hang over each of them. */
+.farena.onfloor .foe{position:absolute;right:9%;bottom:30px;width:130px;height:130px;z-index:2}
+.farena.onfloor .fnurse{position:absolute;left:9%;bottom:14px;z-index:2;transform-origin:50% 100%}
+.farena.onfloor .fnurse svg{height:190px;width:auto}
+.farena.onfloor .fnurse.cast{animation:cast .5s ease-in-out infinite alternate}
 @keyframes cast{from{transform:translateY(0)}to{transform:translateY(-6px) scale(1.02)}}
-.farena.pk .foe.cast{animation:foecast .35s ease-in-out infinite alternate}
+.farena.onfloor .foe.cast{animation:foecast .35s ease-in-out infinite alternate}
 @keyframes foecast{from{transform:scale(1)}to{transform:scale(1.08) rotate(-3deg);filter:brightness(.7) saturate(1.4)}}
-.fpanel{position:absolute;z-index:3;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.92);
-  border:2px solid #243B37;box-shadow:3px 3px 0 #243B37;min-width:150px}
+/* Bedside monitors, one per side: dark glass, a live trace across the top,
+   and the patient's condition in the words a hospital actually uses. */
+.fpanel{position:absolute;z-index:5;padding:9px 12px 10px;border-radius:13px;min-width:160px;
+  background:linear-gradient(180deg,#132623,#0C1A18);color:#DDF5EE;
+  border:1px solid rgba(74,222,155,.28);
+  box-shadow:0 10px 24px rgba(8,22,20,.35),inset 0 0 0 1px rgba(255,255,255,.04),0 0 0 3px rgba(12,26,24,.18)}
+.fpanel .ecg{display:block;width:100%;height:12px;margin:-2px 0 4px;overflow:visible}
+.fpanel .ecg path{fill:none;stroke:#4ADE9B;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:46 130;animation:ecg 1.6s linear infinite;filter:drop-shadow(0 0 3px rgba(74,222,155,.7))}
+.fpanel.pme .ecg path{animation-duration:1.25s}
+@keyframes ecg{to{stroke-dashoffset:-176}}
 .fpanel b{display:block;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:700;
-  letter-spacing:.02em;color:#111B19;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
-.fpanel.pfoe{left:12px;top:12px}
-.fpanel.pme{right:12px;bottom:14px}
-.fpanel .fhp{width:150px;margin-top:5px;border:1.5px solid #243B37;background:#E4EBE9}
-.fpanel .fhp span{background:linear-gradient(90deg,#4ADE9B,#2FA36B);transition:width .35s cubic-bezier(.2,.8,.3,1)}
-.fpanel .fhpn{margin-top:2px;color:#243B37}
-.fpanel .fhearts{margin-top:5px}
+  letter-spacing:.02em;color:#F2FBF7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+.fpanel.pfoe{right:12px;top:12px}
+.fpanel.pme{left:12px;top:12px}
+.fcond{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.fcond.c4{color:#FF5C78}.fcond.c3{color:#FF9A4D}.fcond.c2{color:#F5C242}.fcond.c1{color:#8BE6B8}.fcond.c0{color:#4ADE9B}
+/* Disease Health is a gauge, the same ring the top bar uses for today's
+   count: a circle that empties as the disease loses ground, with the number
+   in the middle. A dial, not a bar. */
+.fmon{display:flex;align-items:center;gap:10px;margin-top:2px}
+.dhring{position:relative;width:48px;height:48px;flex:none}
+.dhring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dhring .trk{fill:none;stroke:rgba(255,255,255,.12);stroke-width:4.5}
+.dhring .val{fill:none;stroke-width:4.5;stroke-linecap:round;transition:stroke-dasharray .4s cubic-bezier(.2,.8,.3,1),stroke .3s}
+.dhring .val.c4{stroke:#FF5C78}.dhring .val.c3{stroke:#FF9A4D}.dhring .val.c2{stroke:#F5C242}.dhring .val.c1{stroke:#8BE6B8}.dhring .val.c0{stroke:#4ADE9B}
+.dhring b{position:absolute;inset:0;display:grid;place-items:center;font-family:"IBM Plex Mono",monospace;
+  font-size:15px;font-weight:800;color:#F2FBF7;letter-spacing:-.02em}
+.fmontxt{min-width:0;flex:1}
+.fmontxt b{margin-bottom:2px}
+.fdhl{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:800;letter-spacing:.14em;color:#9FC9BD;margin-right:4px}
+.fpanel .fhp{width:150px;margin-top:6px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);height:9px}
+.fpanel .fhp span{background:linear-gradient(90deg,#FF9A4D,#FF3B5C);transition:width .35s cubic-bezier(.2,.8,.3,1);
+  box-shadow:0 0 8px rgba(255,59,92,.55)}
+.fpanel .fhpn{margin-top:3px;color:#9FC9BD}
+.fpanel .fhearts{margin-top:6px}
+.fpanel .fheart{color:rgba(255,255,255,.22)}
+.fpanel .fheart.on{color:#FF5C78}
 .fheart.lost{animation:heartpop .4s ease forwards}
 @keyframes heartpop{40%{transform:scale(1.5);color:#fff}100%{transform:scale(0);opacity:0}}
 .fx{position:absolute;inset:0;z-index:4;pointer-events:none}
@@ -579,6 +717,15 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 @keyframes boltgo{from{transform:translate(var(--x0),var(--y0)) scale(.5);opacity:.6}
   30%{opacity:1;transform:translate(calc(var(--x0)*.7 + var(--x1)*.3),calc(var(--y0)*.7 + var(--y1)*.3 - 24px)) scale(1.1)}
   to{transform:translate(var(--x1),var(--y1)) scale(1);opacity:1}}
+.fxring{position:absolute;width:130px;height:130px;margin:-65px 0 0 -65px;border-radius:50%;pointer-events:none;opacity:0;
+  border:4px solid var(--rc,#fff)}
+.fxring.heal{animation:ringin .6s cubic-bezier(.2,.7,.3,1) forwards;
+  box-shadow:0 0 16px var(--rc,#fff),inset 0 0 22px var(--rc,#fff)}
+@keyframes ringin{from{transform:scale(1.9);opacity:0}35%{opacity:1}to{transform:scale(.7);opacity:0}}
+.fxring.dark{border-color:#9B5DE5;border-width:6px;animation:ringout .65s ease-out forwards;
+  box-shadow:0 0 20px rgba(155,93,229,.85),inset 0 0 26px rgba(42,29,107,.6)}
+@keyframes ringout{from{transform:scale(.35);opacity:1}to{transform:scale(1.9);opacity:0}}
+.stream.miasma circle{mix-blend-mode:multiply}
 .stream{position:absolute;inset:0;width:100%;height:100%;overflow:visible;opacity:1;transition:opacity .35s}
 .stream.off{opacity:0}
 .stream .haze{fill:none;stroke:#fff;stroke-width:26;stroke-linecap:round;opacity:.55;
@@ -599,22 +746,42 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
   box-shadow:0 0 0 0 rgba(158,228,147,.9)}
 .burst.dark{background:radial-gradient(circle,#F15BB5 0 20%,#9B5DE5 50%,transparent 72%)}
 @keyframes burst{from{transform:scale(.4);opacity:1}to{transform:scale(6);opacity:0}}
-.farena.pk.flash{animation:flash .25s ease}
+.farena.onfloor.flash{animation:flash .25s ease}
 @keyframes flash{30%{filter:brightness(1.35)}}
-.farena.pk.shake{animation:arenashake .4s ease}
+.farena.onfloor.shake{animation:arenashake .4s ease}
 @keyframes arenashake{0%,100%{transform:translate(0,0)}20%{transform:translate(-6px,3px)}40%{transform:translate(6px,-3px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-1px)}}
-.fmsg{min-height:52px;margin:-6px 0 12px;padding:12px 15px;border-radius:14px;
-  background:#fff;border:3px solid #243B37;box-shadow:4px 4px 0 #243B37;
-  font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;color:#111B19;line-height:1.4}
+/* The chart line: what just happened, written the way a nurse would note it. */
+.fmsg{min-height:52px;margin:-6px 0 12px;padding:12px 64px 12px 16px;border-radius:12px;position:relative;
+  background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);box-shadow:var(--shadow);
+  font-family:"IBM Plex Mono",monospace;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.45}
+.fmsg::after{content:"CHART";position:absolute;right:12px;top:9px;font-size:9.5px;letter-spacing:.16em;
+  color:var(--faint);font-weight:700}
 .fmsg.pop{animation:msgpop .25s ease}
 @keyframes msgpop{from{transform:translateY(4px);opacity:.4}}
 @media (max-width:430px){
-  .farena.pk{height:300px}
-  .farena.pk .fnurse{left:18px;bottom:12px}
-  .farena.pk .fnurse svg{height:158px}
-  .farena.pk .foe{width:112px;height:112px;right:28px;top:22px}
-  .farena.pk .fground.gfoe{right:12px;top:112px;width:146px}
-  .fpanel{min-width:128px;padding:7px 10px}
+  .corridor{grid-template-columns:repeat(3,1fr);gap:12px 6px;padding:12px 8px 8px}
+  .hrframe{width:76px;height:106px}
+  .hroom.ward .hrframe{width:92px}
+  .hrname{font-size:11px;max-width:104px}
+  .corridorhead .fnurse.sm svg{height:96px}
+  .farena.onfloor{height:316px}
+  .farena.onfloor .fnurse{left:6%;bottom:12px}
+  .farena.onfloor .fnurse svg{height:158px}
+  .farena.onfloor .foe{width:112px;height:112px;right:6%;bottom:26px}
+  .farena.onfloor .fground.gfoe{right:calc(6% - 16px);bottom:10px;width:146px}
+  .farena.onfloor .fground.gme{left:calc(6% - 26px);width:150px}
+  /* two monitors over a 366px floor: split the width instead of overlapping */
+  .fpanel{min-width:0;padding:6px 9px 7px}
+  .fpanel.pme{max-width:33%}
+  .fpanel.pfoe{max-width:56%}
+  .fpanel b{max-width:100%;font-size:10.5px}
+  .fpanel .ecg{height:9px;margin:-1px 0 3px}
+  .fpanel .fhearts{flex-wrap:wrap;gap:2px}
+  .fpanel .fheart{font-size:16px}
+  .fpanel .fhpn{white-space:normal;font-size:10px;line-height:1.3}
+  .fmon{gap:7px}
+  .dhring{width:40px;height:40px}
+  .dhring b{font-size:13px}
   .fpanel .fhp{width:120px}
   .fpanel b{max-width:150px;font-size:11px}
 }
@@ -1280,11 +1447,18 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .avstage .stgcap{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .ladder{display:flex;flex-direction:column}
 .rankhead{margin:-16px -16px 8px;padding:16px 16px 14px;border-radius:14px 14px 0 0}
+.rankside{margin-left:auto;text-align:right;font-family:"IBM Plex Mono",monospace}
+.rankside b{display:block;font-size:19px;font-weight:700}
+.rankside i{font-style:normal;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.rankrow .chip{margin-left:auto}
+.ropens{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--faint);white-space:nowrap}
+.ropens.done{color:var(--accent)}
+.xpbar.behind i{background:linear-gradient(90deg,#E0A63A,#C4353F)}
 .rankrow{display:flex;align-items:center;gap:12px;padding:9px 18px;border-top:1px solid var(--line-soft);opacity:.55}
 .rankrow:first-child{border-top:0}
 .rankrow.done{opacity:.85}
 .rankrow.here{opacity:1;background:var(--accent-soft)}
-.rankrow .lv{width:22px;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.rankrow .lv{width:46px;flex:none;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap}
 .rankrow .nm{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:14.5px;flex:none}
 .rankrow.here .nm{color:var(--accent)}
 .rankrow .req{font-size:11.5px;color:var(--muted);margin-left:auto;text-align:right}
@@ -2409,7 +2583,7 @@ const SEED_QUESTIONS=[
   rationale:"The major responsibility for day-to-day management often falls to family members. This can bring economic strain from lost income and expensive treatments, decreased socialization for the entire family, and role reversal as spouses, children or parents take on caregiving roles."},
 
  /* ---- 308T · week 1, second pass ------------------------------------------
-    Written from Jeremy's own notes on the vision and chronic-illness lectures,
+    Written from the owner's own notes on the vision and chronic-illness lectures,
     checked against the decks where the decks say it. Where a question comes
     from what the instructor said in class rather than from a slide, the
     rationale says so, so nothing here pretends to be printed material. */
@@ -2816,8 +2990,10 @@ function newerMine(a,b){
   const ta=+a.at||0, tb=+b.at||0;
   return ta>=tb?a:b;
 }
+let FRESH_INSTALL=false;                     // nothing was on this device before
 async function loadAll(){
   const core=LS.get("cn_core",null);
+  if(!core&&!LS.get("cn_mine",null))FRESH_INSTALL=true;
   if(core){S.profile=freshProfile(core.profile);S.courses=core.courses||[];S.events=core.events||[];S.logins=core.logins||{};S.deleted=core.deleted||{};}
   S.materials=Object.values(LS.get("cn_materials",{}));
   S.questions=Object.values(LS.get("cn_questions",{}));
@@ -2844,6 +3020,16 @@ async function loadAll(){
   }catch(e){}
 }
 
+/* The calendar is shared - everyone in the cohort gets the same due dates -
+   but the backlog is not. Someone who opens this in November should not be met
+   by a blinking red board of work from September that was never theirs. So the
+   day you first open it is recorded, and Late only ever counts from there.
+   Anyone who already had the app keeps their whole history. */
+function migrateJoined(){
+  if(S.profile.joined)return false;
+  S.profile.joined=FRESH_INSTALL?today():"2000-01-01";
+  return true;
+}
 const DROP_COURSES=["VIS 103"];
 function dropCourses(){
   if(S.profile.dropped1)return false;
@@ -3267,11 +3453,141 @@ function xpProgress(xp){
   while(lvl<XP_CAP&&xp>=cum+need){cum+=need;lvl++;need=Math.round(need*1.22);}
   return {lvl:lvl,into:xp-cum,need:need,pct:Math.min(1,(xp-cum)/need),capped:lvl>=XP_CAP&&xp>=cum+need};
 }
+/* -------------------------------------------------------------------------
+   THE LADDER RUNS ON THE SEMESTER CLOCK
+
+   XP was the wrong engine: it topped out at nine, and a hard week in September
+   could carry you further up the ladder than the calendar had any business
+   allowing. So the ladder is paced to the term instead. A rank opens roughly
+   every week, and the last one opens a week before finals - so the top of the
+   ladder is something you reach by staying with the course all semester, not
+   by grinding one weekend.
+
+   Two things have to be true to hold a rank: the week has to have arrived, and
+   you have to be caught up. Being caught up is everything already due that is
+   ticked off, plus the exam gates for exams that have already happened. Falling
+   behind holds you where you are; it never takes back a rank you have earned. */
+const RANK_STEPS=RANKS.length-1;                 // twelve moves from Student Nurse to the top
+const FINALS_LEAD=1;                             // the top rank opens this many weeks before finals
+function termWeeks(){
+  const t=termBounds();
+  if(!t)return null;
+  const wk=d=>Math.floor((parseD(d)-t.start)/604800000);
+  const exams=S.events.filter(e=>e.type==="Exam"||/final exam/i.test(e.title||"")).map(e=>e.date).sort();
+  const fin=exams.length?exams[exams.length-1]:dkey(t.end);
+  const top=Math.max(RANK_STEPS,wk(fin)-FINALS_LEAD);   // never squeeze the ladder shorter than its steps
+  return {t:t,wk:wk,now:wk(today()),top:top,finals:fin};
+}
+/* the Sunday a given rank opens */
+function rankOpens(lvl){
+  const T=termWeeks();if(!T)return null;
+  const w=Math.round((lvl-1)*T.top/RANK_STEPS);
+  return dkey(weekStart(T.t,w));
+}
+/* -------------------------------------------------------------------------
+   SIXTY-FIVE LEVELS
+
+   A full week is five levels: eighty questions you have not answered before,
+   and that week's tasks. Thirteen weeks of that reaches the top, two weeks
+   before finals. The name changes every fifth level, so the thirteen rank
+   names cover the ladder exactly - one to five is Student Nurse, sixty-one to
+   sixty-five is Nightingale - while the number moves every single level.
+
+   Of those five, three come from questions and two from tasks.
+
+   Only the FIRST answer to a question counts. A question that comes round
+   again on its spaced-repetition schedule is worth studying and worth XP, but
+   it does not move the ladder, and a question met in a ward round is the same
+   question it was in Study. The four rounds inside each boss room are their
+   own content and count once each.
+
+   Because levels come off a running total rather than a weekly reckoning, a
+   heavy week banks itself: answer a hundred and the extra twenty is already on
+   the board. What limits anyone is how many questions exist to be answered. */
+/* A hundred levels in twenty tiers of five. Thirteen of those tiers have
+   names; the seven above them are deliberately blank. At five levels a week
+   the named ladder runs out around week thirteen and the rest is a mountain
+   nobody is expected to climb this semester - which is the point of leaving it
+   visible and unnamed. Anyone who does get up there keeps the last name we
+   have until we write the new ones. */
+const LEVEL_MAX=100;
+const TIER_SIZE=5;
+const TIER_COUNT=LEVEL_MAX/TIER_SIZE;      // twenty
+const rankName=t=>RANKS[Math.min(t,RANKS.length)-1];
+const tierNamed=t=>t<=RANKS.length;
+const WEEK_Q=80;                  // a week of practice
+const LV_FROM_Q=3;                // three of the week's five levels
+const LV_FROM_TASKS=2;            // and two from the week's tasks
+const Q_PER_LEVEL=WEEK_Q/LV_FROM_Q;
+
+/* every distinct question this person has ever answered, plus the boss rounds
+   they have played, which are content of their own */
+function uniqueAnswered(){
+  const q=S.questions.filter(x=>!x.prime&&(x.seen||0)>0).length;
+  return q+Object.keys(S.profile.fightSeen||{}).length;
+}
+/* one week's tasks, done over due. The current week counts only what has come
+   due so far, so Wednesday is not judged on Friday's homework. */
+function weekWork(a,z){
+  const end=z>today()?today():z;
+  if(end<a)return {credit:0,due:0,done:0};
+  const due=todoOf(S.events.filter(e=>e.date>=a&&e.date<=end));
+  const done=due.filter(e=>e.done).length;
+  return {credit:due.length?Math.min(1,done/due.length):1,due:due.length,done:done};
+}
+function caughtUp(){
+  const T=termWeeks(), from=S.profile.joined||"2000-01-01";
+  const u=uniqueAnswered();
+  if(!T)return {levels:0,due:0,done:0,unique:u,week:null,share:1};
+  let lv=0,due=0,done=0;
+  for(let w=0;w<=T.top;w++){
+    const a=dkey(weekStart(T.t,w));
+    if(a>today())break;
+    if(dshift(a,6)<from)continue;
+    const r=weekWork(a,dshift(a,6));
+    lv+=r.credit*LV_FROM_TASKS;due+=r.due;done+=r.done;
+  }
+  const wa=dkey(weekStart(T.t,T.now));
+  return {levels:lv,due:due,done:done,unique:u,share:due?done/due:1,
+          week:weekWork(wa,dshift(wa,6))};
+}
+const tierOfLevel=l=>Math.min(TIER_COUNT,Math.floor((l-1)/TIER_SIZE)+1);
 function levelInfo(xp){
-  const x=xpProgress(xp),m=milestoneLevel();
-  const lvl=Math.max(Math.min(x.lvl,XP_CAP),m.lvl,S.profile.rankMax||1);   // a rank once reached is never taken back
-  return {lvl:lvl,into:x.into,need:x.need,pct:x.pct,rank:RANKS[Math.min(lvl-1,RANKS.length-1)],
-          gated:(x.lvl>=XP_CAP||m.lvl>=10),gates:m.open,total:m.total,next:m.next};
+  const T=termWeeks(), c=caughtUp();
+  const qLv=c.unique/Q_PER_LEVEL;
+  const earned=qLv+c.levels;
+  const lvl=Math.max(S.profile.rankMax||1,Math.min(LEVEL_MAX,1+Math.floor(earned+1e-9)));
+  const into=Math.max(0,Math.min(1,earned-(lvl-1)));
+  const tier=tierOfLevel(lvl);
+  return {lvl:lvl,tier:tier,into:into,need:1,pct:lvl>=LEVEL_MAX?1:into,
+          rank:rankName(tier),named:tierNamed(tier),paced:!!T,earned:earned,qLevels:qLv,taskLevels:c.levels,
+          heldBy:lvl>=LEVEL_MAX?"top":"open",caught:c,
+          week:T?T.now+1:1,weeks:T?T.top+1:1,finals:T?T.finals:null,
+          inTier:lvl-(tier-1)*TIER_SIZE,tierTop:Math.min(LEVEL_MAX,tier*TIER_SIZE)};
+}
+/* one line saying why you are not higher up yet */
+/* What is left before the next rank, said in the two things you can actually
+   go and do about it. Questions carry half a week, so the count is doubled. */
+/* what closes the gap to the next level, in the two things you can go and do */
+function rankWhy(li){
+  if(li.heldBy==="top")return "Level "+LEVEL_MAX+" \u2014 the top of the mountain.";
+  const left=1-li.into;
+  const qs=Math.ceil(left*Q_PER_LEVEL);
+  const w=li.caught.week||{due:0,done:0};
+  const owed=Math.max(0,w.due-w.done);
+  const bits=["Level "+(li.lvl+1)+": "+qs+" new question"+(qs===1?"":"s")];
+  if(owed)bits.push("or clear "+owed+" task"+(owed===1?"":"s"));
+  return bits.join(" ");
+}
+/* five levels a week is the pace the calendar sets */
+const PACE_PER_WEEK=LV_FROM_Q+LV_FROM_TASKS;
+function paceLevel(){const T=termWeeks();return T?Math.min(LEVEL_MAX,1+T.now*PACE_PER_WEEK):1;}
+function rankPace(li){
+  if(!li.paced)return "";
+  const due=paceLevel();
+  if(li.lvl>due+1)return "ahead of pace";
+  if(li.lvl<due-1)return "behind pace";
+  return "on pace";
 }
 const TROPHIES=[
  {id:"first",xp:25,n:"First Blood",d:"Answer your first question",k:(p,s)=>[p.answered,1],t:p=>p.answered>=1},
@@ -3305,7 +3621,8 @@ function syncLatches(){
   const p=S.profile;p.gatesOpen=p.gatesOpen||{};
   let changed=false;
   allGates().forEach(g=>{if(g.earned&&!p.gatesOpen[g.ex.sid]){p.gatesOpen[g.ex.sid]=today();changed=true;}});
-  const li=Math.max(xpProgress(p.xp).lvl,milestoneLevel().lvl);
+  if(!p.lvl65){p.rankMax=1;p.lvl65=true;changed=true;}   // the old 1-13 latch is not a level
+  const li=levelInfo(p.xp).lvl;
   if(li>(p.rankMax||1)){p.rankMax=li;changed=true;}
   return changed;
 }
@@ -3337,6 +3654,9 @@ function awardMilestones(silent){
    "closest trophy" card with a full progress bar. Award them, don't toast
    them: the user did nothing this second and a toast would say otherwise. */
 function checkTrophies(silent){
+  /* a new week can open a rank while the app is still open */
+  const lv=levelInfo(S.profile.xp).lvl;
+  if(lv>(S.profile.rankMax||1))S.profile.rankMax=lv;
   awardMilestones(silent);
   let got=false;
   TROPHIES.forEach(tr=>{
@@ -3545,10 +3865,12 @@ function renderVitals(){
   const pct=Math.min(1,cnt/g),C=2*Math.PI*15;
   const acc=p.answered?Math.round(p.correct/p.answered*100):0;
   $("#vitals").innerHTML=
-   '<div class="vital"><div class="rank">'+esc(li.rank)+'</div><div class="l">Rank '+li.lvl+'</div></div>'+
-   '<div class="xpwrap">'+(li.gated
-      ? '<div class="mono" style="font-size:11px;color:var(--faint);display:flex;justify-content:space-between"><span>'+li.gates+' / '+li.total+' exam gates</span><span>'+p.xp+' XP</span></div><div class="xpbar"><i style="width:'+(li.total?(li.gates/li.total*100).toFixed(1):0)+'%"></i></div>'
-      : '<div class="mono" style="font-size:11px;color:var(--faint);display:flex;justify-content:space-between"><span>'+li.into+' / '+li.need+' XP</span><span>'+p.xp+' total</span></div><div class="xpbar"><i style="width:'+(li.pct*100).toFixed(1)+'%"></i></div>')+'</div>'+
+   '<div class="vital"><div class="rank">'+esc(li.rank)+'</div><div class="l">Level '+li.lvl+'</div></div>'+
+   '<div class="xpwrap">'+
+     '<div class="mono" style="font-size:11px;color:var(--faint);display:flex;justify-content:space-between;gap:10px">'+
+       '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(rankWhy(li))+'</span>'+
+       '<span>'+p.xp+' XP</span></div>'+
+     '<div class="xpbar'+(li.heldBy==="assignments"?' behind':'')+'"><i style="width:'+(li.pct*100).toFixed(1)+'%"></i></div></div>'+
    '<div class="goalbox"><svg class="ring" viewBox="0 0 38 38"><circle class="trk" cx="19" cy="19" r="15"/><circle class="val" cx="19" cy="19" r="15" stroke-dasharray="'+(C*pct).toFixed(1)+' 999"/></svg>'+
      '<div class="vital"><div class="n">'+cnt+'<span style="font-size:12px;color:var(--faint)">/'+g+'</span></div><div class="l">Today</div></div></div>'+
    '<div class="vital"><div class="n">'+(p.streak||0)+'</div><div class="l">Day streak</div></div>'+
@@ -3999,9 +4321,9 @@ function viewNurse(){
     '</div>'+
     trophyDrawer()+shopSection()+settingsSection();
   }
-  const got=GEAR.filter(g=>li.lvl>=g.lv), nextUp=GEAR.find(g=>li.lvl<g.lv);
+  const got=GEAR.filter(g=>li.tier>=g.lv), nextUp=GEAR.find(g=>li.tier<g.lv);
   return ''+
-  '<div class="vhead"><div><h1>Your nurse</h1><p>Rank '+li.lvl+' of 13 &mdash; '+esc(li.rank)+'.</p></div>'+
+  '<div class="vhead"><div><h1>Your nurse</h1><p>Level '+li.lvl+' of '+LEVEL_MAX+' &mdash; '+esc(li.rank)+'.</p></div>'+
   '<div class="row"><button class="btn sm" id="avEdit">Change how they look</button><button class="btn sm lkbtn" id="lkOpen">The locker &middot; $'+dollars()+'</button><button class="btn sm ghost" id="avOff">Hide them</button></div></div>'+
   '<div class="card pad" style="margin-bottom:16px"><span class="eyebrow">Where they turn up</span>'+
     '<div class="note" style="margin:5px 0 10px;max-width:60ch">They walk into the corner when you tick something off, say what you earned, and go. Pin them and they stay \u2014 though a figure that never leaves the corner does stop being a treat.</div>'+
@@ -4010,13 +4332,13 @@ function viewNurse(){
       '<button class="chip" data-ntog="pin" aria-pressed="'+(!!S.profile.nursePin&&!S.profile.nurseOff)+'"'+(S.profile.nurseOff?' disabled':'')+'>Keep them on screen</button>'+
     '</div></div>'+
   '<div class="card nursehero">'+
-    '<div class="heroart tapbig" id="heroArt" title="See them full size">'+nurseAvatar(li.lvl,190)+'<div class="taphint">Tap to enlarge</div></div>'+
+    '<div class="heroart tapbig" id="heroArt" title="See them full size">'+nurseAvatar(li.tier,190)+'<div class="taphint">Tap to enlarge</div></div>'+
     '<div class="herotext">'+
-      '<span class="eyebrow">Rank '+li.lvl+'</span>'+
+      '<span class="eyebrow">Level '+li.lvl+'</span>'+
       '<div class="rankname" style="font-size:28px">'+esc(li.rank)+'</div>'+
       '<div class="note" style="margin-top:4px">'+(p.streak?p.streak+'-day streak &middot; ':'')+p.xp+' XP</div>'+
-      '<div class="xpbar" style="margin-top:12px;max-width:300px"><i style="width:'+(li.gated?(li.total?(li.gates/li.total*100):0):li.pct*100).toFixed(1)+'%"></i></div>'+
-      '<div class="mono" style="font-size:11px;color:var(--faint);margin-top:5px">'+(li.gated?li.gates+' / '+li.total+' exam gates':li.into+' / '+li.need+' XP to the next rank')+'</div>'+
+      '<div class="xpbar'+(li.heldBy==="assignments"?' behind':'')+'" style="margin-top:12px;max-width:300px"><i style="width:'+(li.pct*100).toFixed(1)+'%"></i></div>'+
+      '<div class="mono" style="font-size:11px;color:var(--faint);margin-top:5px">'+esc(rankWhy(li))+'</div>'+
     '</div>'+
   '</div>'+
   '<div style="margin-top:14px"></div>'+
@@ -4107,15 +4429,15 @@ const LOCKER=[
  {id:"badge",    p:35, n:"ID badge",        d:"Clipped on, without waiting for the rank"},
  {id:"hairacc",  p:60, n:"Hair accessories",d:"Headband, bandana and a scrunchie"},
  /* bay 109 - what comes out of the hand in a fight */
- {id:"en_solar", p:90, n:"Solar flare",     d:"Healing energy in gold, orange and red"},
- {id:"en_tide",  p:90, n:"Deep tide",       d:"Healing energy in blue, indigo and violet"},
- {id:"en_scrub", p:110,n:"Scrub green",     d:"Healing energy in the green of the scrubs"},
- {id:"en_star",  p:140,n:"Starlight",       d:"White healing energy, silver at the edges"},
- {id:"en_nova",  p:180,n:"Nova",            d:"Eleven streams, the whole spectrum, wider"},
+ {id:"en_solar", p:270,n:"Solar flare",     d:"Healing energy in gold, orange and red"},
+ {id:"en_tide",  p:270,n:"Deep tide",       d:"Healing energy in blue, indigo and violet"},
+ {id:"en_scrub", p:330,n:"Scrub green",     d:"Healing energy in the green of the scrubs"},
+ {id:"en_star",  p:420,n:"Starlight",       d:"White healing energy, silver at the edges"},
+ {id:"en_nova",  p:540,n:"Nova",            d:"Eleven streams, the whole spectrum, wider"},
  /* bay 110 - a real edge in the fight */
- {id:"k_cart",   p:200,n:"Crash cart",      d:"A fifth heart in every fight"},
- {id:"k_second", p:150,n:"Second opinion",  d:"One wrong answer crossed out before every round"},
- {id:"k_overtime",p:120,n:"Overtime",       d:"Ten more seconds on every round"}];
+ {id:"k_cart",   p:600,n:"Crash cart",      d:"A fifth heart in every fight"},
+ {id:"k_second", p:450,n:"Second opinion",  d:"One wrong answer crossed out before every round"},
+ {id:"k_overtime",p:360,n:"Overtime",       d:"Ten more seconds on every round"}];
 const LOCKER_BY={};LOCKER.forEach(i=>{LOCKER_BY[i.id]=i;});
 /* A wall of lockers rather than a price list: each one carries a category and
    you open it to see what is inside. */
@@ -4401,7 +4723,7 @@ const lockOf=(row,val)=>{const m=LOCKS[row],id=m&&m[val];return (id&&!owns(id))?
 function dollarsEarned(){
   const p=S.profile;
   let d=GRANT;
-  for(let L=2;L<=(p.rankMax||1);L++)d+=RANK_PURSE(L);
+  for(let L=2;L<=tierOfLevel(p.rankMax||1);L++)d+=RANK_PURSE(L);
   return d+GATE_BONUS*Object.keys(p.gatesOpen||{}).length+(p.fightDollars||0);
 }
 /* Items handed over by grandfatherLocker were never bought, so charging list
@@ -4526,7 +4848,7 @@ function bayWall(){
    screen builds them, the other buys the pieces - so it sits here as a drawer
    with the balance on its face, which is the number people actually come for. */
 /* The rail's "Switch theme" button lives in .railfoot, which is display:none
-   on a phone - so on the device Jeremy actually uses, the theme was
+   on a phone - so on the device this is actually used on, the theme was
    unreachable. Same control, in a drawer that renders at every width. */
 function themeNow(){
   const a=document.documentElement.getAttribute("data-theme");
@@ -4656,7 +4978,7 @@ function avatarSetup(seed){
   let pick={};Object.keys(AV_DEFAULT).forEach(k=>{pick[k]=av[k];});
   // full length in the builder, or there is no way to see what the pants and
   // shoes you are picking actually look like
-  const draw=()=>{const el=$("#avPrev");if(el)el.innerHTML=nurseAvatar(levelInfo(S.profile.xp).lvl,150,Object.assign({on:true},pick),true);};
+  const draw=()=>{const el=$("#avPrev");if(el)el.innerHTML=nurseAvatar(levelInfo(S.profile.xp).tier,150,Object.assign({on:true},pick),true);};
   const chips=(k,list)=>list.map(o=>{const L=lockOf(k,o[0]);
     return '<button class="chip'+(L?' locked':'')+'" data-'+k+'="'+o[0]+'"'+(L?' data-lk="'+L+'" title="In the locker \u2014 '+esc(LOCKER_BY[L].n)+', $'+LOCKER_BY[L].p+'"':'')+'>'+o[1]+(L?'<i class="lk">\u25CF</i>':'')+'</button>';}).join("");
   const sw=(k,map,label)=>Object.keys(map).map(x=>{const L=lockOf(k,x);
@@ -4893,6 +5215,7 @@ function termBounds(){
   return {start:a,end:b,weeks:weeks};
 }
 const weekStart=(t,i)=>{const d=new Date(t.start);d.setDate(d.getDate()+i*7);return d;};
+const niceDate=iso=>{const d=parseD(iso);return MON[d.getMonth()].slice(0,3)+" "+d.getDate();};
 function monthSpans(t){
   const out=[];
   for(let i=0;i<t.weeks;i++){
@@ -5401,7 +5724,8 @@ function gradeNeed(cid,target){
    would trip half the trophies on the way past. The button says so. */
 const LATE_BACK=120;                       // how far back the board looks
 function lateItems(){
-  return todoOf(S.events.filter(e=>!e.done&&dayDiff(e.date)<0&&dayDiff(e.date)>=-LATE_BACK))
+  const from=S.profile.joined||"2000-01-01";
+  return todoOf(S.events.filter(e=>!e.done&&e.date>=from&&dayDiff(e.date)<0&&dayDiff(e.date)>=-LATE_BACK))
     .sort((a,b)=>a.date.localeCompare(b.date));
 }
 let lateOpen=false;
@@ -5481,7 +5805,10 @@ function standBoard(){
    off - "3 to do today" when two are already done was both clunky and wrong. */
 const NWORD=["no","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"];
 function dayLine(left,total){
-  if(!total)return "Nothing due today";
+  /* "Nothing due today" sitting directly above a red board of overdue work read
+     as a bug, because it was one: nothing due is not the same as nothing owed. */
+  if(!total){const n=lateItems().length;
+    return n?(n===1?"One thing is late":(n<10?NWORD[n]:String(n))+" things are late"):"Nothing due today";}
   if(!left)return "You\u2019re clear for today";
   const n=left<10?NWORD[left]:String(left);
   const thing=left===1?"thing":"things";
@@ -5510,7 +5837,7 @@ function viewHome(){
   return ''+
   '<div class="hero">'+
     '<div class="lineup">'+crowdRow()+'<div class="floor"></div>'+
-      (made?'<div class="herofig tapbig" id="homeFig" title="See them full size">'+nurseAvatar(li.lvl,176,null,true)+'</div>'
+      (made?'<div class="herofig tapbig" id="homeFig" title="See them full size">'+nurseAvatar(li.tier,176,null,true)+'</div>'
            :'<div class="herofig ghost tapbig" id="homeGhost" title="Not yours yet \u2014 tap for another">'+nurseAvatar(1,176,ghostAvatar(),true)+'</div>')+
     '</div>'+
     '<span class="eyebrow">'+greet+'</span>'+
@@ -6383,14 +6710,16 @@ const FIGHT_BOSS_S=40;
 const FIGHT_HEARTS=4;
 const fightSecs=b=>(b.boss?FIGHT_BOSS_S:FIGHT_ROUND_S)+(owns("k_overtime")?10:0);
 const fightHearts=()=>FIGHT_HEARTS+(owns("k_cart")?1:0);
-const FIGHT_PURSE=25;                      // nurse dollars for a win
+const FIGHT_PURSE=25;                      // nurse dollars for a first win
+const FIGHT_WARD_PURSE=15;                 // a ward round is eight bank questions, not a boss
+const FIGHT_REPEAT=0.4;                    // beating the same disease again pays this much of it
 const FIGHT_ROUNDS=[
-  {k:"sym",  t:"Spot it",     q:"Which of these are signs of"},
-  {k:"cause",t:"Name the cause",q:"What causes or raises the risk of"},
-  {k:"fight",t:"Fight it",    q:"What do you do about"},
-  {k:"keep", t:"Keep it down",q:"What keeps it under control after"}];
+  {k:"sym",  t:"Spot it",      q:"Which of these are signs of"},
+  {k:"cause",t:"Understand it",q:"What causes or raises the risk of"},
+  {k:"fight",t:"Manage it",    q:"What do you do about"},
+  {k:"keep", t:"Outsmart it",  q:"What keeps it under control after"}];
 const BOSSES=[
- {id:"acg",boss:true,name:"Acute angle-closure glaucoma",kind:"vision",unit:"Content 3 — Vision",tag:"a true eye emergency",
+ {id:"acg",fx:"halo",boss:true,name:"Acute angle-closure glaucoma",kind:"vision",unit:"Content 3 — Vision",tag:"a true eye emergency",
   sym:{yes:["Sudden blurry vision","Severe eye pain","Headache with nausea and vomiting","Rainbow halos around lights"],
        no:["Painless blurry vision","Fullness in the ear","Peripheral vision lost slowly over years"]},
   cause:{yes:["The iris blocks the drainage angle","Aqueous humor cannot drain, so pressure spikes","Mydriatic drops in someone with narrow angles"],
@@ -6399,7 +6728,7 @@ const BOSSES=[
        no:["Schedule surgery for next month","Warm compresses and rest","Meclizine"]},
   keep:{yes:["No mydriatic or cycloplegic drops with narrow angles","Lifelong adherence to the drop schedule","Report any eye pain at once"],
        no:["Stop drops once vision feels normal","Low-sodium diet","Avoid bright light for 5 days"]}},
- {id:"oag",boss:true,name:"Open-angle glaucoma",kind:"vision",unit:"Content 3 — Vision",tag:"the silent thief",
+ {id:"oag",fx:"tunnel",boss:true,name:"Open-angle glaucoma",kind:"vision",unit:"Content 3 — Vision",tag:"the silent thief",
   sym:{yes:["Peripheral vision loss","Blurring, halos, trouble focusing","Trouble adjusting to low light","Aching around the eyes or headache"],
        no:["Sudden severe eye pain","Otalgia and fever","Yellow sclera"]},
   cause:{yes:["Trabecular meshwork partly blocked","Pressure rises slowly and damages the optic nerve","Over 60, Black or Hispanic, family history","Long-term corticosteroid eye drops"],
@@ -6408,7 +6737,7 @@ const BOSSES=[
        no:["Acyclovir","Anti-VEGF injection","Cochlear implant"]},
   keep:{yes:["Drops for life — adherence prevents more loss","Regular tonometry and perimetry","Support adjusting to vision loss"],
        no:["Drops only during flare-ups","Sneeze with the mouth closed","Flush the eye for 20 minutes daily"]}},
- {id:"cat",name:"Cataract",kind:"vision",unit:"Content 3 — Vision",tag:"a cloudy lens",
+ {id:"cat",fx:"fog",name:"Cataract",kind:"vision",unit:"Content 3 — Vision",tag:"a cloudy lens",
   sym:{yes:["Painless blurry vision","Sensitivity to glare","Reduced visual acuity","Cloudy lens on the slit lamp"],
        no:["Severe eye pain","Halos with nausea","Tinnitus"]},
   cause:{yes:["Aging — over half of Americans by 80","Diabetes","Too much sunlight or radiation","Alcohol, high blood pressure, obesity"],
@@ -6417,7 +6746,7 @@ const BOSSES=[
        no:["Mannitol","Two weeks of antibiotics","Photodynamic therapy"]},
   keep:{yes:["No bending or stooping","Nothing heavier than 15 pounds","Do not sleep on the operated side the first night","Sneeze with the mouth open","Call at once for flashing lights, pain or more drainage"],
        no:["Hold sneezes in","Drive again on day 2","Sleep face down"]}},
- {id:"amd",name:"Macular degeneration",kind:"vision",unit:"Content 3 — Vision",tag:"center of vision fading",
+ {id:"amd",fx:"warp",name:"Macular degeneration",kind:"vision",unit:"Content 3 — Vision",tag:"center of vision fading",
   sym:{yes:["Central vision loss","Drusen — yellow-white deposits in the retina","Abrupt onset in the wet type"],
        no:["Peripheral vision lost first","Eye pain with vomiting","Ringing in the ears"]},
   cause:{yes:["Slow breakdown of retinal layers — dry, 85 to 90%","Abnormal vessels growing under the retina — wet","Age over 60"],
@@ -6426,7 +6755,7 @@ const BOSSES=[
        no:["Timolol drops","Cataract extraction","Low-sodium diet"]},
   keep:{yes:["No sunlight or bright light for 5 days after photodynamic therapy","Better lighting and magnification","Referral to a vision center","Safety at home"],
        no:["Blow the nose one side at a time","Eye patch for a week","Nothing heavier than 15 pounds"]}},
- {id:"conj",name:"Conjunctivitis",kind:"vision",unit:"Content 3 — Vision",tag:"pink eye",
+ {id:"conj",fx:"glow",name:"Conjunctivitis",kind:"vision",unit:"Content 3 — Vision",tag:"pink eye",
   sym:{yes:["Red, irritated eye","Discharge","Itching in the allergic type"],
        no:["Sudden loss of central vision","Halos around lights","Vertigo"]},
   cause:{yes:["Bacteria","A virus — contagious","Allergens","Fungus or parasite","Toxic exposure"],
@@ -6435,7 +6764,7 @@ const BOSSES=[
        no:["Mannitol","Anti-VEGF injection","Meclizine"]},
   keep:{yes:["Do not share drops or towels","Throw out eye makeup","Change pillowcases","Keep the dropper off the eye"],
        no:["Patch the eye for a week","Stop drops once it looks better","No bright light for 5 days"]}},
- {id:"dr",name:"Diabetic retinopathy",kind:"vision",unit:"Content 3 — Vision",tag:"the smallest vessels go first",
+ {id:"dr",fx:"spots",name:"Diabetic retinopathy",kind:"vision",unit:"Content 3 — Vision",tag:"the smallest vessels go first",
   sym:{yes:["Gradual vision impairment","Can end in blindness","Often unnoticed until advanced"],
        no:["Sudden severe eye pain","Ear fullness","Painless cloudy lens"]},
   cause:{yes:["High blood sugar damages retinal vessels","The smallest vessels go first","Persistent uncontrolled diabetes"],
@@ -6444,7 +6773,7 @@ const BOSSES=[
        no:["Ciprofloxacin drops","Cataract surgery","Low-sodium diet"]},
   keep:{yes:["A dilated eye exam every year","Keep glucose in range","Report vision changes early"],
        no:["Sneeze with the mouth open","Keep water out of the ear","Meclizine daily"]}},
- {id:"men",boss:true,name:"Ménière’s disease",kind:"hearing",unit:"Content 2 — Hearing & balance",tag:"the room spins",
+ {id:"men",fx:"sway",boss:true,name:"Ménière’s disease",kind:"hearing",unit:"Content 2 — Hearing & balance",tag:"the room spins",
   sym:{yes:["Episodic, incapacitating vertigo","Fluctuating, progressive hearing loss","Tinnitus","Fullness or pressure in the ear","Nausea and vomiting with attacks"],
        no:["Painless blurry vision","Otalgia with fever","Halos around lights"]},
   cause:{yes:["Abnormal inner ear fluid balance","Malabsorption of the endolymphatic sac","Blockage of the endolymphatic duct"],
@@ -6453,7 +6782,7 @@ const BOSSES=[
        no:["Timolol drops","Myringotomy","Anti-VEGF injection"]},
   keep:{yes:["Low-sodium diet, 2,000 mg a day","Help walking during attacks — falls break hips","Antivertigo medication teaching"],
        no:["No bending or stooping","Flush the ear with water","Sunglasses for 5 days"]}},
- {id:"aom",name:"Acute otitis media",kind:"hearing",unit:"Content 2 — Hearing & balance",tag:"the middle ear",
+ {id:"aom",fx:"muffle",name:"Acute otitis media",kind:"hearing",unit:"Content 2 — Hearing & balance",tag:"the middle ear",
   sym:{yes:["Otalgia","Fever","Hearing loss","Most often in children"],
        no:["Peripheral vision loss","Spinning vertigo","Yellow sclera"]},
   cause:{yes:["Infection of the middle ear","Repeat attacks become chronic otitis media","Chronic infection damages the eardrum, ossicles and mastoid"],
@@ -6462,7 +6791,7 @@ const BOSSES=[
        no:["Mannitol","Low-sodium diet","Photodynamic therapy"]},
   keep:{yes:["Keep water out of the ear after surgery","Blow one side of the nose at a time","Constant throbbing pain with fever means infection — report it","No heavy lifting or straining after ear surgery"],
        no:["Hold sneezes in","Irrigate the ear every day","Swim again on day 2"]}},
- {id:"eo",name:"External otitis",kind:"hearing",unit:"Content 2 — Hearing & balance",tag:"the outer ear",
+ {id:"eo",fx:"glow",name:"External otitis",kind:"hearing",unit:"Content 2 — Hearing & balance",tag:"the outer ear",
   sym:{yes:["Pain and tenderness of the ear","Discharge","Edema and redness of the canal","Itching","A feeling of fullness"],
        no:["Fever with otalgia in a child","Vertigo attacks","Blurry vision"]},
   cause:{yes:["Inflammation, most often bacterial","Can progress to malignant external otitis in the skull"],
@@ -6471,7 +6800,7 @@ const BOSSES=[
        no:["Myringotomy","Cochlear implant","Mannitol"]},
   keep:{yes:["Never irrigate a foreign body that swells — a vegetable or an insect","Cerumen: gentle irrigation, lowest pressure, stream behind the wax","Glycerin or mineral oil to soften cerumen"],
        no:["Meclizine","Low-sodium diet","Irrigate at full pressure straight at the object"]}},
- {id:"hl",name:"Hearing loss",kind:"hearing",unit:"Content 2 — Hearing & balance",tag:"presbycusis",
+ {id:"hl",fx:"muffle",name:"Hearing loss",kind:"hearing",unit:"Content 2 — Hearing & balance",tag:"presbycusis",
   sym:{yes:["Cannot hear in a group","The TV turned up","Tinnitus","Gradual, and not noticed by the person","Withdrawal and isolation"],
        no:["Otalgia and fever","Spinning vertigo","Halos around lights"]},
   cause:{yes:["Age — presbycusis","Excessive noise exposure","Damage to the cochlea or cranial nerve VIII — sensorineural","Wax, infection or fluid blocking sound — conductive"],
@@ -6480,7 +6809,7 @@ const BOSSES=[
        no:["Antibiotics","Mannitol","Vestibular nerve section"]},
   keep:{yes:["Low-tone normal voice, slowly and distinctly","Face the person and get their attention","Reduce background noise","Speak into the less impaired ear","Write it down if needed"],
        no:["Shout","Speak into the worse ear","Turn away while talking"]}},
- {id:"chem",boss:true,name:"Chemical splash",kind:"vision",unit:"Content 3 — Vision",tag:"eye trauma",
+ {id:"chem",fx:"glow",boss:true,name:"Chemical splash",kind:"vision",unit:"Content 3 — Vision",tag:"eye trauma",
   sym:{yes:["Pain","Vision changes","Redness"],
        no:["Otalgia","Vertigo","Drusen"]},
   cause:{yes:["Chemical exposure","Blunt force","Sharp objects"],
@@ -6489,7 +6818,7 @@ const BOSSES=[
        no:["Patch it and wait","Flush for 5 minutes","Pull the object out"]},
   keep:{yes:["Protective eyewear","Awareness of hazards at work and home"],
        no:["Low-sodium diet","Meclizine","Sunglasses for 5 days"]}},
- {id:"poly",course:"NUR 314",boss:true,name:"Polypharmacy",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"too many prescribers",
+ {id:"poly",fx:"haze",course:"NUR 314",boss:true,name:"Polypharmacy",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"too many prescribers",
   sym:{yes:["A list from a cardiologist, an endocrinologist and a dermatologist","Two names for the same drug — Tylenol and acetaminophen","A drug on the Beers criteria in the list","New falls, confusion or weakness with no other cause"],
        no:["A single drug at a single dose","Halos around lights","Otalgia with fever"]},
   cause:{yes:["Each prescriber sees only their own list","Over-the-counter drugs the client does not count as medication","Nobody has reconciled the list"],
@@ -6498,7 +6827,7 @@ const BOSSES=[
        no:["Stop every medication at once","Hold all doses until the provider rounds","Refer to physical therapy"]},
   keep:{yes:["One reconciled list the client carries","Include the family in the teaching in case the client cannot manage alone","Teach that feeling better means the drug is working, not that it can stop","Review the list at every admission"],
        no:["Let each specialist manage their own drugs separately","Round the dose down if the client seems sensitive","Stop the Beers drug without assessing"]}},
- {id:"warf",course:"NUR 314",boss:true,name:"Warfarin",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"a narrow window",
+ {id:"warf",fx:"seep",course:"NUR 314",boss:true,name:"Warfarin",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"a narrow window",
   sym:{yes:["Bleeding or bruising more easily","Signs of toxicity at a dose that used to be fine","A low serum albumin in the chart"],
        no:["A low serum potassium","Vertigo with vomiting","Painless blurry vision"]},
   cause:{yes:["Highly protein-bound, so less albumin means more free drug","Vitamin K in the diet swinging up and down","Another new drug competing for the same binding sites"],
@@ -6507,7 +6836,7 @@ const BOSSES=[
        no:["Double the dose to reach the range","Give a potassium supplement","Hold all food"]},
   keep:{yes:["Consistent vitamin K — not none, the same amount","Green leafy vegetables kept steady week to week","Report bleeding, dark stools or a new bruise"],
        no:["Avoid all green vegetables","Take it only when symptoms appear","Skip the level once the client feels well"]}},
- {id:"lasix",course:"NUR 314",boss:true,name:"Furosemide and potassium",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"the electrolyte",
+ {id:"lasix",fx:"rain",course:"NUR 314",boss:true,name:"Furosemide and potassium",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"the electrolyte",
   sym:{yes:["Muscle weakness","Cramping","A low serum potassium"],
        no:["A high serum potassium","Rainbow halos around lights","Tinnitus"]},
   cause:{yes:["The diuretic wastes potassium as it pulls fluid","An older kidney excretes less and holds the drug longer","Nobody is checking the electrolyte"],
@@ -6516,7 +6845,7 @@ const BOSSES=[
        no:["Give more furosemide","Restrict all fluids","Give calcium citrate"]},
   keep:{yes:["Monitor the electrolyte on a schedule","Teach the signs of a low potassium","Weigh daily and report a sudden change"],
        no:["Stop the drug the moment cramping starts","Add salt substitute without asking","Double the dose on a heavy day"]}},
- {id:"apap",course:"NUR 314",boss:true,name:"Acetaminophen",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"the hidden dose",
+ {id:"apap",fx:"haze",course:"NUR 314",boss:true,name:"Acetaminophen",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"the hidden dose",
   sym:{yes:["Taking Tylenol and acetaminophen as if they were different drugs","No relief after 30 minutes, so another dose goes in","A daily total nobody has added up"],
        no:["Muscle cramping","Fluctuating hearing loss","Sudden severe eye pain"]},
   cause:{yes:["It is in combination products under other names","Slowed GI motility delays onset and peak, so it feels like it did not work","Three grams a day is the ceiling and it is easy to pass"],
@@ -6525,7 +6854,7 @@ const BOSSES=[
        no:["Give a second dose at 30 minutes if there is no relief","Re-evaluate in 15 minutes","Give it with warfarin to speed absorption"]},
   keep:{yes:["No more than 3 grams a day from every source combined","Read the label of every over-the-counter product","Teach that onset is slower in an older adult"],
        no:["Any amount is safe if it is over the counter","Stop as soon as the pain returns","Take it on an empty stomach for speed"]}},
- {id:"benzo",course:"NUR 314",boss:true,name:"Diazepam in the older adult",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"the drug that will not leave",
+ {id:"benzo",fx:"dim",course:"NUR 314",boss:true,name:"Diazepam in the older adult",kind:"pharm",unit:"Module 1 — Principles of pharmacology & the older adult",tag:"the drug that will not leave",
   sym:{yes:["Increasing sedation over two weeks on an unchanged dose","New unsteadiness or a fall","Confusion that was not there before"],
        no:["Muscle cramping","Bleeding gums","Halos around lights"]},
   cause:{yes:["Highly lipophilic, and body fat increases with age","A half-life that can reach 96 hours in an older adult","Steady state takes five to six half-lives, so it kept climbing after discharge","It is on the Beers criteria"],
@@ -6534,7 +6863,7 @@ const BOSSES=[
        no:["Give a second dose to settle the client","Check a potassium","Withhold food"]},
   keep:{yes:["Start low and adjust to the response in an older adult","Watch for accumulation after a hospital stay ends","Involve the family in the teaching"],
        no:["Expect the same half-life as in a younger adult","Assume a dose that worked in hospital will keep working","A Beers drug is always withheld, whatever the setting"]}},
- {id:"chronic",course:"NUR 308T",boss:true,name:"Chronic illness",kind:"geront",unit:"Content 1 — Gerontology & chronic illness",tag:"the long haul",
+ {id:"chronic",fx:"fade",course:"NUR 308T",boss:true,name:"Chronic illness",kind:"geront",unit:"Content 1 — Gerontology & chronic illness",tag:"the long haul",
   sym:{yes:["A course that lasts longer than 3 months","Flare-ups and remissions with no pattern","Constant adaptation, with new solutions needed as things change","One condition raising the risk of the next"],
        no:["Resolves within a year with the right treatment","Sudden severe eye pain","Otalgia with fever"]},
   cause:{yes:["A natural tendency with advancing age","Chronic stress, smoking and obesity","A domino effect — diabetes leading to chronic renal disease"],
@@ -6543,7 +6872,7 @@ const BOSSES=[
        no:["Curing it","Waiting for it to resolve","Restricting the client to bed"]},
   keep:{yes:["Assess the activities of daily living — the foundation of rehabilitation","Never do for a patient what the patient can do","The client has a right to care even when their own behavior contributes","Support the family, who carry the day-to-day management"],
        no:["Take over the tasks the client finds slow","Withhold care until the client stops smoking","Manage it without the family"]}},
- {id:"depr",course:"NUR 308T",boss:true,name:"Depression in the older adult",kind:"mind",unit:"Content 1 — Gerontology & chronic illness",tag:"more than two weeks",
+ {id:"depr",fx:"fade",course:"NUR 308T",boss:true,name:"Depression in the older adult",kind:"mind",unit:"Content 1 — Gerontology & chronic illness",tag:"more than two weeks",
   sym:{yes:["Loss of interest or pleasure in usual activities","Fatigue and loss of energy","Feelings of worthlessness or excessive guilt","Signs present every day for more than 2 weeks"],
        no:["Able to remember later or when given time","Slower processing speed alone","A normal medical evaluation with no other change"]},
   cause:{yes:["Losing independence","Social isolation as the illness narrows life","The weight of a chronic condition"],
@@ -6552,7 +6881,7 @@ const BOSSES=[
        no:["Change the subject to something cheerful","Tell the client it could be worse","Leave them to it until they ask"]},
   keep:{yes:["Encourage participation in care decisions and goal setting","Encourage self-management","Involve the family and support the caregiver"],
        no:["Do everything for them so they can rest","Wait for the two weeks to pass","Keep the family out of it"]}},
- {id:"indep",course:"NUR 308T",boss:true,name:"Loss of independence",kind:"geront",unit:"Content 1 — Gerontology & chronic illness",tag:"function, once lost, is hard to win back",
+ {id:"indep",fx:"fade",course:"NUR 308T",boss:true,name:"Loss of independence",kind:"geront",unit:"Content 1 — Gerontology & chronic illness",tag:"function, once lost, is hard to win back",
   sym:{yes:["Tearful while describing what they can no longer do","Tasks of daily living slipping away one at a time","Role reversal at home, with a spouse or child taking over"],
        no:["Halos around lights","A low serum potassium","Otalgia with fever"]},
   cause:{yes:["Every task taken away is function lost","Slower processing speed and reaction time","The heart works harder but accomplishes less","Aging skin, kidneys and bladder changing what a day can hold"],
@@ -6575,7 +6904,28 @@ const ENERGY_BY={};ENERGIES.forEach(e=>{ENERGY_BY[e.id]=e;});
 const ownedEnergies=()=>ENERGIES.filter(e=>e.id==="aurora"||owns(e.id));
 const bossCourse=b=>b.course||"NUR 308T";
 var FIGHT=null;
-function bossHp(b){return FIGHT_ROUNDS.reduce((n,r)=>n+b[r.k].yes.length,0);}
+/* How much of the room you have to get right to resolve it.
+   A regular room leaves slack: miss a couple and the patient still stabilizes,
+   which is what makes an ordinary shift playable. A CRITICAL room does not -
+   the emergencies are the ones you have to know cold, so they ask for 90%.
+   Simulated over 4,000 fights each: at 80% accuracy a regular room is won 62%
+   of the time and a critical one 28%; at 90% it is 92% and 66%. */
+const DH_MARGIN=0.75, DH_MARGIN_CRIT=0.90;
+function bossMax(b){return 1+FIGHT_ROUNDS.slice(1).reduce((n,r)=>n+b[r.k].yes.length,0);}
+function bossHp(b){return Math.max(1,Math.ceil(bossMax(b)*(b.boss?DH_MARGIN_CRIT:DH_MARGIN)));}
+/* Three other diseases to name it against: the same class and the same kind
+   first, so the distractors are the ones the exam would actually use. */
+function dxOptions(b){
+  const same=x=>x.id!==b.id;
+  let pool=BOSSES.filter(x=>same(x)&&bossCourse(x)===bossCourse(b)&&x.kind===b.kind);
+  if(pool.length<3)pool=pool.concat(BOSSES.filter(x=>same(x)&&bossCourse(x)===bossCourse(b)&&x.kind!==b.kind));
+  if(pool.length<3)pool=pool.concat(BOSSES.filter(x=>same(x)&&bossCourse(x)!==bossCourse(b)));
+  const seen={};pool=pool.filter(x=>!seen[x.id]&&(seen[x.id]=true));
+  return shuffle(pool).slice(0,3).map(x=>({t:x.name,ok:false})).concat([{t:b.name,ok:true}]);
+}
+const roomOf=b=>{const c=bossCourse(b), list=BOSSES.filter(x=>bossCourse(x)===c);
+  const floor=studyCourses().findIndex(x=>x.code===c)+1||1;
+  return String(floor)+String(list.indexOf(b)+1).padStart(2,"0");};
 /* ---------------------------------------------------------------------------
    TWO KINDS OF FIGHT
 
@@ -6591,10 +6941,16 @@ function bossHp(b){return FIGHT_ROUNDS.reduce((n,r)=>n+b[r.k].yes.length,0);}
    misses and comes back tomorrow, exactly as it would in Study. */
 const WARD_N=8;
 function bossRounds(b){
-  return FIGHT_ROUNDS.map(R=>({
+  /* Round one: you do not know what it is. The chart gives the presentation;
+     you name it. Then the three rounds after ask about it by name. */
+  const dx={title:FIGHT_ROUNDS[0].t, dx:true, single:true,
+    ask:'On the chart: <b>'+esc(b.sym.yes.map(x=>x.charAt(0).toLowerCase()+x.slice(1)).join(" \u00b7 "))+'</b>. What is it?',
+    why:b.tag?b.name+" \u2014 "+b.tag+".":"",
+    opts:shuffle(dxOptions(b))};
+  return [dx].concat(FIGHT_ROUNDS.slice(1).map(R=>({
     title:R.t, ask:R.q+' <b>'+esc(b.name)+'</b>? Pick all that apply.',
     opts:shuffle(b[R.k].yes.map(x=>({t:x,ok:true})).concat(b[R.k].no.map(x=>({t:x,ok:false}))))
-  }));
+  })));
 }
 function wardPool(courseId,unit){
   return S.questions.filter(q=>!q.prime&&q.courseId===courseId&&(q.unit||"")===unit);
@@ -6639,7 +6995,8 @@ function wardStart(courseId,unit){
 function fightBegin(b,rounds,hp,secs){
   if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);
   FIGHT={b:b,rounds:rounds,r:0,hp:hp,hpMax:hp,hearts:fightHearts(),secs:secs,picked:{},locked:false,
-         hits:0,ouch:0,missed:0,answered:0,over:null,ends:0,timer:null,log:[]};
+         hits:0,ouch:0,missed:0,answered:0,over:null,ends:0,timer:null,log:[],
+         known:!!b.ward||!rounds[0].dx};          // a ward round has no diagnosis to hide
   fightRoundStart();
   tab="fight";render();window.scrollTo(0,0);
 }
@@ -6706,7 +7063,17 @@ function fightLock(){
   const froze=!Object.keys(F.picked).some(k=>F.picked[k]);
   if(froze)ouch=1;
   F.froze=froze;
-  F.hp=Math.max(0,F.hp-hits);F.hearts=Math.max(0,F.hearts-ouch);
+  /* the four rounds in a room are their own questions - the first time you
+     play one it counts toward the ladder, and never again */
+  {const p=S.profile;p.fightSeen=p.fightSeen||{};
+   const key=F.b.ward?null:(F.b.id+":"+F.r);
+   if(key&&!p.fightSeen[key]){p.fightSeen[key]=1;}}
+  if(R.dx){
+    /* right or wrong, the chart now says what it is - a wrong call still teaches */
+    F.dxOk=hits>0;F.known=true;F.revealing=true;
+    const p=S.profile;p.dxKnown=p.dxKnown||{};p.dxKnown[F.b.id]=true;
+  }
+  F.hp=Math.max(0,F.hp-hits);F.hearts=Math.max(0,F.hearts-ouch);   // extra right answers still pay XP
   F.hits+=hits;F.ouch+=ouch;F.missed+=missed;
   F.result={hits:hits,ouch:ouch,missed:missed};
   F.log.push({round:F.rounds[F.r].title,hits:hits,ouch:ouch,missed:missed});
@@ -6719,7 +7086,7 @@ function fightLock(){
     F.played=true;
     if(F.hearts<=0)return fightEnd("lost");
     const nx=document.getElementById("fNext");if(nx)nx.disabled=false;
-    const hp=document.getElementById("fhpn");if(hp)hp.textContent=F.hp;
+    setDH(F.hp,F.hpMax);
   });
 }
 /* ---------------------------------------------------------------------------
@@ -6749,7 +7116,7 @@ function healStream(fx,from,to,hits,onHit,done){
     /* the control point bends each stream a little differently, and the end
        lands around the creature rather than on one spot */
     const ex=from.x+Math.cos(a1)*len*(0.92+(i%2)*0.08), ey=from.y+Math.sin(a1)*len*(0.92+(i%2)*0.08);
-    const cx=from.x+Math.cos(a1)*len*0.5-Math.sin(a1)*(30+(i%3)*10), cy=from.y+Math.sin(a1)*len*0.5+Math.cos(a1)*(30+(i%3)*10)*-1;
+    const cx=from.x+Math.cos(a1)*len*0.5-Math.sin(a1)*(30+(i%3)*10), cy=from.y+Math.sin(a1)*len*0.5+Math.cos(a1)*(30+(i%3)*10)*-1-(18+(i%2)*10);
     const d='M'+from.x+' '+from.y+' Q'+cx.toFixed(1)+' '+cy.toFixed(1)+' '+ex.toFixed(1)+' '+ey.toFixed(1);
     defs+='<linearGradient id="hg'+uid+'_'+i+'" gradientUnits="userSpaceOnUse" x1="'+from.x+'" y1="'+from.y+'" x2="'+ex.toFixed(1)+'" y2="'+ey.toFixed(1)+'">'+
       '<stop offset="0" stop-color="#ffffff"/><stop offset=".38" stop-color="#ffffff"/>'+
@@ -6778,6 +7145,43 @@ function healStream(fx,from,to,hits,onHit,done){
   };
   setTimeout(tick,460);
 }
+/* A ring at the point of impact. Healing energy CLOSES a ring around the
+   disease - containment. Dark energy OPENS one on the nurse - spread. Same
+   shape, opposite motion, and neither is a flash or a projectile. */
+function ring(fx,at,kind,color){
+  const e=document.createElement("i");e.className="fxring "+kind;
+  e.style.left=at.x+"px";e.style.top=at.y+"px";if(color)e.style.setProperty("--rc",color);
+  fx.appendChild(e);setTimeout(()=>e.remove(),750);
+}
+/* The disease does not shoot. It spreads: a bank of dark cloud rolls off it,
+   drifts across the floor and breaks over the nurse, one wave per wrong pick. */
+function darkCloud(fx,from,to,n,onHit,done){
+  const uid=++AV_UID;
+  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("class","stream miasma");
+  let puffs='';
+  const N=16;
+  for(let k=0;k<N;k++){
+    const wob=((k%2)?1:-1)*(10+(k*7)%26), lift=18+(k*11)%34;
+    const cx=(from.x+to.x)/2+wob, cy=Math.min(from.y,to.y)-lift+(k%3)*12;
+    const d='M'+from.x+' '+from.y+' Q'+cx.toFixed(1)+' '+cy.toFixed(1)+' '+(to.x+((k%3)-1)*14)+' '+(to.y+((k%2)?10:-8));
+    const dur=(0.78+(k%4)*0.09).toFixed(2), beg=(k*0.045).toFixed(2);
+    const col=k%3===0?'#9B5DE5':k%3===1?'#2A1D6B':'#4C2F8F';
+    puffs+='<circle r="8" fill="'+col+'" opacity="0" filter="url(#mb'+uid+')">'+
+      '<animateMotion dur="'+dur+'s" begin="'+beg+'s" fill="freeze" path="'+d+'"/>'+
+      '<animate attributeName="r" values="6;26;19" dur="'+dur+'s" begin="'+beg+'s" fill="freeze"/>'+
+      '<animate attributeName="opacity" values="0;.9;.7" dur="'+dur+'s" begin="'+beg+'s" fill="freeze"/></circle>';
+  }
+  svg.innerHTML='<defs><filter id="mb'+uid+'" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"/></filter></defs>'+puffs;
+  fx.appendChild(svg);
+  let i=0;
+  const tick=()=>{
+    if(i>=n){setTimeout(()=>{svg.classList.add("off");setTimeout(()=>{svg.remove();done();},380);},220);return;}
+    i++;onHit();ring(fx,to,"dark");
+    setTimeout(tick,330);
+  };
+  setTimeout(tick,900);
+}
 function fightPlay(hits,ouch,done){
   const F=FIGHT, arena=document.getElementById("arena"), fx=document.getElementById("fx");
   const msg=document.getElementById("fmsg"), nx=document.getElementById("fNext");
@@ -6789,50 +7193,44 @@ function fightPlay(hits,ouch,done){
   const hand={x:N.left-A.left+N.width*0.78,y:N.top-A.top+N.height*0.52};
   const foe={x:M.left-A.left+M.width*0.5,y:M.top-A.top+M.height*0.55};
   const say=t=>{if(msg){msg.textContent=t;msg.classList.remove("pop");void msg.offsetWidth;msg.classList.add("pop");}};
-  const bolt=(from,to,kind,after)=>{
-    const e=document.createElement("i");e.className="bolt "+kind;
-    e.style.setProperty("--x0",from.x+"px");e.style.setProperty("--y0",from.y+"px");
-    e.style.setProperty("--x1",to.x+"px");e.style.setProperty("--y1",to.y+"px");
-    fx.appendChild(e);
-    setTimeout(()=>{
-      const bu=document.createElement("i");bu.className="burst "+kind;
-      bu.style.left=to.x+"px";bu.style.top=to.y+"px";fx.appendChild(bu);
-      setTimeout(()=>{bu.remove();},520);
-      e.remove();after&&after();
-    },380);
-  };
   const steps=[];
   const nurse=document.getElementById("nurseEl"), foeEl=document.getElementById("foeEl");
-  const bar=document.getElementById("fhpbar"), hpn=document.getElementById("fhpn");
+  const HUES=(ENERGY_BY[S.profile.energy]||ENERGY_BY.aurora).hues;let hi=0;
   let hpNow=F.hp+hits, heartsNow=F.hearts+ouch;
   if(hits){
-    steps.push(cb=>{say("Your nurse used HEALING ENERGY!");nurse.classList.add("cast");setTimeout(cb,300);});
+    steps.push(cb=>{say("Hands on. Healing energy flows.");nurse.classList.add("cast");setTimeout(cb,300);});
     steps.push(cb=>{
       healStream(fx,hand,foe,hits,()=>{
         foeEl.classList.remove("hit");void foeEl.offsetWidth;foeEl.classList.add("hit");
-        hpNow--;if(bar)bar.style.width=(hpNow/F.hpMax*100).toFixed(0)+"%";if(hpn)hpn.textContent=hpNow;
+        hpNow--;setDH(hpNow,F.hpMax);
+        ring(fx,foe,"heal",HUES[hi%HUES.length]);hi++;
         arena.classList.remove("flash");void arena.offsetWidth;arena.classList.add("flash");
       },cb);
     });
-    steps.push(cb=>{nurse.classList.remove("cast");say(hits+" hit"+(hits===1?"":"s")+"!"+(hits>=4?" It's super effective!":""));setTimeout(cb,520);});
+    steps.push(cb=>{nurse.classList.remove("cast");say(hits+" hit"+(hits===1?"":"s")+"."+(hits>=4?" Textbook.":hits>=2?" It is losing ground.":""));setTimeout(cb,520);});
   }
   if(ouch){
-    steps.push(cb=>{say(F.b.name+" used DARK ENERGY!");foeEl.classList.add("cast");setTimeout(cb,420);});
-    for(let i=0;i<ouch;i++)steps.push(cb=>{
-      bolt(foe,{x:hand.x-10,y:hand.y-20},"dark",()=>{
+    steps.push(cb=>{say(F.b.name+" flares. Dark energy.");foeEl.classList.add("cast");setTimeout(cb,420);});
+    steps.push(cb=>{
+      darkCloud(fx,{x:foe.x-20,y:foe.y+10},{x:hand.x-30,y:hand.y-10},ouch,()=>{
         nurse.classList.remove("ouch");void nurse.offsetWidth;nurse.classList.add("ouch");
         heartsNow--;const hs=document.querySelectorAll("#fhearts .fheart.on");
         const last=hs[hs.length-1];if(last){last.classList.add("lost");setTimeout(()=>{last.classList.remove("on","lost");last.textContent="\u2661";},420);}
         arena.classList.remove("shake");void arena.offsetWidth;arena.classList.add("shake");
-        setTimeout(cb,160);
-      });
+      },cb);
     });
-    steps.push(cb=>{foeEl.classList.remove("cast");say("You took "+ouch+"!");setTimeout(cb,500);});
+    steps.push(cb=>{foeEl.classList.remove("cast");say("That cost you "+ouch+" heart"+(ouch===1?"":"s")+".");setTimeout(cb,500);});
   }
-  if(F.froze)steps.unshift(cb=>{say("You froze. "+F.b.name+" saw the opening.");setTimeout(cb,700);});
+  if(F.rounds[F.r].dx)steps.unshift(cb=>{
+    say(F.dxOk?"Dx confirmed: "+F.b.name+".":F.froze?"No call made. The chart says "+F.b.name+".":"Wrong call. The chart says "+F.b.name+".");
+    const fe=document.getElementById("foeEl");if(fe){fe.classList.remove("unresolved");fe.classList.add("resolving");}
+    const nm=document.getElementById("foeName");if(nm){nm.textContent=F.b.name;nm.classList.remove("pending");}
+    const h1=document.getElementById("fightH1");if(h1)h1.textContent="Room "+roomOf(F.b)+" \u00b7 "+F.b.name;
+    setTimeout(cb,1100);});
+  if(F.froze)steps.unshift(cb=>{say("You froze. Nothing charted.");setTimeout(cb,700);});
   else if(!hits&&!ouch)steps.push(cb=>{say("Nothing landed. "+(F.result.missed?F.result.missed+" of the right answers were sitting there.":""));setTimeout(cb,500);});
   if(F.result.missed&&(hits||ouch))steps.push(cb=>{say(F.result.missed+" right answer"+(F.result.missed===1?"":"s")+" missed — shown in amber.");setTimeout(cb,300);});
-  if(hpNow<=0)steps.push(cb=>{foeEl.classList.add("down");say(F.b.name+" fainted!");setTimeout(cb,500);});
+  if(hpNow<=0)steps.push(cb=>{foeEl.classList.add("down");say(F.b.name+" \u2014 resolved. Patient stable.");setTimeout(cb,500);});
   let i=0;const run=()=>{if(!FIGHT||FIGHT!==F)return;if(i>=steps.length)return done();steps[i++](run);};
   run();
 }
@@ -6849,13 +7247,21 @@ function fightEnd(how){
   p.fights=(p.fights||0)+1;
   p.beaten=p.beaten||{};
   let xp=F.hits*10, cash=0;
-  if(how==="won"){p.fightWins=(p.fightWins||0)+1;p.beaten[F.b.id]=(p.beaten[F.b.id]||0)+1;xp+=60;
-    cash=FIGHT_PURSE+(F.b.boss?15:0);
-    if(F.ouch===0&&F.missed===0){xp+=40;cash+=15;}
+  if(how==="won"){
+    /* Money comes from NEW ground. The first win over a disease pays the
+       purse; farming the same easy one again pays a fraction, so the way to
+       fill the locker is to go beat the next thing, not the last thing. */
+    const first=!p.beaten[F.b.id];
+    p.fightWins=(p.fightWins||0)+1;p.beaten[F.b.id]=(p.beaten[F.b.id]||0)+1;xp+=60;
+    let purse=F.b.ward?FIGHT_WARD_PURSE:FIGHT_PURSE+(F.b.boss?15:0);
+    if(!first)purse=Math.round(purse*FIGHT_REPEAT);
+    cash=purse;
+    if(F.ouch===0&&F.missed===0){xp+=40;cash+=first?15:5;}
+    F.first=first;
     p.fightDollars=(p.fightDollars||0)+cash;}
   F.xp=xp;F.cash=cash;
   if(F.hits||F.ouch){logStudyDay();earnXp(xp);bumpToday(F.b.ward?(F.answered||0):F.rounds.length);}
-  if(how==="won"){confetti(70);toast("+"+xp+" XP \u00b7 +$"+cash,"Spend it in the locker \u2014 bay 109 has new energy, bay 110 has kit.",true);}
+  if(how==="won"){confetti(70);toast("+"+xp+" XP \u00b7 +$"+cash,F.first?"Spend it in the locker \u2014 bay 109 has new energy, bay 110 has kit.":"A repeat pays less. New diseases pay full.",true);}
   else if(xp)toast("+"+xp+" XP","Every hit counts, even in a loss.");
   saveCore();checkTrophies();render();
 }
@@ -6884,17 +7290,39 @@ function foeArt(b,hurt){
     '<path d="M28 44 q12 -22 32 -18" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="5" stroke-linecap="round"/>'+
     face+mouth+'</svg>';
 }
+/* The disease's bar in the words a hospital reports a patient in: critical,
+   serious, fair, good - and resolved when it is gone. */
+function condWord(hp,max){
+  if(hp<=0)return {w:"Resolved",c:"c0"};
+  const f=hp/Math.max(1,max);
+  return f>0.75?{w:"Critical",c:"c4"}:f>0.5?{w:"Serious",c:"c3"}:f>0.25?{w:"Fair",c:"c2"}:{w:"Good",c:"c1"};
+}
+/* One place updates everything the monitor says about the disease: the DH
+   number, the plain-words line under it, and the condition tag. */
+const DH_C=2*Math.PI*18;                    // the gauge ring's circumference
+function setDH(hp,max){
+  const n=document.getElementById("fhpn");if(n)n.textContent=hp;
+  const ar=document.getElementById("arena");if(ar)ar.style.setProperty("--dh",(hp/Math.max(1,max)).toFixed(3));
+  const r=document.getElementById("fring");if(r){r.setAttribute("stroke-dasharray",(DH_C*hp/Math.max(1,max)).toFixed(1)+" 999");r.setAttribute("class","val "+condWord(hp,max).c);}
+  const l=document.getElementById("fhpleft");if(l)l.textContent=hp+" right answer"+(hp===1?"":"s")+" to go";
+  const el=document.getElementById("fcond");if(el){const c=condWord(hp,max);el.textContent=c.w;el.className="fcond "+c.c;}
+}
+const ECG='<svg class="ecg" viewBox="0 0 176 12" aria-hidden="true"><path d="M0 6H28l4 0 3-5 4 11 3-6h30l4 0 3-3 3 7 3-4h34l4 0 3-5 4 11 3-6h40"/></svg>';
 function heartsRow(n){const N=FIGHT?Math.max(fightHearts(),n):fightHearts();let o="";for(let i=0;i<N;i++)o+='<span class="fheart'+(i<n?' on':'')+'">'+(i<n?'♥':'♡')+'</span>';return o;}
 function viewFight(){
   const li=levelInfo(S.profile.xp), p=S.profile, beaten=p.beaten||{};
   if(!FIGHT){
-    /* the roster */
-    const card=(b,i,arr)=>'<button type="button" class="tile boss'+(arr.length%2&&i===arr.length-1?' wide':'')+'" data-boss="'+b.id+'">'+
-      coverArt(b.name,beaten[b.id]?1:0,"",b.kind,artHash(b.id)%4)+'<span class="tileveil"></span>'+
-      '<span class="foemini">'+foeArt(b,false)+'</span>'+
-      (b.boss?'<span class="bossbadge">BOSS</span>':'')+
-      '<span class="tilet"><b>'+esc(b.name)+'</b><i>'+esc(b.tag)+'</i>'+
-        '<u>'+(beaten[b.id]?'beaten ×'+beaten[b.id]:bossHp(b)+' hits to win')+'</u></span></button>';
+    /* The corridor. Every disease is a room; the door shows the number and,
+       once you have named what is inside, the name. Until then the chart on
+       the door is blank - you find out when you walk in. */
+    const known=p.dxKnown||{};
+    const card=(b)=>'<button type="button" class="hroom'+(b.boss?' crit':'')+(beaten[b.id]?' done':'')+'" data-boss="'+b.id+'" aria-label="Room '+roomOf(b)+'">'+
+      '<span class="hrframe"><span class="hrpanel"><span class="hrwin"></span><span class="hrhandle"></span></span>'+
+        '<span class="hrplate">'+roomOf(b)+'</span>'+
+        (b.boss?'<span class="hrtag">CRITICAL</span>':'')+'</span>'+
+      '<span class="hrname'+(known[b.id]?'':' pend')+'">'+(known[b.id]?esc(b.name):'Dx pending')+'</span>'+
+      '<span class="hrstat">'+(beaten[b.id]?'resolved \u00d7'+beaten[b.id]
+        :bossHp(b)+' of '+bossMax(b)+' to stabilize')+'</span></button>';
     /* Two classes, kept apart the way Study keeps them apart: a fight is always
        one disease from one class, and the roster never mixes them in a block. */
     const cs=studyCourses();
@@ -6905,18 +7333,14 @@ function viewFight(){
     const wardCard=(c,unit)=>{
       const pool=wardPool(c.id,unit), left=stillOpen(pool).length;
       const nm=wardName(unit);
-      return '<button type="button" class="tile boss ward" data-ward="'+esc(c.id+"||"+unit)+'">'+
-        coverArt(unit+"ward",pool.length?(pool.length-left)/pool.length:0,"",artKind(unit))+
-        '<span class="tileveil"></span><span class="wardbadge">WARD ROUND</span>'+
-        '<span class="tilet"><b>'+esc(nm)+'</b><i>eight from your bank, never the same twice</i>'+
-          '<u>'+(left?left+' still open':'all '+pool.length+' right \u00b7 review')+'</u></span></button>';
+      return '<button type="button" class="hroom ward" data-ward="'+esc(c.id+"||"+unit)+'" aria-label="Ward: '+esc(nm)+'">'+
+        '<span class="hrframe"><span class="hrpanel l"><span class="hrwin"></span></span><span class="hrpanel r"><span class="hrwin"></span></span>'+
+          '<span class="hrplate">WARD</span></span>'+
+        '<span class="hrname">'+esc(nm)+'</span>'+
+        '<span class="hrstat">'+(left?left+' still open':'all '+pool.length+' right \u00b7 review')+'</span></button>';
     };
-    return '<div class="vhead"><div><h1>Fight</h1><p>Your nurse against a disease. Four rounds, forty seconds each: spot it, name the cause, fight it, keep it down. Pick everything that applies — every right pick is a hit, every wrong one hits you back.</p></div></div>'+
-      '<div class="farena intro">'+
-        '<div class="fnurse">'+nurseAvatar(li.lvl,150)+'</div>'+
-        '<div class="fvs">VS</div>'+
-        '<div class="foe idle">'+foeArt(BOSSES[(p.fights||0)%BOSSES.length],false)+'</div>'+
-      '</div>'+
+    return '<div class="vhead"><div><h1>Choose a room</h1><p>Someone is in every room, and the chart on the door is blank until you have been in. Four rounds, forty seconds each: spot it, understand it, manage it, outsmart it. Every right answer pulls the disease back; every wrong one costs you a heart.</p></div></div>'+
+      '<div class="corridorhead"><div class="fnurse sm">'+nurseAvatar(li.tier,120)+'</div><div class="corridorsign"><b>'+esc(li.rank)+'</b><i>on shift</i></div></div>'+
       '<div class="frec">'+(p.fightWins||0)+' won · '+((p.fights||0)-(p.fightWins||0))+' lost or escaped'+
         ((p.fightDollars||0)?' · $'+p.fightDollars+' earned':'')+'</div>'+
       '<div class="enrow"><span class="eyebrow">Your energy</span>'+
@@ -6930,49 +7354,62 @@ function viewFight(){
         const mine=BOSSES.filter(b=>bossCourse(b)===c.code);
         const units=ward(c);
         if(!mine.length&&!units.length)return '';
+        const floor=studyCourses().findIndex(x=>x.code===c.code)+1||1;
         return '<div class="fclass" style="--cc:'+(c.color||'#0E7C70')+'">'+
           '<div class="fclasshead"><b>'+esc(c.code||c.name)+'</b>'+
-            '<i>'+mine.length+' to fight'+(units.length?' \u00b7 '+units.length+' ward round'+(units.length===1?'':'s'):'')+'</i></div>'+
-          (mine.length?'<div class="tiles">'+mine.map(card).join("")+'</div>':'')+
-          (units.length?'<div class="tiles">'+units.map(u=>wardCard(c,u)).join("")+'</div>':'')+
+            '<i>Floor '+floor+' \u00b7 '+mine.length+' room'+(mine.length===1?'':'s')+(units.length?' \u00b7 '+units.length+' ward'+(units.length===1?'':'s'):'')+'</i></div>'+
+          '<div class="corridor">'+mine.map(card).join("")+units.map(u=>wardCard(c,u)).join("")+'</div>'+
         '</div>';}).join("");
   }
   const F=FIGHT, b=F.b, R=F.rounds[F.r];
-  const head='<div class="vhead"><div>'+studyCrumb("Fight","fightroster")+
-    '<h1 style="margin-top:6px">'+esc(b.name)+'</h1></div></div>';
-  /* Drawn the way a battle screen is drawn: the enemy up and to the right on
-     its own ground, your nurse down and to the left, a status panel for each,
-     and a message box that says what just happened. The HP bar shows the
-     number from BEFORE the round when a result is pending, so the beams can
-     be seen taking it down. */
+  const head='<div class="vhead"><div>'+studyCrumb("Rooms","fightroster")+
+    '<h1 style="margin-top:6px" id="fightH1">'+(b.ward?esc(b.name):'Room '+roomOf(b)+(F.known?' \u00b7 '+esc(b.name):''))+'</h1></div></div>';
+  /* A ward at night: the disease up and to the right on its own patch of
+     floor, your nurse down and to the left, a bedside monitor for each, and a
+     chart line that says what just happened. The monitor shows the number
+     from BEFORE the round while a result is pending, so the healing can be
+     seen taking it down. */
   const hpShow=F.result&&!F.played?F.hp+F.result.hits:F.hp;
   const heartsShow=F.result&&!F.played?F.hearts+F.result.ouch:F.hearts;
-  const arena='<div class="farena pk" id="arena">'+
-    '<div class="fpanel pfoe"><b>'+esc(b.name)+'</b>'+
-      '<div class="fhp"><span id="fhpbar" style="width:'+(hpShow/F.hpMax*100).toFixed(0)+'%"></span></div>'+
-      '<div class="fhpn"><span id="fhpn">'+hpShow+'</span> / '+F.hpMax+'</div></div>'+
+  const cond=condWord(hpShow,F.hpMax);
+  const known=F.known, fxk=b.fx||"", room=b.ward?"":roomOf(b);
+  const arena='<div class="farena onfloor'+(fxk?' sfx-'+fxk:'')+'" id="arena" style="--dh:'+(hpShow/F.hpMax).toFixed(3)+'">'+
+    '<div class="fpanel pfoe">'+ECG+
+      '<div class="fmon">'+
+        '<div class="dhring" title="Disease Health"><svg viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="18"/>'+
+          '<circle class="val '+cond.c+'" id="fring" cx="22" cy="22" r="18" stroke-dasharray="'+(DH_C*hpShow/F.hpMax).toFixed(1)+' 999"/></svg>'+
+          '<b id="fhpn">'+hpShow+'</b></div>'+
+        '<div class="fmontxt"><b id="foeName"'+(known?'':' class="pending"')+'>'+(known?esc(b.name):'Dx pending')+'</b>'+
+          '<div class="fhpn"><span class="fdhl">DH</span><span id="fhpleft">'+hpShow+' right answer'+(hpShow===1?'':'s')+' to go</span></div>'+
+          '<span id="fcond" class="fcond '+cond.c+'">'+cond.w+'</span></div>'+
+      '</div></div>'+
+    '<div class="fstage">'+
     '<div class="fground gfoe"></div>'+
-    '<div class="foe'+(F.hp<=0&&F.played?' down':'')+'" id="foeEl">'+foeArt(b,F.result&&F.result.hits>0&&F.played)+'</div>'+
+    '<div class="foe'+(F.hp<=0&&F.played?' down':'')+(known?(F.revealing&&F.r===0?' resolving':''):' unresolved')+'" id="foeEl">'+foeArt(b,F.result&&F.result.hits>0&&F.played)+'</div>'+
     '<div class="fground gme"></div>'+
-    '<div class="fnurse" id="nurseEl">'+nurseAvatar(li.lvl,190,null,true)+'</div>'+
-    '<div class="fpanel pme"><b>'+esc(li.rank)+'</b><div class="fhearts" id="fhearts">'+heartsRow(heartsShow)+'</div></div>'+
+    '<div class="fnurse" id="nurseEl">'+nurseAvatar(li.tier,190,null,true)+'</div>'+
+    '</div>'+
+    '<div class="sfx"><i class="a"></i><i class="b"></i></div>'+
+    '<div class="fpanel pme">'+ECG+'<b>'+esc(li.rank)+'</b><div class="fhearts" id="fhearts">'+heartsRow(heartsShow)+'</div></div>'+
     '<div class="fx" id="fx"></div>'+
   '</div>'+
-  '<div class="fmsg" id="fmsg">'+(F.over?(F.over==="won"?esc(b.name)+' fainted!':F.over==="lost"?'Your nurse is out of hearts.':esc(b.name)+' got away.')
-     :F.result?'':F.r===0?(b.ward?'Ward round \u2014 '+esc(b.name)+'. Eight from your bank.':'A wild '+esc(b.name)+' appeared!')
+  '<div class="fmsg" id="fmsg">'+(F.over?(F.over==="won"?esc(b.name)+' resolved. Patient discharged.':F.over==="lost"?'Out of hearts. Backup is taking over.':'End of shift. '+esc(b.name)+' is still on the floor.')
+     :F.result?'':F.r===0?(b.ward?'Ward round \u2014 '+esc(b.name)+'. Eight from your bank.'
+                          :b.boss?'Rapid response \u2014 Room '+room+'. Dx pending. Read the chart and name it.'
+                          :'Handoff \u2014 Room '+room+'. Dx pending. Read the chart and name it.')
        :esc(F.rounds[F.r].title)+' — go.')+'</div>';
   if(F.over){
     const won=F.over==="won";
     return head+arena+
       '<div class="card pad fover">'+
-        '<div class="shbig">'+(won?"Beaten":F.over==="lost"?"It got you":"It got away")+'</div>'+
-        '<div class="fbigline">'+(won?esc(b.name)+' is down.':F.over==="lost"?'Out of hearts. '+esc(b.name)+' is still out there.':esc(b.name)+' escaped with '+F.hp+' left.')+'</div>'+
+        '<div class="shbig">'+(won?"Resolved":F.over==="lost"?"Backup called":"Still on the floor")+'</div>'+
+        '<div class="fbigline">'+(won?esc(b.name)+' is under control.':F.over==="lost"?'Out of hearts. '+esc(b.name)+' is still on the unit.':'Shift ended with '+esc(b.name)+' at '+condWord(F.hp,F.hpMax).w.toLowerCase()+'.')+'</div>'+
         '<div class="note">'+F.hits+' hits · '+F.ouch+' taken · '+F.missed+' missed</div>'+
         (F.xp||F.cash?'<div class="fpay">'+(F.xp?'<b>+'+F.xp+' XP</b>':'')+(F.cash?'<b>+$'+F.cash+'</b>':'')+'</div>':'')+
         '<div class="flog">'+F.log.map(l=>'<span><b>'+esc(l.round)+'</b> '+l.hits+' hit'+(l.hits===1?'':'s')+(l.ouch?' · '+l.ouch+' taken':'')+(l.missed?' · '+l.missed+' missed':'')+'</span>').join("")+'</div>'+
         '<div class="row" style="margin-top:16px;justify-content:center">'+
-          '<button class="btn primary" id="fAgain">'+(won?'Fight it again':'Try again')+'</button>'+
-          '<button class="btn" id="fBack">Pick another</button></div>'+
+          '<button class="btn primary" id="fAgain">'+(won?'Take it again':'Back on shift')+'</button>'+
+          '<button class="btn" id="fBack">Next patient</button></div>'+
       '</div>'+
       takeawayCard(b.unit?[b.unit]:[],"What this was about",true);
   }
@@ -9952,8 +10389,8 @@ function nurseStage(pref){
   const li=levelInfo(S.profile.xp);
   const w=document.createElement("div");
   w.className="avstage";
-  w.innerHTML='<div class="stgcap">Rank '+li.lvl+' \u00b7 '+esc(li.rank)+'</div>'+
-    nurseAvatar(li.lvl,340,pref?Object.assign({on:true},pref):null,true)+
+  w.innerHTML='<div class="stgcap">Level '+li.lvl+' \u00b7 '+esc(li.rank)+'</div>'+
+    nurseAvatar(li.tier,340,pref?Object.assign({on:true},pref):null,true)+
     '<button class="btn sm" id="stgClose">Close</button>';
   const key=e=>{if(e.key==="Escape")off();};
   const off=()=>{w.remove();document.removeEventListener("keydown",key);};
@@ -10085,32 +10522,34 @@ function nurseAvatar(lvl,size,pref,full){
    in the open, and the unknown ones behind a single line instead of nine copies
    of "?????". */
 function rankLadder(){
-  const li=levelInfo(S.profile.xp),top=S.profile.rankMax||li.lvl;
-  const row=(r,i)=>{
-    const lv=i+1,here=lv===li.lvl,known=lv<=top;
-    return '<div class="rankrow'+(here?" here":known?" done":"")+'">'+
-      '<span class="lv mono">'+lv+'</span>'+
-      '<span class="nm'+(known?"":" hidden-rank")+'">'+(known?esc(r):"?????")+'</span>'+
-      (here?'<span class="chip">you are here</span>':'')+'</div>';
+  const li=levelInfo(S.profile.xp), top=Math.max(S.profile.rankMax||1,li.lvl);
+  const topTier=tierOfLevel(top);
+  const row=t=>{
+    const lo=(t-1)*TIER_SIZE+1, hi=Math.min(LEVEL_MAX,t*TIER_SIZE);
+    const here=t===li.tier, seen=t<=topTier, named=tierNamed(t);
+    return '<div class="rankrow'+(here?" here":seen?" done":"")+'">'+
+      '<span class="lv mono">'+lo+'\u2013'+hi+'</span>'+
+      '<span class="nm'+(seen&&named?"":" hidden-rank")+'">'+(seen&&named?esc(rankName(t)):"?????")+'</span>'+
+      (here?'<span class="chip">level '+li.lvl+'</span>':'')+'</div>';
   };
-  const shown=RANKS.slice(0,Math.min(RANKS.length,Math.max(top,li.lvl)+1));
-  const hidden=RANKS.slice(shown.length);
+  /* show what you have climbed, the next tier up, then say plainly how far the
+     rest goes - the unnamed stretch is meant to look like a long way off */
+  const upto=Math.min(TIER_COUNT,Math.max(topTier,li.tier)+1);
+  const left=TIER_COUNT-upto;
+  const rows=[];for(let t=1;t<=upto;t++)rows.push(row(t));
   return '<div class="card" style="margin-bottom:10px"><div class="pad" style="padding-bottom:8px">'+
     '<div class="rankhead">'+
-      '<div><span class="eyebrow">Rank '+li.lvl+' of 13</span>'+
+      '<div><span class="eyebrow">Level '+li.lvl+' of '+LEVEL_MAX+' \u00b7 week '+li.week+' \u00b7 '+rankPace(li)+'</span>'+
       '<div class="rankname">'+esc(li.rank)+'</div>'+
-      '<div class="note" style="margin-top:5px;max-width:38ch">Thirteen ranks. You will find out what the higher ones are when you get there.</div>'+
+      '<div class="note" style="margin-top:5px;max-width:42ch">A hundred levels, and the name changes every fifth. A full week is five: eighty questions you have not seen before earns three, and that week\u2019s tasks earn two. '+esc(rankWhy(li))+'</div>'+
+      '</div>'+
+      '<div class="rankside"><b>'+li.inTier+'/'+TIER_SIZE+'</b><i>in this tier</i></div>'+
     '</div></div>'+
-    '</div>'+
-    '<div class="ladder">'+shown.map(row).join("")+
-    (hidden.length?'<div class="rankrow"><span class="lv mono">\u2026</span><span class="nm hidden-rank">'+hidden.length+' more above</span></div>':'')+
-    '</div></div>';
+    rows.join("")+
+    (left?'<div class="rankrow"><span class="lv mono">'+(upto*TIER_SIZE+1)+'\u2013'+LEVEL_MAX+'</span>'+
+      '<span class="nm hidden-rank">'+left+' more tiers \u2014 unnamed so far</span></div>':'')+
+  '</div>';
 }
-
-
-/* Ranks 10 to 13 are bought with gates and never with XP, so this is the only
-   place that explains why the ladder stops at 9. Open by default the first time
-   a gate is within reach, shut once they are all cleared. */
 function gateSection(){
   const gs=allGates();
   if(!gs.length)return "";
@@ -10197,7 +10636,7 @@ function nurseTap(){
   const fig=el.querySelector(".nfig");
   if(!fig)return;
   // a smile is a redraw, not a transform: the mouth has to actually change
-  if(move==="nsmile")fig.innerHTML=nurseAvatar(levelInfo(S.profile.xp).lvl,118,
+  if(move==="nsmile")fig.innerHTML=nurseAvatar(levelInfo(S.profile.xp).tier,118,
     Object.assign({},avatarPrefs(),{mouth:"smirk",cheeks:avatarPrefs().cheeks||"soft"}),true);
   fig.classList.remove("nbob","nwiggle","ndance","nbounce","nspin","nsmile");
   void fig.offsetWidth;
@@ -10206,7 +10645,7 @@ function nurseTap(){
   talkTimer=setTimeout(()=>{
     const f=el.querySelector(".nfig");
     if(f){f.classList.remove("nbob","nwiggle","ndance","nbounce","nspin","nsmile");
-          if(move==="nsmile")f.innerHTML=nurseAvatar(levelInfo(S.profile.xp).lvl,118,null,true);}
+          if(move==="nsmile")f.innerHTML=nurseAvatar(levelInfo(S.profile.xp).tier,118,null,true);}
     if(!S.profile.nursePin){el.classList.remove("in");document.body.classList.remove("ncheer");}
   },move==="ndance"?1900:1400);
   if(tapTimer)clearTimeout(tapTimer);
@@ -10223,7 +10662,7 @@ function nurseDock(){
   return el;
 }
 function nurseFigure(){
-  return '<div class="nfig">'+nurseAvatar(levelInfo(S.profile.xp).lvl,118,null,true)+'</div>';
+  return '<div class="nfig">'+nurseAvatar(levelInfo(S.profile.xp).tier,118,null,true)+'</div>';
 }
 function nurseCheer(msg,sub){
   if(S.profile.nurseOff)return false;
@@ -10260,7 +10699,7 @@ function progressReport(){
   const acc=p.answered?Math.round(p.correct/p.answered*100):0;
   const L=[];
   L.push("Trophos — progress, "+MON[new Date().getMonth()].slice(0,3)+" "+new Date().getDate());
-  L.push("XP "+(p.xp||0)+" · level "+li.lvl+" ("+li.rank+") · streak "+(p.longest||0)+
+  L.push("XP "+(p.xp||0)+" · level "+li.lvl+"/"+LEVEL_MAX+" ("+li.rank+") · streak "+(p.longest||0)+
          " · accuracy "+(p.answered?acc+"% of "+p.answered:"—"));
   const all=todoOf(S.events), done=all.filter(e=>e.done).length;
   L.push("");
@@ -10448,7 +10887,7 @@ function viewTrophies(){
   const next=ranked.length?ranked[0]:null;
   const rest=left.filter(t=>!next||t.id!==next.t.id);
   return ''+
-  '<div class="vhead"><div><h1>Progress</h1><p>Rank '+li.lvl+' of 13 &mdash; '+esc(li.rank)+'. '+won+' of '+TROPHIES.length+' trophies.</p></div>'+
+  '<div class="vhead"><div><h1>Progress</h1><p>Level '+li.lvl+' of '+LEVEL_MAX+' &mdash; '+esc(li.rank)+'. '+won+' of '+TROPHIES.length+' trophies.</p></div>'+
     '<div class="row"><button class="btn sm" id="progBtn">Copy my progress</button></div></div>'+
   '<div class="stats" style="margin-bottom:14px">'+
     ['<div class="stat"><div class="n">'+p.xp+'</div><div class="l">Total XP</div></div>',
@@ -11285,8 +11724,9 @@ function wire(){
     runQueue(S.questions.filter(q=>!q.prime&&studyCourses().some(c=>c.id===q.courseId)));
   const lateMoreBtn=$("#lateMore"); if(lateMoreBtn)lateMoreBtn.onclick=()=>{lateOpen=!lateOpen;render();};
   const lateAllBtn=$("#lateAll"); if(lateAllBtn)lateAllBtn.onclick=clearLateAsk;
-  $$("[data-boss]").forEach(b=>b.onclick=()=>fightStart(b.dataset.boss));
-  $$("[data-ward]").forEach(b=>b.onclick=()=>{const x=b.dataset.ward.split("||");wardStart(x[0],x[1]);});
+  const openRoom=(btn,go)=>{if(btn.classList.contains("opening"))return;btn.classList.add("opening");setTimeout(go,320);};
+  $$("[data-boss]").forEach(b=>b.onclick=()=>openRoom(b,()=>fightStart(b.dataset.boss)));
+  $$("[data-ward]").forEach(b=>b.onclick=()=>openRoom(b,()=>{const x=b.dataset.ward.split("||");wardStart(x[0],x[1]);}));
   $$("[data-energy]").forEach(b=>b.onclick=()=>{S.profile.energy=b.dataset.energy;saveCore();render();});
   const es=$("#enShop"); if(es)es.onclick=()=>{shopBay="energy";tab="nurse";DRAWER.locker=true;render();window.scrollTo(0,0);};
   $$("[data-fopt]").forEach(b=>b.onclick=()=>{if(!b.disabled)fightToggle(+b.dataset.fopt);});
@@ -11609,7 +12049,7 @@ function firstRunAvatar(){
   reapplyDone();
   syncLatches();
   checkTrophies(true);
-  if([migrateReplies(),migrateNotes(),migrateLoginsToEvents(),recolourCourses(),grandfatherLocker(),grantOnce(),migrateTiers(),seedSchedule(),dropDeadQuestions(),repairEvents(),repairXp()].some(Boolean))saveCore();
+  if([migrateJoined(),migrateReplies(),migrateNotes(),migrateLoginsToEvents(),recolourCourses(),grandfatherLocker(),grantOnce(),migrateTiers(),seedSchedule(),dropDeadQuestions(),repairEvents(),repairXp()].some(Boolean))saveCore();
   if(calCourse!=="all"&&!courseById(calCourse))calCourse="all";
   focusMonth();
   render();
@@ -11621,7 +12061,7 @@ function firstRunAvatar(){
       try{await d.doc("shared/probe").set({t:Date.now()});}
       catch(err){if(err&&(err.code==="invalid_argument"||err.code==="permission_denied"))sharedRW=false;}
       await loadAll();
-      if(sharedRW){dropCourses();resetSeeded();seedCourses();seedQuestions();}reapplyDone();if(sharedRW&&[migrateReplies(),migrateNotes(),migrateLoginsToEvents(),recolourCourses(),migrateTiers(),repairEvents(),repairXp()].some(Boolean))saveCore();reapplyDone();focusMonth();
+      if(sharedRW){dropCourses();resetSeeded();seedCourses();seedQuestions();}reapplyDone();if(sharedRW&&[migrateJoined(),migrateReplies(),migrateNotes(),migrateLoginsToEvents(),recolourCourses(),migrateTiers(),repairEvents(),repairXp()].some(Boolean))saveCore();reapplyDone();focusMonth();
       const n=$("#storeNote");if(n)n.textContent="Saved to your account.";
       render();
     }).catch(()=>{});
