@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Charge Nurse</title>
-<meta name="description" content="Charge Nurse — nursing school calendar, question bank and practice.">
+<title>Trophos</title>
+<meta name="description" content="Trophos — your prescription for learning. Nursing school calendar, question bank and practice.">
 <meta name="theme-color" content="#0E7C70">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230E7C70'/%3E%3Cpath d='M7 5v5a5 5 0 0 0 10 0V5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M12 15v2a2.5 2.5 0 0 0 5 0v-1' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='17.5' cy='14.5' r='1.6' fill='white'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230E7C70'/%3E%3Cpath d='M7 5v5a5 5 0 0 0 10 0V5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M12 15v2a2.5 2.5 0 0 0 5 0v-1' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='17.5' cy='14.5' r='1.6' fill='white'/%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Charge Nurse">
+<meta name="apple-mobile-web-app-title" content="Trophos">
 <style>:root{color-scheme:light dark}html,body{margin:0;padding:0}body{font:14px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#faf9f5;color:#141413;-webkit-text-size-adjust:100%}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -1803,14 +1803,18 @@ body.ncheer #toasts{top:18px}
   .msum{gap:9px;margin-top:9px}
   .msum span{font-size:11px}
 }
+  .tagline{font-size:10.5px;line-height:1.3;color:var(--faint);letter-spacing:.02em;
+    margin:-4px 0 10px 2px;max-width:15ch}
+  @media(max-width:900px){.tagline{display:none}}
 </style>
 
 <div class="shell">
   <nav class="rail" aria-label="Sections">
     <div class="brand">
       <span class="mark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a6 6 0 0 0 12 0V3"/><path d="M12 15v3a3 3 0 0 0 6 0v-1"/><circle cx="19" cy="15" r="2"/></svg></span>
-      <b>Charge Nurse</b>
+      <b>Trophos</b>
     </div>
+    <div class="tagline">Your prescription for learning</div>
     <button class="navbtn" data-nav="home"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.8 20v-5.4h4.4V20"/></svg><span>Home</span></button>
     <button class="navbtn" data-nav="calendar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Calendar</span></button>
     <button class="navbtn" data-nav="study"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".6"/></svg><span>Study</span></button>
@@ -3859,7 +3863,7 @@ function courseForm(c){
 /* ============================ ICS export ============================ */
 function icsDate(iso){return iso.replace(/-/g,"");}
 function buildIcs(){
-  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Charge Nurse//EN","CALSCALE:GREGORIAN"];
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Trophos//EN","CALSCALE:GREGORIAN"];
   const push=(uidv,date,summary,desc,alarmDays)=>{
     const d=parseD(date),end=dkey(new Date(d.getTime()+86400000));
     L.push("BEGIN:VEVENT","UID:"+uidv+"@charge-nurse","DTSTAMP:"+icsDate(today())+"T090000Z",
@@ -10255,7 +10259,7 @@ function progressReport(){
   const p=S.profile,li=levelInfo(p.xp);
   const acc=p.answered?Math.round(p.correct/p.answered*100):0;
   const L=[];
-  L.push("Charge Nurse — progress, "+MON[new Date().getMonth()].slice(0,3)+" "+new Date().getDate());
+  L.push("Trophos — progress, "+MON[new Date().getMonth()].slice(0,3)+" "+new Date().getDate());
   L.push("XP "+(p.xp||0)+" · level "+li.lvl+" ("+li.rank+") · streak "+(p.longest||0)+
          " · accuracy "+(p.answered?acc+"% of "+p.answered:"—"));
   const all=todoOf(S.events), done=all.filter(e=>e.done).length;
