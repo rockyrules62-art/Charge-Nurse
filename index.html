@@ -2324,6 +2324,24 @@ body.gated{overflow:hidden}
 .urow .ub i{display:block;height:100%;background:var(--accent);border-radius:999px}
 .urow .uv{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);white-space:nowrap}
 @media (max-width:600px){.urow{grid-template-columns:64px 1fr auto;gap:8px}}
+.plist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.prow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+  padding:10px 13px;border-top:1px solid var(--line-soft);background:var(--surface)}
+.prow:first-child{border-top:0}
+.prow.me{background:var(--accent-soft)}
+.pwho{min-width:0}
+.pwho b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pwho .psub{display:block;font:600 11px "IBM Plex Mono",monospace;font-style:normal;
+  color:var(--muted);margin-top:2px}
+.pme{display:inline-block;font:700 9.5px "IBM Plex Mono",monospace;font-style:normal;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent-txt);
+  border:1px solid var(--accent);border-radius:999px;padding:1px 5px;margin-left:6px;
+  vertical-align:1px}
+.pnum{text-align:right;white-space:nowrap}
+.pnum b{display:block;font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:700;color:var(--ink)}
+.pnum i{display:block;font-size:10.5px;font-style:normal;color:var(--muted);margin-top:1px}
+@media (max-width:600px){.prow{padding:9px 11px;gap:9px}.pwho b{font-size:12.5px}}
 /* ---- the crash panel ---- */
 .crashwrap{padding:26px 18px;display:flex;justify-content:center}
 .crashcard{max-width:56ch;width:100%;background:var(--surface);border:2px solid var(--edge);
@@ -4630,7 +4648,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 7, 1:23 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 7, 2:25 PM";              /* _dist.py stamps the shipped one */
 const SUPA={url:"https://ezvnzvvdpbrjtdifqjhk.supabase.co",key:"sb_publishable_jiiuzrdjTCiBFj2IV0-0Eg_1vVHIJAb"};
 const supaOn=()=>!!(SUPA.url&&SUPA.key);
 const AUTH_KEY="cn_auth";
@@ -7231,7 +7249,11 @@ function useBump(k,n){
   USE.last=Date.now();usePending=true;
 }
 function useRow(){
-  return {id:USE.id,user_id:((AUTH||{}).user||{}).id,
+  const u=((AUTH||{}).user||{});
+  /* Written by the person's own client into the person's own row, so it is
+     self-reported: the id is what identifies them, this is a label on top of
+     it so a list of visits can be read without cross-checking the dashboard. */
+  return {id:USE.id,user_id:u.id,who:u.name||null,email:u.email||null,
     started_at:new Date(USE.started).toISOString(),
     last_at:new Date(Math.max(USE.last,Date.now())).toISOString(),
     build:USE.build,device:USE.device,tabs:USE.tabs,counts:USE.counts};
@@ -7266,6 +7288,48 @@ async function pullUsage(){
 const useSecs=r=>Object.keys(r.tabs||{}).reduce((n,k)=>n+(+r.tabs[k]||0),0);
 const useMins=n=>n<60?"under a minute":n<3600?Math.round(n/60)+" min":
   (Math.round(n/360)/10)+" hours";
+/* One line per person rather than one pile for everybody: who they are, how
+   often they come back, how long they stay, and how they are doing. Rolled up
+   from their visits, newest first. */
+function usagePeople(rows){
+  const by={};
+  rows.forEach(r=>{
+    const k=r.user_id||"?";
+    const p=by[k]||(by[k]={id:k,who:null,email:null,visits:0,secs:0,last:0,
+      answered:0,right:0,ticked:0,devices:{}});
+    if(r.who)p.who=r.who;
+    if(r.email)p.email=r.email;
+    p.visits++;p.secs+=useSecs(r);
+    if(r.device)p.devices[r.device]=1;
+    const t=Date.parse(r.last_at||r.started_at)||0;
+    if(t>p.last)p.last=t;
+    const c=r.counts||{};
+    p.answered+=+c.answered||0;p.right+=+c.right||0;p.ticked+=+c.ticked||0;
+  });
+  return Object.keys(by).map(k=>by[k]).sort((a,b)=>b.last-a.last);
+}
+const useAgo=t=>{
+  if(!t)return "never";
+  const m=Math.round((Date.now()-t)/60000);
+  if(m<2)return "just now";
+  if(m<60)return m+" min ago";
+  const h=Math.round(m/60);
+  if(h<24)return h+" hour"+(h===1?"":"s")+" ago";
+  const d=Math.round(h/24);
+  return d+" day"+(d===1?"":"s")+" ago";
+};
+function usagePersonRow(p,mine){
+  const label=p.who||p.email||("account "+String(p.id).slice(0,8));
+  const sub=[p.visits+" visit"+(p.visits===1?"":"s"),useMins(p.secs),useAgo(p.last)];
+  const acc=p.answered?Math.round(p.right/p.answered*100)+"%":null;
+  return '<div class="prow'+(mine?" me":"")+'">'+
+    '<span class="pwho"><b>'+esc(label)+(mine?' <i class="pme">you</i>':'')+'</b>'+
+      '<i class="psub">'+esc(sub.join(" · "))+'</i></span>'+
+    '<span class="pnum">'+
+      (p.answered?'<b>'+p.answered+'</b><i>question'+(p.answered===1?'':'s')+(acc?' · '+acc:'')+'</i>'
+                 :'<b>—</b><i>no questions yet</i>')+
+    '</span></div>';
+}
 function usageSection(){
   if(!USE_ON())return "";
   if(!signedIn())return "";
@@ -7299,17 +7363,24 @@ function usageSection(){
           '<span class="uchip"><b>'+useMins(total).replace(/^under a minute$/,"<1 min")+'</b>in the app</span>'+
           cn("answered","questions")+cn("right","right")+cn("ticked","items ticked")+
         '</div>'+
-        '<span class="eyebrow">Where the time went</span>'+
+        (people>1
+          ? '<span class="eyebrow">Who is using it</span>'+
+            '<div class="plist" style="margin:7px 0 15px">'+
+              usagePeople(rows).map(p=>usagePersonRow(p,p.id===mine)).join("")+'</div>'
+          : '')+
+        '<span class="eyebrow">'+(people>1?"Where everyone\u2019s time went":"Where the time went")+'</span>'+
         '<div class="ulist" style="margin-top:7px">'+order.map(bar).join("")+'</div>'+
         '<div class="note" style="margin-top:11px">'+
           (others.length
-            ? "Everyone with an account, because this project is yours."
-            : "Yours only. The database returns your own rows and nobody else’s.")+
+            ? "Everyone with an account, because this project is yours. An account that has never opened the app has nothing here to show."
+            : "You are the only account so far. Anyone else who signs up turns up here as their own line.")+
         '</div>'+
         '<div class="row" style="margin-top:11px"><button class="btn sm ghost" id="useLoad">Refresh</button></div>'+
       '</div>';
   return drawer("usage","◴","Your activity",
-    USE_ROWS===null?"not loaded":(rows.length+" visit"+(rows.length===1?"":"s")),
+    USE_ROWS===null?"not loaded":
+      (people>1?people+" people \u00b7 "+rows.length+" visits"
+               :rows.length+" visit"+(rows.length===1?"":"s")),
     body,false);
 }
 function settingsSection(){
@@ -15642,7 +15713,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 7, 1:23 PM":"This browser is not saving anything. Build Sep 7, 1:23 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 7, 2:25 PM":"This browser is not saving anything. Build Sep 7, 2:25 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -16114,7 +16185,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 7, 1:23 PM":"This browser is not saving anything. Build Sep 7, 1:23 PM");
+    (LS_OK?"Saved in this browser. Build Sep 7, 2:25 PM":"This browser is not saving anything. Build Sep 7, 2:25 PM");
 })();
 </script>
 
