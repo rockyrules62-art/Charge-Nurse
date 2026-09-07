@@ -237,7 +237,10 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .cell.clickable{cursor:pointer}
 .cell.clickable{background:var(--surface);border-color:var(--line)}
 .cell.clickable:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--accent)}
-.cell.clickable:active{transform:translateY(0)}
+/* the press scale is set further down with every other control; this is the
+   colour half of it, so a tap on a day is acknowledged in two ways at once */
+.cell.clickable:active{background:color-mix(in srgb,var(--accent) 12%,var(--surface));
+  border-color:var(--accent)}
 .cell.hasquiz{background:color-mix(in srgb,var(--sun) 28%,var(--surface));border-color:color-mix(in srgb,var(--sun) 60%,transparent)}
 .cell.hasmm{background:color-mix(in srgb,var(--tang) 22%,var(--surface));border-color:color-mix(in srgb,var(--tang) 55%,transparent)}
 .cell.hasexam{background:color-mix(in srgb,var(--coral) 24%,var(--surface));border-color:color-mix(in srgb,var(--coral) 65%,transparent)}
@@ -2221,7 +2224,7 @@ div.qzcard{cursor:default}
 
 /* forms */
 label.f{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--muted)}
-input[type=text],input[type=date],input[type=number],select,textarea{
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=number],select,textarea{
   padding:9px 11px;border-radius:7px;border:1px solid var(--line);background:var(--surface-2);
   color:var(--ink);font-size:14px;font-weight:400;width:100%
 }
@@ -2229,6 +2232,80 @@ textarea{resize:vertical;min-height:110px;line-height:1.5}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
 
 /* modal + toast */
+/* ---- taps, on a phone ------------------------------------------------------
+   Safari waits about 300ms after a tap on anything it might have to treat as
+   the first half of a double-tap-to-zoom, and only then sends the click. On a
+   day cell that reads as the app hesitating before it opens the day - the work
+   itself takes 33ms. touch-action:manipulation tells the browser this element
+   is never a zoom target, so the click goes out on the tap. It is on every
+   control, because the wait was on every control. The Grove sets its own
+   touch-action for panning and is more specific, so it keeps it. */
+button,[role="button"],input,select,textarea,label,summary,.cell,.opt,.navbtn{
+  touch-action:manipulation}
+/* ---- reminders ----
+   A painted board like the other two on Home, so it reads as part of the same
+   set rather than as a notice bolted on. Gold, because it is neither the alarm
+   red of Late nor the calm teal of what is coming - it is the thing you asked
+   for yourself. */
+.board.painted.remind{--pg1:#7A5A12;--pg2:#5E4A15;--pg3:#0E7C70;--bc:#F5C542;
+  background:linear-gradient(128deg,#8A6414 0%,#6B5518 20%,#334E48 50%,#0E7C70 80%,#12907F 100%)}
+.board.painted.remind .btag{background:#F5C542;color:#4A3708}
+.board.remind .rmlist{display:flex;flex-direction:column}
+.rmrow{display:grid;grid-template-columns:auto 1fr auto auto;gap:11px;align-items:center;
+  padding:11px 16px;border-top:1px solid rgba(255,255,255,.13);
+  box-shadow:inset 3px 0 0 0 var(--lc,#fff)}
+.rmrow:first-child{border-top:0}
+.rmrow .bigbox{accent-color:#F5C542}
+.rmt{text-align:left;background:transparent;border:0;padding:0;cursor:pointer;min-width:0}
+.rmt b{display:block;font-size:14.5px;font-weight:700;color:#fff;line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rmt i{display:block;font:600 11.5px "IBM Plex Mono",monospace;font-style:normal;
+  color:rgba(255,255,255,.78);margin-top:2px}
+.rmwhen{font:700 12px "IBM Plex Mono",monospace;color:rgba(255,255,255,.82);white-space:nowrap}
+.rmrow.now .rmwhen{color:#FFE08A}
+.rmrow.over .rmwhen{color:#FFB3C0}
+.board.remind .note{color:rgba(255,255,255,.8)}
+.rmoff{border:0;background:transparent;color:rgba(255,255,255,.6);font-size:17px;line-height:1;
+  padding:4px 8px;border-radius:7px;cursor:pointer;touch-action:manipulation}
+.rmoff:hover{background:rgba(255,255,255,.14);color:#fff}
+.rmoff:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.btn.rmbell.on{color:var(--accent-txt);border-color:var(--accent)}
+@media (max-width:600px){
+  /* two rows on a phone: the countdown drops under the title rather than
+     squeezing a fourth column into 390px. Every cell is placed by hand,
+     because auto-placement put the dismiss button in front of the tick box. */
+  .rmrow{grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;
+    gap:2px 9px;padding:10px 13px;align-items:start}
+  .rmrow .bigbox{grid-column:1;grid-row:1 / span 2;align-self:center}
+  .rmrow .rmt   {grid-column:2;grid-row:1}
+  .rmrow .rmwhen{grid-column:2;grid-row:2;justify-self:start}
+  .rmrow .rmoff {grid-column:3;grid-row:1 / span 2;align-self:center}
+}
+/* ---- the crash panel ---- */
+.crashwrap{padding:26px 18px;display:flex;justify-content:center}
+.crashcard{max-width:56ch;width:100%;background:var(--surface);border:2px solid var(--edge);
+  border-radius:20px;padding:24px 26px;
+  box-shadow:0 7px 0 -2px color-mix(in srgb,var(--crimson) 26%,transparent),var(--shadow)}
+.crashcard h1{font-size:26px;font-weight:800;margin:8px 0 12px;letter-spacing:-.01em}
+.crashcard p{margin:0 0 14px;font-size:15px;line-height:1.6;color:var(--ink)}
+.crashrow{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+.crashout{width:100%;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
+  padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);
+  color:var(--ink);margin-bottom:10px;resize:vertical}
+.crashsay{font-size:13.5px;color:var(--accent-txt);min-height:19px;margin-bottom:6px}
+.crashwarn{font-size:13.5px!important;color:var(--muted)!important;
+  border-left:3px solid var(--crimson);padding-left:12px}
+.crashwarn b{color:var(--crimson)}
+.crasherr{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;
+  line-height:1.5;color:var(--muted);background:var(--surface-2);border:1px solid var(--line-soft);
+  border-radius:8px;padding:9px 11px;overflow-wrap:anywhere}
+@media (max-width:600px){.crashcard{padding:20px 18px}.crashcard h1{font-size:22px}}
+/* the account drawer */
+label.f.acf{margin-bottom:11px}
+.acsaid{margin-top:11px;padding:9px 12px;border-radius:9px;font-size:13px;line-height:1.45;
+  background:var(--surface-2);border-left:3px solid var(--line)}
+.acsaid.ok{border-left-color:var(--accent);color:var(--ink)}
+.acsaid.no{border-left-color:var(--crimson);color:var(--ink)}
 .veil{position:fixed;inset:0;background:rgba(8,18,16,.5);display:grid;place-items:center;padding:18px;z-index:70;backdrop-filter:blur(2px)}
 .sheet{background:var(--surface);border-radius:14px;border:1px solid var(--line);box-shadow:0 30px 70px -20px rgba(0,0,0,.5);width:min(560px,100%);max-height:88vh;overflow:auto}
 .sheet header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:8}
@@ -2352,6 +2429,24 @@ body.ncheer #toasts{top:18px}
   .cell{min-height:70px;padding:5px 5px 6px;border-radius:10px;gap:3px}
   .cell .d{font-size:11px;padding:0 3px}
   .cell .pill{font-size:9.5px;padding:2px 4px;white-space:normal;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  /* A day is 48px wide on a phone and the course chip takes most of that, so a
+     title had no width to render into - but it still claimed two lines of
+     height, which is what spread three marks down the length of a Thursday and
+     left a hole under everything else. Hidden here, so a day is its chip and
+     its marks and nothing invisible. The words are on the day sheet. */
+  .cell .lane .li .tx{display:none}
+  .cell .lane .li{max-width:none}
+  /* The chip was taking the whole 38px of usable width and leaving the marks a
+     one-pixel box, so every mark wrapped onto a line of its own and a Thursday
+     with three things ran down the cell. Slimmer chip, and the marks are
+     allowed to drop to their own line when they genuinely do not fit - one
+     mark still sits beside the chip, four go underneath it. */
+  .cell .lane{flex-wrap:wrap;gap:3px}
+  .cell .lane .tag{font-size:8.5px;line-height:14px;padding:0 3px;border-radius:3px}
+  .cell .lane .lit{flex:1 1 auto;min-width:min-content;gap:4px}
+  /* a four-letter code plus one mark has to clear 38px, or a lone dot drops to
+     a line of its own and the days stop looking alike */
+  .cell .lane .li .mk{line-height:14px;font-size:8px}
   .dots i{width:6px;height:6px}
   .dots b{font-size:9px;margin-left:2px}
   .msum{gap:9px;margin-top:9px}
@@ -4370,7 +4465,7 @@ const BLANK={xp:0,streak:0,longest:0,lastDay:null,lastHit:null,tier:"standard",t
 const freshProfile=src=>{const p=Object.assign({},BLANK,src||{});p.trophies=Object.assign({},(src&&src.trophies)||{});return p;};
 const S={profile:freshProfile(),courses:[],events:[],materials:[],questions:[],logins:{},deleted:{}};
 let sharedRW=true;              // can this viewer edit the shared schedule?
-const MINE={done:{},qstats:{},misses:[],flags:{}}; // personal progress, never shared
+const MINE={done:{},qstats:{},misses:[],flags:{},remind:{}}; // personal progress, never shared
 const MISS_CAP=800;                        // a semester of mistakes, then it rolls
 let DB=null, calFull=false, semOpen=false, semZoom=1, calDetail=false, calCourse="all", tab="home", calMonth=new Date().getMonth(), calYear=new Date().getFullYear(), courseFilter="all", weakTopic="all", session=null, SAMPLE=null, DL=null;
 
@@ -4399,7 +4494,7 @@ function collectMine(){
   S.questions.forEach(q=>{if(q.seen||q.wrong)MINE.qstats[q.id]=
     {s:q.seen||0,w:q.wrong||0,l:q.lastSeen||null,b:q.box||0,d:q.due||null};});
   return {at:Date.now(),profile:S.profile,logins:S.logins,done:MINE.done,qstats:MINE.qstats,
-          misses:MINE.misses,flags:MINE.flags};
+          misses:MINE.misses,flags:MINE.flags,remind:MINE.remind};
 }
 function applyMine(m){
   if(!m)return;
@@ -4407,6 +4502,7 @@ function applyMine(m){
   if(m.logins)S.logins=m.logins;
   MINE.done=m.done||{};MINE.qstats=m.qstats||{};MINE.misses=Array.isArray(m.misses)?m.misses:[];
   MINE.flags=m.flags||{};
+  MINE.remind=(m.remind&&typeof m.remind==="object"&&!Array.isArray(m.remind))?m.remind:{};
   S.events.forEach(e=>{const v=MINE.done[evKey(e)];
     if(v){const p=String(v).split("|");e.done=true;e.doneOn=p[0];
       e.xp=(p[1]===undefined||p[1]==="")?10:(+p[1]||0);}
@@ -4417,6 +4513,8 @@ function applyMine(m){
 function saveMine(){
   const mine=collectMine();
   LS.set("cn_mine",mine);
+  pushProgress();                                 // to the account, if there is one
+
   if(!DB||!sharedRW)return;                       // only the owner syncs progress to the account
   if(mineSaving){mineDirty=true;return;}
   mineSaving=true;
@@ -4472,19 +4570,261 @@ async function delQuestionsFor(materialId){
 
    Both copies are stamped now, and the newer one wins. A copy with no stamp is
    from before this existed, so it loses to anything stamped. */
+/* ============================ the account ==================================
+   Supabase, spoken directly over HTTPS rather than through its SDK. Trophos is
+   one file you can email to somebody or drop on a static host, and that is
+   worth keeping - so there is no bundle, no CDN script tag and no version to
+   pin. Supabase's auth and REST layers are ordinary HTTP; this is that.
+
+   What is here and what is not:
+   - The password is sent to Supabase and checked THERE. Nothing in this file
+     decides whether a password is right, and the password is never written to
+     storage. What comes back is a signed token, and the token is what proves
+     who you are on every request after that.
+   - Both values below are meant to be public. The publishable key ships inside
+     every Supabase web app; it identifies the project, it does not authorise
+     anything. What keeps one person's progress away from another is the
+     row-level security in the database, which no request from a browser can
+     talk its way past.
+   ========================================================================== */
+const SUPA={
+  url:"https://ezvnzvvdpbrjtdifqjhk.supabase.co",
+  key:"sb_publishable_jiiuzrdjTCiBFj2IV0-0Eg_1vVHIJAb"   /* publishable: public by design */
+};
+const supaOn=()=>!!(SUPA.url&&SUPA.key);
+const AUTH_KEY="cn_auth";
+let AUTH=null;                 /* {token,refresh,exp,user:{id,email,name}} */
+let AUTH_ERR="";               /* the last thing that went wrong, for the screen */
+let AUTH_BUSY="";              /* which button is mid-flight */
+
+/* Supabase says what went wrong in four different shapes depending on which
+   layer answered. Pick whichever one is present rather than showing "[object
+   Object]" to somebody trying to sign in. */
+function supaErr(j,status){
+  const m=j&&(j.msg||j.error_description||j.message||j.error_message||
+    (typeof j.error==="string"?j.error:null));
+  if(m)return String(m);
+  if(status===401)return "That did not go through — check the project settings.";
+  if(status===0)return "No connection.";
+  return "Something went wrong ("+(status||"?")+").";
+}
+async function supaCall(path,opts){
+  const o=opts||{};
+  const head=Object.assign({"apikey":SUPA.key,"content-type":"application/json"},o.headers||{});
+  if(o.token)head["Authorization"]="Bearer "+o.token;
+  let r,j=null;
+  try{
+    r=await fetch(SUPA.url.replace(/\/+$/,"")+path,
+      {method:o.method||"GET",headers:head,body:o.body?JSON.stringify(o.body):undefined});
+  }catch(e){return {ok:false,status:0,err:"No connection."};}
+  const txt=await r.text();
+  try{j=txt?JSON.parse(txt):null;}catch(e){j=null;}
+  if(!r.ok)return {ok:false,status:r.status,err:supaErr(j,r.status),data:j};
+  return {ok:true,status:r.status,data:j};
+}
+
+/* ---- the session ---------------------------------------------------------
+   The refresh token is the durable half and the access token expires in an
+   hour, so the access token is refreshed a minute before it dies rather than
+   after something has already failed. */
+function authSave(){
+  try{
+    if(AUTH)localStorage.setItem(AUTH_KEY,JSON.stringify(
+      {refresh:AUTH.refresh,user:AUTH.user,token:AUTH.token,exp:AUTH.exp}));
+    else localStorage.removeItem(AUTH_KEY);
+  }catch(e){}
+}
+function authSet(s){
+  if(!s||!s.access_token)return null;
+  const u=s.user||{};
+  AUTH={token:s.access_token,refresh:s.refresh_token,
+        exp:Date.now()+((+s.expires_in||3600)*1000),
+        user:{id:u.id,email:u.email,
+              name:(u.user_metadata&&u.user_metadata.name)||String(u.email||"").split("@")[0]}};
+  authSave();
+  return AUTH;
+}
+async function authRefresh(){
+  if(!AUTH||!AUTH.refresh)return false;
+  const r=await supaCall("/auth/v1/token?grant_type=refresh_token",
+    {method:"POST",body:{refresh_token:AUTH.refresh}});
+  if(!r.ok){
+    /* a refresh token that is gone is not an error to retry - it means the
+       session is over, on this device or every device */
+    AUTH=null;authSave();return false;
+  }
+  authSet(r.data);return true;
+}
+async function authFresh(){
+  if(!AUTH)return null;
+  if(Date.now()>AUTH.exp-60000){if(!await authRefresh())return null;}
+  return AUTH.token;
+}
+/* a call as the signed-in person, with one retry through a refresh if the
+   token turned out to be dead earlier than expected */
+async function meCall(path,opts){
+  const t=await authFresh();
+  if(!t)return {ok:false,status:401,err:"Signed out."};
+  let r=await supaCall(path,Object.assign({},opts,{token:t}));
+  if(r.status===401&&await authRefresh())
+    r=await supaCall(path,Object.assign({},opts,{token:AUTH.token}));
+  return r;
+}
+
+async function authSignUp(email,pass,name){
+  AUTH_ERR="";
+  const r=await supaCall("/auth/v1/signup",{method:"POST",
+    body:{email:email,password:pass,data:{name:name||""}}});
+  if(!r.ok){AUTH_ERR=r.err;return {ok:false};}
+  /* With email confirmation on - which is the Supabase default - signup
+     answers with a user and no session. That is not a failure; it means go
+     and look at your inbox. */
+  if(!r.data||!r.data.access_token)return {ok:true,confirm:true};
+  authSet(r.data);
+  return {ok:true};
+}
+async function authSignIn(email,pass){
+  AUTH_ERR="";
+  const r=await supaCall("/auth/v1/token?grant_type=password",
+    {method:"POST",body:{email:email,password:pass}});
+  if(!r.ok){AUTH_ERR=r.err;return {ok:false};}
+  authSet(r.data);
+  return {ok:true};
+}
+async function authSignOut(){
+  const t=AUTH&&AUTH.token;
+  AUTH=null;authSave();
+  /* scope=local: signing out on your phone should not sign you out on your
+     laptop. GoTrue defaults to global, which would. */
+  if(t)supaCall("/auth/v1/logout?scope=local",{method:"POST",token:t}).catch(()=>{});
+  return true;
+}
+async function authReset(email){
+  AUTH_ERR="";
+  const r=await supaCall("/auth/v1/recover",{method:"POST",body:{email:email}});
+  if(!r.ok){AUTH_ERR=r.err;return {ok:false};}
+  return {ok:true};
+}
+function authRestore(){
+  if(!supaOn())return false;
+  let s=null;try{s=JSON.parse(localStorage.getItem(AUTH_KEY)||"null");}catch(e){}
+  if(!s||!s.refresh)return false;
+  AUTH={token:s.token||"",refresh:s.refresh,exp:+s.exp||0,user:s.user||{}};
+  return true;
+}
+const signedIn=()=>!!(supaOn()&&AUTH&&AUTH.refresh);
+
+/* ---- progress, both ways -------------------------------------------------
+   The rule on the way down is the same one two devices already used between
+   themselves: whichever copy carries the later stamp wins, whole. Signing in
+   on a laptop you have been working on offline must never be the thing that
+   throws that work away. */
+async function pullProgress(){
+  if(!signedIn())return false;
+  const r=await meCall("/rest/v1/progress?select=*&limit=1");
+  if(!r.ok||!Array.isArray(r.data)||!r.data.length)return false;
+  const row=r.data[0];
+  const remote=(row&&row.data&&Object.keys(row.data).length)?row.data:null;
+  /* what this device arrived with, not what it has written to itself since */
+  const local=(LOADED_MINE===false?null:LOADED_MINE)||LS.get("cn_mine",null);
+  const use=newerMine(remote,local);
+  if(!use)return false;
+  /* The schedule first: a ticked item is keyed to the event it belongs to, so
+     the events have to be in place before the ticks are laid over them. */
+  if(use===remote&&row.core)applyCore(row.core);
+  applyMine(use);
+  LS.set("cn_mine",use);
+  /* if this device held the newer copy, hand it up so the account catches up */
+  if(use===local&&remote)pushProgress(true);
+  return true;
+}
+let pushT=null, pushing=false, pushAgain=false;
+function pushProgress(now){
+  if(!signedIn())return;
+  if(!now){clearTimeout(pushT);pushT=setTimeout(()=>pushProgress(true),1500);return;}
+  if(pushing){pushAgain=true;return;}
+  pushing=true;
+  const mine=collectMine();
+  meCall("/rest/v1/progress",{method:"POST",
+    headers:{"Prefer":"resolution=merge-duplicates"},
+    body:{id:AUTH.user.id,data:mine,core:collectCore(),at:+mine.at||Date.now()}})
+   .catch(()=>{})
+   .then(()=>{pushing=false;if(pushAgain){pushAgain=false;pushProgress(true);}});
+}
+/* The name lives on the account itself rather than in a table, because there
+   is no table any other account can read. Nothing about you is stored anywhere
+   a classmate could reach, by any route - there is no shared row to reach. */
+async function setDisplayName(name){
+  if(!signedIn())return false;
+  AUTH.user.name=name;authSave();
+  await meCall("/auth/v1/user",{method:"PUT",body:{data:{name:name}}});
+  return true;
+}
+
+/* ---- the schedule follows the account too ---------------------------------
+   collectMine carries how you are DOING; it never carried what you are doing it
+   against. So an item you added yourself - a study block, a shift, a deadline
+   the seed does not know about - stayed on the device you added it on, and a
+   second device would quietly push its own shorter list back up. Everyone gets
+   their own copy of the schedule to edit; this is what makes it theirs across
+   devices rather than theirs on one device. */
+function collectCore(){
+  return {at:Date.now(),courses:S.courses,events:S.events,deleted:S.deleted};
+}
+function applyCore(c){
+  if(!c||typeof c!=="object")return false;
+  if(Array.isArray(c.courses))S.courses=c.courses;
+  if(Array.isArray(c.events))S.events=c.events;
+  if(c.deleted&&typeof c.deleted==="object"&&!Array.isArray(c.deleted))S.deleted=c.deleted;
+  LS.set("cn_core",{profile:S.profile,courses:S.courses,events:S.events,
+                    logins:S.logins,deleted:S.deleted});
+  return true;
+}
+/* How much there is to lose in a copy. A device that has just been installed
+   has nothing: it should never win a merge on the strength of its clock, and
+   before this it did - boot-time housekeeping (seeding, the XP recount) saves,
+   which stamps `at` with "now", so a brand new phone looked newer than an
+   account holding a term of work and pushed its empty copy up over it. */
+function mineWeight(m){
+  if(!m)return 0;
+  const n=o=>(o&&typeof o==="object")?Object.keys(o).length:0;
+  return n(m.done)+n(m.qstats)+n(m.flags)+n(m.remind)+((m.misses||[]).length);
+}
 function newerMine(a,b){
   if(!a)return b||null;
   if(!b)return a;
+  const wa=mineWeight(a), wb=mineWeight(b);
+  if(wa>0&&wb===0)return a;            // one of them is empty; emptiness never wins
+  if(wb>0&&wa===0)return b;
   const ta=+a.at||0, tb=+b.at||0;
   return ta>=tb?a:b;
 }
 let FRESH_INSTALL=false;                     // nothing was on this device before
+/* The stamp `cn_mine` carried when the page opened. Boot does a good deal of
+   saving before the account is ever asked - seeding, migrations, the XP
+   recount - and every one of those rewrites `at`. Comparing the account
+   against a stamp this session wrote is comparing it against nothing. */
+let LOADED_MINE=null;
+/* Set when what was loaded was the wrong shape and had to be rebuilt. Healing
+   quietly would be worse than the crash it replaces: the schedule comes back
+   from the seed, but anything keyed to the old events does not, and the XP is
+   recomputed from what survived. That is the moment to take a backup, so it
+   says so rather than letting the numbers quietly differ. */
+let REPAIRED=false;
 async function loadAll(){
   const core=LS.get("cn_core",null);
+  if(LOADED_MINE===null)LOADED_MINE=LS.get("cn_mine",null)||false;
   if(!core&&!LS.get("cn_mine",null))FRESH_INSTALL=true;
-  if(core){S.profile=freshProfile(core.profile);S.courses=core.courses||[];S.events=core.events||[];S.logins=core.logins||{};S.deleted=core.deleted||{};}
-  S.materials=Object.values(LS.get("cn_materials",{}));
-  S.questions=Object.values(LS.get("cn_questions",{}));
+  /* A half-written save, or one interrupted mid-sync, can leave these the
+     wrong SHAPE rather than merely absent - and `||[]` does not catch that,
+     because a string is truthy. S.events.forEach then throws during boot,
+     before anything has been drawn. */
+  const arr=x=>{if(Array.isArray(x))return x;if(x!==undefined&&x!==null)REPAIRED=true;return [];};
+  const obj=x=>{if(x&&typeof x==="object"&&!Array.isArray(x))return x;
+    if(x!==undefined&&x!==null)REPAIRED=true;return {};};
+  if(core){S.profile=freshProfile(obj(core.profile));S.courses=arr(core.courses);S.events=arr(core.events);S.logins=obj(core.logins);S.deleted=obj(core.deleted);}
+  S.materials=Object.values(obj(LS.get("cn_materials",{})));
+  S.questions=Object.values(obj(LS.get("cn_questions",{})));
   applyMine(LS.get("cn_mine",null));
   if(!DB)return;
   try{
@@ -5630,6 +5970,72 @@ function dayByDay(){
   modal("The next two weeks",body,'<button class="btn primary" id="dbClose">Close</button>');
   $("#dbClose").onclick=closeModal;
 }
+/* ---- reminders you set for yourself ---------------------------------------
+   Stored against the event's key rather than its id, so it survives the
+   schedule being re-seeded, and kept in MINE so it is private and follows the
+   account. The value is how many days ahead you want to start seeing it; 0 is
+   the day itself.
+
+   Deliberately not a notification. A static page cannot wake itself, and a
+   reminder you trust that never arrives is worse than none - so this says what
+   it is: it turns up at the top of Home, the next time you open Trophos. */
+const REMIND_CHOICES=[
+  {v:0, n:"On the day"},
+  {v:1, n:"1 day before"},
+  {v:3, n:"3 days before"},
+  {v:7, n:"A week before"},
+  {v:14,n:"2 weeks before"}];
+const REMIND_DEFAULT=3;
+const remindOf=e=>{const v=MINE.remind&&MINE.remind[evKey(e)];return v===undefined?null:+v;};
+function setRemind(e,days){
+  MINE.remind=MINE.remind||{};
+  const k=evKey(e);
+  if(days===null||days===undefined)delete MINE.remind[k];
+  else MINE.remind[k]=Math.max(0,+days||0);
+  saveMine();
+}
+/* what is inside its own window right now, soonest first */
+function remindNow(){
+  if(!MINE.remind)return [];
+  return S.events.filter(e=>{
+    if(e.done)return false;
+    const d=remindOf(e);
+    if(d===null)return false;
+    const n=dayDiff(e.date);
+    return n<=d;                 /* including the ones that have gone by */
+  }).sort((a,b)=>dayDiff(a.date)-dayDiff(b.date)||String(a.title).localeCompare(String(b.title)));
+}
+const remindWhen=n=>n<0?(Math.abs(n)+(Math.abs(n)===1?" day ago":" days ago"))
+                 :n===0?"today":n===1?"tomorrow":"in "+n+" days";
+function remindBoard(){
+  const L=remindNow();
+  if(!L.length)return "";
+  return '<div class="board painted remind" style="--bc:var(--gold)">'+
+    '<div class="boardtop"><span class="bt">'+stk("coming")+'You asked to be reminded</span>'+
+    '<span class="btag">'+L.length+'</span></div>'+
+    '<div class="rmlist">'+L.map(e=>{
+      const n=dayDiff(e.date);
+      return '<div class="rmrow'+(n<0?" over":n===0?" now":"")+'" style="--lc:'+courseColor(e.courseId)+'">'+
+        '<input type="checkbox" class="bigbox" data-wk="'+e.id+'" data-key="'+esc(evKey(e))+'" aria-label="Check off '+esc(e.title)+'">'+
+        '<button type="button" class="rmt" data-ev="'+e.id+'">'+
+          '<b>'+esc(shortTitle(e)||e.title)+'</b>'+
+          '<i>'+esc(courseName(e.courseId))+' · '+esc(prettyDay(e.date))+'</i></button>'+
+        '<span class="rmwhen">'+esc(remindWhen(n))+'</span>'+
+        '<button type="button" class="rmoff" data-rmoff="'+esc(evKey(e))+'" '+
+          'aria-label="Stop reminding me about '+esc(e.title)+'" title="Stop reminding me">×</button>'+
+      '</div>';}).join("")+'</div>'+
+    '<div class="pad" style="padding:11px 16px 13px"><div class="note">These show up here when you open Trophos. '+
+      'Nothing is sent to your phone — a page cannot wake itself up, and a reminder you trust that never arrives is worse than none.</div></div>'+
+  '</div>';
+}
+/* the control, wherever an item can be edited */
+function remindPicker(e,id){
+  const cur=remindOf(e);
+  return '<label class="f"><span>Remind me</span><select id="'+id+'">'+
+    '<option value=""'+(cur===null?" selected":"")+'>No reminder</option>'+
+    REMIND_CHOICES.map(c=>'<option value="'+c.v+'"'+(cur===c.v?" selected":"")+'>'+esc(c.n)+'</option>').join("")+
+    '</select></label>';
+}
 function eventForm(ev){
   const e=ev||{id:"",courseId:S.courses[0]?S.courses[0].id:"",title:"",type:"Assignment",date:today(),notes:""};
   const opts=S.courses.map(c=>'<option value="'+c.id+'"'+(c.id===e.courseId?" selected":"")+'>'+esc(c.code||c.name)+'</option>').join("");
@@ -5638,7 +6044,9 @@ function eventForm(ev){
     '<div class="row" style="gap:13px"><label class="f" style="flex:1;min-width:130px">Course<select id="fCourse">'+(opts||'<option value="">No courses yet</option>')+'</select></label>'+
     '<label class="f" style="flex:1;min-width:130px">Type<select id="fType">'+TYPES.map(t=>'<option'+(t===e.type?" selected":"")+'>'+t+'</option>').join("")+'</select></label></div>'+
     '<label class="f">Date<input type="date" id="fDate" value="'+esc(e.date)+'"></label>'+
-    '<label class="f">Notes<textarea id="fNotes" style="min-height:70px" placeholder="Chapters, room, weight toward grade…">'+esc(e.notes||"")+'</textarea></label>',
+    '<label class="f">Notes<textarea id="fNotes" style="min-height:70px" placeholder="Chapters, room, weight toward grade…">'+esc(e.notes||"")+'</textarea></label>'+
+    remindPicker(e,"fRemind")+
+    '<div class="note" style="margin-top:-4px">It appears at the top of Home when you open Trophos, from that many days out.</div>',
     (ev?'<button class="btn ghost" id="fDel" style="margin-right:auto;color:var(--crimson)">Delete</button>':'')+
     '<button class="btn" id="fCancel">Cancel</button><button class="btn primary" id="fSave">Save</button>');
   $("#fCancel").onclick=closeModal;
@@ -5647,6 +6055,10 @@ function eventForm(ev){
     const t=$("#fTitle").value.trim();if(!t){$("#fTitle").focus();return;}
     const rec={id:e.id||uid(),sid:ev?ev.sid:undefined,courseId:$("#fCourse").value,title:t,type:$("#fType").value,date:$("#fDate").value||today(),notes:$("#fNotes").value.trim(),done:ev?!!ev.done:false,doneOn:ev?ev.doneOn:undefined,custom:ev?true:undefined};   // edited by hand: updates from Claude leave it alone
     if(e.id)S.events=S.events.map(x=>x.id===e.id?rec:x); else S.events.push(rec);
+    /* the reminder is keyed to the event, so it is set after the record exists
+       and after any date change has been written into it */
+    const rv=$("#fRemind")?$("#fRemind").value:"";
+    setRemind(rec, rv===""?null:+rv);
     await saveCore();closeModal();render();
   };
 }
@@ -5763,6 +6175,101 @@ function sayView(){
   if(el.dataset.said===t)return;
   el.dataset.said=t;el.textContent=t;
 }
+/* ---- when something throws ------------------------------------------------
+   The point of this is not to look tidy. It is that everything you have done
+   lives in this browser, and a blank screen is indistinguishable from a lost
+   one - so the first thing on offer is the backup, and it is built by reading
+   local storage directly rather than through any of the app's own state, which
+   by definition cannot be trusted at this moment. */
+let CRASHED=false;
+function crashText(err){
+  const m=(err&&(err.message||err.reason&&err.reason.message))||String(err&&err.reason||err||"");
+  return String(m).slice(0,300);
+}
+/* the raw contents of local storage, which is the whole of what there is to
+   lose. No app code runs to produce it. */
+function rawBackup(){
+  const out={v:1,at:new Date().toISOString(),keys:{}};
+  try{
+    ["cn_core","cn_mine","cn_questions","cn_materials","cn_auth","cn_theme","cn_detail2","cn_ctab"]
+      .forEach(k=>{try{const v=localStorage.getItem(k);if(v!==null)out.keys[k]=v;}catch(e){}});
+  }catch(e){}
+  return JSON.stringify(out);
+}
+function crashHtml(err){
+  let n=0;
+  try{const m=JSON.parse(localStorage.getItem("cn_mine")||"null");
+      n=m&&m.done?Object.keys(m.done).length:0;}catch(e){}
+  return '<div class="crashwrap"><div class="crashcard">'+
+    '<span class="eyebrow">Something in the app broke</span>'+
+    '<h1>Your work is safe</h1>'+
+    '<p>Trophos hit a fault and stopped drawing this screen. '+
+      'Nothing has been deleted &mdash; everything is still saved in this browser'+
+      (n?', including all '+n+' items you have ticked off':'')+'. '+
+      'Take a copy before anything else, then try again.</p>'+
+    '<div class="crashrow">'+
+      '<button class="btn primary" id="crBackup">Copy my backup</button>'+
+      '<button class="btn" id="crRetry">Try again</button>'+
+      '<button class="btn ghost" id="crHome">Go to Home</button>'+
+    '</div>'+
+    '<textarea id="crOut" readonly rows="3" class="crashout" hidden></textarea>'+
+    '<div class="crashsay" id="crSay"></div>'+
+    '<p class="crashwarn"><b>Do not clear this site’s data</b> to try to fix it. '+
+      'That is the one thing that would actually lose your progress. Send me the line below instead.</p>'+
+    '<code class="crasherr">'+esc(crashText(err))+'</code>'+
+  '</div></div>';
+}
+function crashWire(){
+  const say=t=>{const el=document.getElementById("crSay");if(el)el.textContent=t;};
+  const b=document.getElementById("crBackup");
+  if(b)b.onclick=()=>{
+    const t=document.getElementById("crOut");
+    t.value=rawBackup();t.hidden=false;t.select();
+    let ok=false;
+    try{ok=document.execCommand("copy");}catch(e){}
+    if(!ok&&navigator.clipboard){try{navigator.clipboard.writeText(t.value);ok=true;}catch(e){}}
+    say(ok?"Copied. Paste it somewhere safe — an email to yourself will do."
+          :"Select all of the text above and copy it.");
+  };
+  const r=document.getElementById("crRetry");
+  if(r)r.onclick=()=>{CRASHED=false;try{render();}catch(e){showCrash(e);}};
+  const h=document.getElementById("crHome");
+  if(h)h.onclick=()=>{CRASHED=false;tab="home";session=null;try{render();}catch(e){showCrash(e);}};
+}
+function showCrash(err){
+  if(CRASHED)return;                       // one panel, not a cascade
+  CRASHED=true;
+  try{console.error("Trophos crash",err);}catch(e){}
+  const v=document.getElementById("view");
+  const host=(v&&v.parentNode)?v:document.body;
+  try{
+    if(host===v)v.innerHTML=crashHtml(err);
+    else{
+      /* nothing was ever drawn - a fault during boot. Put the panel over
+         whatever half-built page is there. */
+      const d=document.createElement("div");
+      d.innerHTML=crashHtml(err);
+      document.body.appendChild(d);
+    }
+    crashWire();
+  }catch(e){
+    try{document.body.innerHTML='<pre style="padding:24px;font:14px/1.6 system-ui">'+
+      'Trophos hit a fault it could not draw around.\n\n'+
+      'Your work is still saved in this browser. Do not clear this site’s data.\n\n'+
+      esc(crashText(err))+'</pre>';}catch(e2){}
+  }
+}
+/* Anything that escapes a handler, a timer or a promise lands here. Without
+   this, a fault during boot leaves the stylesheet showing and no way to know
+   the data behind it is fine. */
+window.addEventListener("error",function(ev){
+  const v=document.getElementById("view");
+  if(!v||!v.innerHTML)showCrash(ev.error||ev);
+});
+window.addEventListener("unhandledrejection",function(ev){
+  const v=document.getElementById("view");
+  if(!v||!v.innerHTML)showCrash(ev.reason||ev);
+});
 var keepFocus=null;
 function render(){
   tickDay();
@@ -5778,20 +6285,23 @@ function render(){
   const vt=$("#vitals"); if(vt)vt.style.display=(tab==="home"?"none":"");
   $$(".navbtn").forEach(b=>b.setAttribute("aria-current",String(b.dataset.nav===tab)));
   const v=$("#view");
-  if(session){renderSession();return;}
-  nursePinSync();
-  const moved=v.dataset.tab!==tab;
-  if(tab==="home")v.innerHTML=viewHome();
-  else if(tab==="calendar")v.innerHTML=viewCalendar();
-  else if(tab==="study")v.innerHTML=viewStudy();
-  else if(tab==="nurse")v.innerHTML=viewNurse();
-  else if(tab==="fight")v.innerHTML=viewFight();
-  else v.innerHTML=viewTrophies();
+  /* A view that throws used to leave the previous one on screen: the tab you
+     pressed lit up, the content did not change, and nothing said why. */
+  try{
+    if(session){renderSession();return;}
+    nursePinSync();
+    var moved=v.dataset.tab!==tab;
+    if(tab==="home")v.innerHTML=viewHome();
+    else if(tab==="calendar")v.innerHTML=viewCalendar();
+    else if(tab==="study")v.innerHTML=viewStudy();
+    else if(tab==="nurse")v.innerHTML=viewNurse();
+    else if(tab==="fight")v.innerHTML=viewFight();
+    else v.innerHTML=viewTrophies();
+  }catch(err){return showCrash(err);}
   v.dataset.tab=tab;
   v.classList.remove("enter");
   if(moved){void v.offsetWidth;v.classList.add("enter");}
-  wire();
-  countUp(v);
+  try{wire();countUp(v);}catch(err){return showCrash(err);}
   /* put the keyboard back where it was. Only when focus had actually been
      taken from the body - otherwise a render would steal it from nothing. */
   if(keepFocus){
@@ -5865,7 +6375,7 @@ function viewNurse(){
         '<div class="row" style="margin-top:14px"><button class="btn primary" id="avEdit">'+(av.set?'Show your nurse':'Make your nurse')+'</button></div>'+
       '</div>'+
     '</div>'+
-    trophyDrawer()+shopSection()+settingsSection();
+    trophyDrawer()+shopSection()+accountSection()+settingsSection();
   }
   const got=GEAR.filter(g=>li.tier>=g.lv), nextUp=GEAR.find(g=>li.tier<g.lv);
   return ''+
@@ -5894,7 +6404,7 @@ function viewNurse(){
       (nextUp?'<div class="rankrow"><span class="lv mono">'+nextUp.lv+'</span><span class="nm hidden-rank">?????</span><span class="req">at rank '+nextUp.lv+'</span></div>':'')+'</div>'
       :'<div class="empty" style="padding:24px">Plain scrubs, for now. Rank 2 hands them something.</div>'),false)+
   trophyDrawer()+
-  shopSection()+settingsSection();
+  shopSection()+accountSection()+settingsSection();
 }
 function trophyDrawer(){
   const p=S.profile;
@@ -6408,6 +6918,125 @@ function setTheme(v){
   else document.documentElement.setAttribute("data-theme",v);
   render();
 }
+/* ---- the account, on screen ----------------------------------------------
+   On the Nurse tab, which is the one place in the app that is about you rather
+   than about the work - and, unlike the rail, a place a phone can reach.
+   The email and the name survive a re-render; the password never touches
+   anything but the request. */
+let AUTH_MODE="in";                  // in | up | reset
+let AUTH_FORM={email:"",name:""};
+let AUTH_SAID="";                    // the last thing that went right
+
+function accountSection(){
+  if(!supaOn())
+    return drawer("account","◎","Account","not switched on yet",
+      '<div class="dwpad"><div class="note" style="max-width:56ch">Accounts are not switched on in this copy. '+
+      'With one, your progress follows you between phone and laptop and survives a cleared browser. '+
+      'Nothing about it is shared with anyone.</div></div>',false);
+
+  if(signedIn()){
+    const u=AUTH.user||{};
+    return drawer("account","◉","Account",esc(u.email||""),
+      '<div class="dwpad">'+
+        '<span class="eyebrow">Signed in</span>'+
+        '<div class="note" style="margin:5px 0 12px;max-width:58ch">Everything follows this account: your XP and level, every question’s box and when it is next due, your misses and flags, and your calendar — the items you have ticked and any you have added or changed yourself. '+
+        'None of it is shared with anyone, and there is no table another account could read even if it tried.</div>'+
+        '<label class="f acf"><span>Your name</span>'+
+          '<input id="acName" type="text" maxlength="24" value="'+esc(u.name||"")+'" autocomplete="nickname"></label>'+
+        '<div class="row" style="margin-top:12px">'+
+          '<button class="btn sm primary" id="acSaveName"'+(AUTH_BUSY==="name"?' disabled':'')+'>'+
+            (AUTH_BUSY==="name"?"Saving…":"Save the name")+'</button>'+
+          '<button class="btn sm ghost" id="acOut">Sign out</button></div>'+
+        (AUTH_SAID?'<div class="acsaid ok">'+esc(AUTH_SAID)+'</div>':'')+
+        (AUTH_ERR?'<div class="acsaid no">'+esc(AUTH_ERR)+'</div>':'')+
+      '</div>',false);
+  }
+
+  const mode=AUTH_MODE;
+  const head=mode==="up"?"Create an account":mode==="reset"?"Reset your password":"Sign in";
+  const busy=AUTH_BUSY==="go";
+  return drawer("account","○","Account","not signed in",
+    '<div class="dwpad">'+
+      '<span class="eyebrow">'+esc(head)+'</span>'+
+      '<div class="note" style="margin:5px 0 12px;max-width:58ch">'+
+        (mode==="reset"
+          ? "Type your email and we will send you a link to set a new password."
+          : mode==="up"
+          ? "Your progress starts following you the moment you are in — and whatever is already on this device comes with you rather than being replaced."
+          : "Signs you in on this device. Your password is checked by Supabase, not by anything in this page, and is never stored.")+
+      '</div>'+
+      (mode==="up"?'<label class="f acf"><span>Your name</span>'+
+        '<input id="acN" type="text" maxlength="24" value="'+esc(AUTH_FORM.name)+'" autocomplete="nickname" placeholder="First name is plenty"></label>':'')+
+      '<label class="f acf"><span>Email</span>'+
+        '<input id="acE" type="email" value="'+esc(AUTH_FORM.email)+'" autocomplete="email" inputmode="email" placeholder="you@example.com"></label>'+
+      (mode==="reset"?'':'<label class="f acf"><span>Password</span>'+
+        '<input id="acP" type="password" autocomplete="'+(mode==="up"?"new-password":"current-password")+'"'+
+        (mode==="up"?' placeholder="At least 6 characters"':'')+'></label>')+
+      '<div class="row" style="margin-top:13px">'+
+        '<button class="btn primary" id="acGo"'+(busy?' disabled':'')+'>'+
+          (busy?"…":mode==="up"?"Create it":mode==="reset"?"Send the link":"Sign in")+'</button>'+
+        (mode==="in"
+          ? '<button class="btn sm ghost" id="acToUp">Create an account</button>'+
+            '<button class="btn sm ghost" id="acToReset">Forgot it</button>'
+          : '<button class="btn sm ghost" id="acToIn">Back to signing in</button>')+
+      '</div>'+
+      (AUTH_SAID?'<div class="acsaid ok">'+esc(AUTH_SAID)+'</div>':'')+
+      (AUTH_ERR?'<div class="acsaid no">'+esc(AUTH_ERR)+'</div>':'')+
+    '</div>',false);
+}
+/* read the fields before anything re-renders and takes them away */
+function acRead(){
+  const g=id=>{const el=$("#"+id);return el?String(el.value||"").trim():"";};
+  AUTH_FORM.email=g("acE");
+  if($("#acN"))AUTH_FORM.name=g("acN");
+  const el=$("#acP");
+  return {email:AUTH_FORM.email,name:AUTH_FORM.name,pass:el?String(el.value||""):""};
+}
+function acWire(){
+  ["acE","acN"].forEach(id=>{const el=$("#"+id);if(el)el.oninput=()=>{
+    if(id==="acE")AUTH_FORM.email=el.value;else AUTH_FORM.name=el.value;};});
+  const swap=(m)=>{AUTH_MODE=m;AUTH_ERR="";AUTH_SAID="";DRAWER.account=true;render();};
+  {const b=$("#acToUp");if(b)b.onclick=()=>swap("up");}
+  {const b=$("#acToIn");if(b)b.onclick=()=>swap("in");}
+  {const b=$("#acToReset");if(b)b.onclick=()=>swap("reset");}
+  {const b=$("#acGo");if(b)b.onclick=async()=>{
+    const f=acRead();
+    AUTH_ERR="";AUTH_SAID="";
+    if(!f.email)  {AUTH_ERR="Put your email in first.";DRAWER.account=true;return render();}
+    if(AUTH_MODE!=="reset"&&!f.pass){AUTH_ERR="Put your password in.";DRAWER.account=true;return render();}
+    AUTH_BUSY="go";DRAWER.account=true;render();
+    let r;
+    if(AUTH_MODE==="reset")r=await authReset(f.email);
+    else if(AUTH_MODE==="up")r=await authSignUp(f.email,f.pass,f.name);
+    else r=await authSignIn(f.email,f.pass);
+    AUTH_BUSY="";
+    if(r&&r.ok){
+      if(AUTH_MODE==="reset"){AUTH_SAID="If that email has an account, a link is on its way to it.";AUTH_MODE="in";}
+      else if(r.confirm){AUTH_SAID="Account made. Open the link in your email to confirm it, then sign in.";AUTH_MODE="in";}
+      else{
+        AUTH_SAID="";
+        /* whatever is on this device comes up with you, or comes down to it -
+           whichever copy is the later one */
+        await pullProgress();
+        pushProgress(true);
+        toast("Signed in","Your progress follows this account now.");
+      }
+    }
+    DRAWER.account=true;render();
+  };}
+  {const b=$("#acOut");if(b)b.onclick=async()=>{
+    await authSignOut();AUTH_SAID="";AUTH_ERR="";AUTH_MODE="in";
+    toast("Signed out","This device keeps everything it already has.");
+    DRAWER.account=true;render();};}
+  {const b=$("#acSaveName");if(b)b.onclick=async()=>{
+    const el=$("#acName");if(!el)return;
+    const n=String(el.value||"").trim().slice(0,24);
+    if(!n){AUTH_ERR="A name, even a short one.";DRAWER.account=true;return render();}
+    AUTH_BUSY="name";AUTH_ERR="";DRAWER.account=true;render();
+    await setDisplayName(n);
+    AUTH_BUSY="";AUTH_SAID="Saved.";DRAWER.account=true;render();};}
+}
+
 function settingsSection(){
   const cur=themeNow();
   const chip=(k,n)=>'<button class="chip" data-theme-set="'+k+'" aria-pressed="'+(cur===k)+'">'+n+'</button>';
@@ -6426,6 +7055,13 @@ function settingsSection(){
       (S.profile.tierNext&&TIER_BY[S.profile.tierNext]?' \u2192 '+esc(TIER_BY[S.profile.tierNext].n)+' tomorrow':'')+
       '. A change lands at the next day rollover, never mid-day.</div>'+
     '</div><div style="padding:0 0 4px">'+tierCard()+'</div>'+
+    /* The rail along the left holds these too, but the rail collapses to the
+       bottom bar on a phone and its footer goes with it - so on a phone they
+       were unreachable. They live here as well. */
+    '<div class="dwpad" style="border-top:1px solid var(--line-soft)"><span class="eyebrow">Your data</span>'+
+      '<div class="note" style="margin:5px 0 10px" id="storeNote2"></div>'+
+      '<div class="row"><button class="btn sm" id="backupBtn2">Back it up to a file</button></div>'+
+    '</div>'+
     '<div class="dwpad" style="border-top:1px solid var(--line-soft)"><span class="eyebrow">The walkthrough</span>'+
       '<div class="note" style="margin:5px 0 10px">Four cards, one per tab. It runs once on a first open and then stays out of your way.</div>'+
       '<div class="row"><button class="btn sm" id="tourAgain">Show it again</button></div>'+
@@ -7393,6 +8029,7 @@ function viewHome(){
     (made?'':'<button class="btn primary" id="heroMake">Build your nurse</button>')+
   '</div>'+
   lateBoard()+
+  remindBoard()+
   '<div class="board painted coming">'+
     '<div class="boardtop"><span class="bt">'+stk("coming")+'What is coming</span>'+
       '<span class="btag">'+MON[new Date().getMonth()]+'</span></div>'+
@@ -8268,9 +8905,13 @@ const HS_LIVES=3;
 const hsMult=n=>HS_MULT[Math.min(n,HS_MULT.length-1)];
 let GAME=null;
 function hsPool(){
-  const src=GAME&&GAME.both
+  /* One pick, one life, no partial credit - a select-all has no way to be
+     answered in here, so it stays out of the bag rather than being unanswerable
+     in it. They are practised in a study round and in a ward round. */
+  const keep=list=>list.filter(q=>q.k!=="sata");
+  const src=keep(GAME&&GAME.both
     ? S.questions.filter(q=>!q.prime&&studyCourses().some(c=>c.id===q.courseId))
-    : filteredQuestions();
+    : filteredQuestions());
   /* things you have not nailed come first, but a run should never stall for
      lack of questions, so everything is in the bag */
   const open=stillOpen(src), rest=src.filter(q=>!open.includes(q));
@@ -8813,10 +9454,17 @@ function wardRounds(courseId,unit){
   const pool=wardPool(courseId,unit);
   const open=stillOpen(pool), rest=pool.filter(q=>open.indexOf(q)<0);
   const use=shuffle(open.slice()).concat(shuffle(rest.slice())).slice(0,WARD_N);
-  return use.map((q,i)=>({
-    title:"Case "+(i+1), ask:esc(q.stem), single:true, qid:q.id, why:q.rationale,
-    opts:shuffle(q.options.map((o,oi)=>({t:o,ok:oi===q.answer,qid:q.id,oi:oi})))
-  }));
+  return use.map((q,i)=>{
+    /* the ward round is already pick-all-that-apply, so a select-all from the
+       bank plays here as itself: every correct option counts, and the round
+       does not close on the first pick */
+    const many=q.k==="sata"&&Array.isArray(q.answers);
+    return {
+      title:"Case "+(i+1), ask:esc(q.stem), single:!many, qid:q.id, why:q.rationale,
+      opts:shuffle(q.options.map((o,oi)=>({
+        t:o, ok:many?q.answers.indexOf(oi)>=0:oi===q.answer, qid:q.id, oi:oi})))
+    };
+  });
 }
 /* a ward round goes down when three quarters of it lands */
 const wardHp=n=>Math.max(1,Math.ceil(n*0.75));
@@ -14305,7 +14953,7 @@ function renderPrimeSummary(){
        '<span style="font-weight:600;font-size:14px">'+esc(w)+'</span></div>').join("")+'</div>':'')+
    (missed.length?'<div class="card" style="margin-bottom:16px"><div class="pad" style="padding-bottom:8px"><span class="eyebrow">Why</span></div>'+
      missed.map(a=>'<div style="padding:14px 18px;border-top:1px solid var(--line-soft)"><div style="font-weight:600;font-size:14px;margin-bottom:6px">'+esc(a.q.stem)+'</div>'+
-       '<div class="note" style="margin-bottom:6px">You chose <b>'+esc(a.q.options[a.pick])+'</b> &mdash; it is <b style="color:var(--accent)">'+esc(a.q.options[a.q.answer])+'</b></div>'+
+       '<div class="note" style="margin-bottom:6px">You chose <b>'+esc(chosePut(a).you)+'</b> &mdash; it is <b style="color:var(--accent)">'+esc(chosePut(a).right)+'</b></div>'+
        '<div class="rationale" style="margin-top:0">'+esc(a.q.rationale)+'</div></div>').join("")+'</div>':'')+
    '<div class="row"><button class="btn primary" id="backStudy">Back to study</button>'+
      (missed.length?'<button class="btn" id="redo">Redo the '+missed.length+' you missed</button>':'')+
@@ -14314,6 +14962,17 @@ function renderPrimeSummary(){
   if(rd)rd.onclick=()=>{const ids=missed.map(a=>a.q.id);session=null;startSession("redo",null,ids);};
   $("#again").onclick=()=>{const m=s.mode,k=s.key;session=null;startSession(m,k);};
   $("#backStudy").onclick=()=>{session=null;render();};
+}
+/* What you picked and what was right, in words, for either kind of question.
+   A select-all's pick is a list of indexes, so options[pick] was undefined and
+   the summary read "You chose undefined". */
+function chosePut(a){
+  const q=a.q, many=q.k==="sata"&&Array.isArray(q.answers);
+  const names=ix=>ix.map(i=>q.options[i]).filter(Boolean).join(", ");
+  if(!many)return {you:String(q.options[a.pick]||""),right:String(q.options[q.answer]||"")};
+  const picks=Array.isArray(a.pick)?a.pick:[];
+  return {you:picks.length?names(picks.slice().sort((x,y)=>x-y)):"nothing",
+          right:names(q.answers.slice().sort((x,y)=>x-y))};
 }
 function renderSummary(){
   const s=session,total=s.answers.length,pct=total?Math.round(s.correct/total*100):0;
@@ -14331,7 +14990,7 @@ function renderSummary(){
      '<div class="stat"><div class="n">'+(S.profile.streak||0)+'</div><div class="l">Day streak</div></div></div>'+
    (missed.length?'<div class="card" style="margin-bottom:16px"><div class="pad" style="padding-bottom:8px"><span class="eyebrow">Review the misses</span></div>'+
      missed.map(a=>'<div style="padding:14px 18px;border-top:1px solid var(--line-soft)"><div style="font-weight:600;font-size:14px;margin-bottom:6px">'+esc(a.q.stem)+'</div>'+
-       '<div class="note" style="margin-bottom:6px">You chose <b style="color:var(--crimson)">'+esc(a.q.options[a.pick])+'</b> &mdash; correct is <b style="color:var(--accent)">'+esc(a.q.options[a.q.answer])+'</b></div>'+
+       '<div class="note" style="margin-bottom:6px">You chose <b style="color:var(--crimson)">'+esc(chosePut(a).you)+'</b> &mdash; correct is <b style="color:var(--accent)">'+esc(chosePut(a).right)+'</b></div>'+
        '<div class="rationale" style="margin-top:0">'+esc(a.q.rationale)+'</div></div>').join("")+'</div>':'')+
    takeawayCard(unitsOf(s.answers.map(a=>a.q)),"What this round was about",true)+
    '<div class="row">'+
@@ -14637,6 +15296,9 @@ function dayModal(iso,allCourses){
         '<div class="body"><div class="t">'+esc(e.title)+'</div>'+
         '<div class="m"><span style="color:'+courseColor(e.courseId)+';font-weight:600">'+esc(courseName(e.courseId))+'</span> &middot; '+esc(typeLabel(e))+
         (e.notes?'<br>'+esc(e.notes):'')+'</div></div>'+
+        (isFyi(e)?'':'<button class="btn sm ghost rmbell'+(remindOf(e)!==null?' on':'')+'" data-rmtog="'+e.id+'" '+
+          'aria-pressed="'+(remindOf(e)!==null)+'" title="'+(remindOf(e)!==null?'Reminding you '+remindOf(e)+' days ahead':'Remind me')+'">'+
+          (remindOf(e)!==null?'\u2713 Reminder':'Remind me')+'</button>')+
         '<button class="btn sm ghost" data-de="'+e.id+'">Edit</button></div>').join("")
     : '<div class="empty"><b>Nothing scheduled</b>Add something to this day below.</div>');
   const shownHere=calEvents().filter(e=>e.date===iso).length;
@@ -14653,6 +15315,12 @@ function dayModal(iso,allCourses){
   };
   
   $$("[data-de]").forEach(b=>b.onclick=()=>{const e=S.events.find(x=>x.id===b.dataset.de);closeModal();if(e)eventForm(e);});
+  /* The sheet is a modal, so the general wiring pass does not see it. Reopening
+     the same day is what redraws the button, and it keeps you where you were. */
+  $$("[data-rmtog]").forEach(b=>b.onclick=ev=>{ev.stopPropagation();
+    const e=S.events.find(x=>x.id===b.dataset.rmtog);if(!e)return;
+    setRemind(e,remindOf(e)!==null?null:REMIND_DEFAULT);
+    const iso=e.date;closeModal();render();openDay(iso);});
 }
 
 /* ============================ wiring ============================ */
@@ -14684,6 +15352,15 @@ function wire(){
     try{localStorage.setItem("cn_ctab",calCourse);}catch(e){}
     focusMonth();render();
   });
+  acWire();
+  $$("[data-rmoff]").forEach(b=>b.onclick=ev=>{ev.stopPropagation();
+    const e=S.events.find(x=>evKey(x)===b.dataset.rmoff);
+    if(e){setRemind(e,null);toast("Reminder off",esc(shortTitle(e)||e.title)+" will not come up here again.");render();}});
+
+  {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
+  {const n2=$("#storeNote2");const n1=$("#storeNote");
+    if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 7, 11:19 AM":"This browser is not saving anything. Build Sep 7, 11:19 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -15106,6 +15783,8 @@ function firstRunAvatar(){
   if(calCourse!=="all"&&!courseById(calCourse))calCourse="all";
   focusMonth();
   render();
+  if(REPAIRED)setTimeout(()=>toast("Some saved data was damaged",
+    "Trophos rebuilt what it could. Your XP has been recounted from what survived. Worth taking a backup \u2014 Nurse tab, Settings."),900);
   betaGate(()=>{if(!maybeTour()){setTimeout(grantToast,700);maybeTierPrompt();}});  // the walkthrough releases both on its way out
   if(window.claude&&claude.use){
     claude.use("db").then(async d=>{
@@ -15121,8 +15800,21 @@ function firstRunAvatar(){
     claude.use("sample").then(s=>{SAMPLE=s;render();}).catch(()=>{});
     claude.use("downloads").then(d=>{DL=d;}).catch(()=>{});
   }
+  /* An account, if there is one. The session is restored from this device and
+     the token refreshed before anything is asked of it; then the two copies of
+     your progress are reconciled by whichever is the later one. */
+  if(supaOn()&&authRestore()){
+    authFresh().then(async t=>{
+      if(!t){render();return;}
+      await pullProgress();
+      pushProgress(true);
+      const nn=$("#storeNote");if(nn)nn.textContent="Saved to your account.";
+      render();
+    }).catch(()=>{});
+  }
   const n=$("#storeNote");
-  if(n&&!DB)n.textContent=LS_OK?"Saved in this browser. Build Sep 6, 9:01 PM":"This browser is not saving anything. Build Sep 6, 9:01 PM";
+  if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
+    (LS_OK?"Saved in this browser. Build Sep 7, 11:19 AM":"This browser is not saving anything. Build Sep 7, 11:19 AM");
 })();
 </script>
 
