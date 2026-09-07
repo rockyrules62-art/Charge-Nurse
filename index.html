@@ -214,26 +214,35 @@ button{cursor:pointer}
 input[type=checkbox].bigbox{width:21px;height:21px;flex:none;margin:2px 0 0;accent-color:var(--accent);cursor:pointer}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;background:transparent}
 .cal .dow{padding:2px 0 6px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);border:0}
-.calcard{background:transparent;border:0;box-shadow:none;overflow:visible}
+/* The month is one thing, so it is one panel - the same block Home is built
+   from: 2px edge, 22px corner, a drop edge tinted by the accent. */
+.calcard{background:var(--surface);border:2px solid var(--edge);border-radius:22px;
+  padding:12px 12px 14px;overflow:visible;
+  box-shadow:0 7px 0 -2px color-mix(in srgb,var(--accent) 30%,transparent),var(--shadow)}
 button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;appearance:none;width:100%}
 .mh{display:flex;align-items:center;gap:10px}
 .mh .yr{color:var(--muted);font-weight:600}
 .mhs{display:inline-block;width:34px;height:34px;transform:rotate(-8deg);flex:none}
 .mhs svg{width:100%;height:100%;display:block;filter:drop-shadow(0 3px 5px rgba(0,0,0,.18))}
-.cal .dow{background:color-mix(in srgb,var(--mint) 18%,transparent);border-radius:8px;padding:5px 0;color:var(--ink);font-weight:700}
-.cell{min-width:0;min-height:92px;border:2px solid var(--edge);border-radius:16px;background:var(--surface);padding:8px 9px;
-  display:flex;flex-direction:column;gap:5px;box-shadow:0 3px 0 -1px color-mix(in srgb,var(--ink) 6%,transparent);
-  transition:transform .13s cubic-bezier(.2,.8,.3,1),box-shadow .13s ease}
-.cell.out{background:transparent;box-shadow:none;opacity:.45}
+/* the weekday row reads as the panel's header band, in the app's label voice */
+.cal .dow{background:transparent;border-radius:0;padding:2px 0 9px;margin-bottom:2px;
+  color:var(--faint);font-weight:700;font-size:10px;letter-spacing:.16em;
+  border-bottom:1px solid var(--line-soft)}
+.cell{min-width:0;min-height:92px;border:1px solid var(--line-soft);border-radius:12px;
+  background:var(--surface-2);padding:8px 9px;
+  display:flex;flex-direction:column;gap:5px;
+  transition:transform .13s cubic-bezier(.2,.8,.3,1),box-shadow .13s ease,border-color .13s ease}
+.cell.out{background:transparent;box-shadow:none;opacity:.45;border-color:transparent}
 .cell .d{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;align-self:flex-start;padding:1px 5px;border-radius:6px}
 .cell.clickable{cursor:pointer}
-.cell.clickable:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.cell.clickable{background:var(--surface);border-color:var(--line)}
+.cell.clickable:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--accent)}
 .cell.clickable:active{transform:translateY(0)}
 .cell.hasquiz{background:color-mix(in srgb,var(--sun) 28%,var(--surface));border-color:color-mix(in srgb,var(--sun) 60%,transparent)}
 .cell.hasmm{background:color-mix(in srgb,var(--tang) 22%,var(--surface));border-color:color-mix(in srgb,var(--tang) 55%,transparent)}
 .cell.hasexam{background:color-mix(in srgb,var(--coral) 24%,var(--surface));border-color:color-mix(in srgb,var(--coral) 65%,transparent)}
-.cell.today{background:color-mix(in srgb,var(--mint) 22%,var(--surface));border-color:var(--mint);
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--mint) 35%,transparent)}
+.cell.today{background:color-mix(in srgb,var(--mint) 22%,var(--surface));border-color:var(--accent);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
 .cell.today .d{background:var(--mint);color:#fff}
 .cell.out{border-color:transparent}
 .cell.alldone{position:relative}
@@ -248,8 +257,9 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .pill.exam,.pill.quiz,.pill.clinical,.pill.medmath{background:var(--lc,var(--accent));color:#fff;border-left-color:var(--lc,var(--accent));font-weight:700}
 .pill.medmath{border-radius:3px}
 /* ---- course lanes ---------------------------------------------------------
-   One row per class, always in the same order. .lane.empty holds the slot open
-   so the class below never slides up into a row your eye has already learned. */
+   One row per class that has something that day, always in the same order, and
+   packed to the top of the cell. Each row carries its course chip, so a class
+   is identified by its colour and code rather than by which slot it sits in. */
 .lanes{display:flex;flex-direction:column;gap:2px;min-width:0}
 .lane{display:flex;align-items:flex-start;gap:4px;min-width:0;min-height:15px}
 .lane.hole{min-height:15px}
@@ -287,62 +297,6 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .legend b{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--muted)}
 .legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
 .legend s{text-decoration:none;font-size:10px;color:var(--muted)}
-/* ---- the day cell, rebuilt -------------------------------------------------
-   The date and what is still owed share the top line; deadlines get the full
-   width of the cell to wrap into; class meetings drop to a quiet strip. The
-   cell is as tall as what is in it. */
-.cell .drow{display:flex;align-items:center;gap:6px;min-width:0}
-.cell .drow .lcount{margin-left:auto}
-.cell .lcount{font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;
-  color:var(--faint);white-space:nowrap;letter-spacing:.02em}
-.cell.late .lcount{color:var(--crimson)}
-.ditems{display:flex;flex-direction:column;gap:3px;min-width:0}
-.ditem{display:flex;align-items:baseline;gap:5px;min-width:0;cursor:pointer;border-radius:5px;
-  padding:1px 4px 1px 5px;border-left:3px solid var(--lc,var(--accent));
-  background:color-mix(in srgb,var(--lc,var(--accent)) 10%,transparent);
-  font-size:11px;line-height:1.35;font-weight:600;color:var(--ink)}
-.ditem:hover{background:color-mix(in srgb,var(--lc,var(--accent)) 20%,transparent)}
-.ditem .mk{flex:none;color:var(--lc,var(--accent));font-size:9px;line-height:1.5}
-.ditem .cc{flex:none;font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;
-  color:var(--lc,var(--accent));line-height:1.5;letter-spacing:.02em}
-.cal:not(.detail) .ditem .cc{display:none}
-.ditem .tx{min-width:0;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;
-  -webkit-line-clamp:3;line-clamp:3;overflow-wrap:break-word}
-/* a graded thing is not the same rank as a discussion reply */
-.ditem.big{font-weight:800;background:color-mix(in srgb,var(--lc,var(--accent)) 20%,transparent)}
-.ditem.done{opacity:.4;text-decoration:line-through}
-.ditem.more{border-left-color:transparent;background:transparent;color:var(--faint);
-  font-family:"IBM Plex Mono",monospace;font-size:9.5px;padding-left:8px;cursor:inherit}
-/* class meetings: present, countable, quiet */
-.dclass{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:3px}
-.dclass i{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;font-style:normal;
-  line-height:14px;padding:0 4px;border-radius:4px;color:var(--lc);cursor:pointer;
-  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc) 45%,transparent)}
-/* compact hides the words, so the toggle is a class swap and not a rebuild */
-.cal:not(.detail) .ditem .tx{display:none}
-.cal:not(.detail) .ditem{padding:1px 3px;min-height:13px}
-/* ---- what is next, above the grid ---- */
-.ahead{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin-bottom:14px}
-.ahd{position:relative;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;
-  text-align:left;padding:11px 13px 11px 15px;border-radius:13px;border:1px solid var(--line);
-  background:var(--surface);cursor:pointer;overflow:hidden;
-  transition:transform .14s ease,border-color .14s ease}
-.ahd::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tc,var(--accent))}
-.ahd:hover{transform:translateY(-2px);border-color:var(--tc,var(--accent))}
-.ahd:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.ahd .ahl{grid-column:1;font:700 9.5px "IBM Plex Mono",monospace;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--faint)}
-.ahd .ahw{grid-column:2;grid-row:1/span 2;align-self:center;justify-self:end;text-align:right;
-  font:800 12.5px "IBM Plex Mono",monospace;color:var(--tc,var(--accent));white-space:nowrap;
-  font-variant-numeric:tabular-nums}
-.ahd .aht{grid-column:1;font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.3;
-  overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3}
-.ahd .ahe{grid-column:1;font-size:12px;font-weight:500;color:var(--muted);line-height:1.3;margin-top:1px}
-.ahd .ahm{grid-column:1;font:600 10.5px "IBM Plex Mono",monospace;color:var(--muted);margin-top:2px}
-.ahd.late{border-color:color-mix(in srgb,var(--crimson) 45%,var(--line))}
-.ahd.late .ahl{color:var(--crimson)}
-/* ---- this week, under the grid (phone only) ---- */
-.calweek{display:none}
 .cell .dfull{display:none}
 /* ---- semester map --------------------------------------------------------
    The lanes and the per-week bars share one column track list, so a bar sits
@@ -1419,9 +1373,11 @@ div.qzcard{cursor:default}
 .due.over{animation:latepulse 1.1s steps(1,end) infinite}
 @keyframes latepulse{0%,49%{opacity:1}50%,100%{opacity:.45}}
 .cell.late{border-color:#FF1F45;animation:cellpulse 1.1s ease-in-out infinite}
+/* the ring is tighter than it was: the cells are hairlines inside a panel now,
+   so a five-pixel halo on three of them was the only thing you could see */
 @keyframes cellpulse{
-  0%,100%{box-shadow:0 0 0 1px rgba(255,31,69,.6),0 3px 0 -1px color-mix(in srgb,var(--ink) 6%,transparent)}
-  50%{box-shadow:0 0 0 5px rgba(255,31,69,.4),0 0 14px 2px rgba(255,31,69,.45),0 3px 0 -1px color-mix(in srgb,var(--ink) 6%,transparent)}}
+  0%,100%{box-shadow:0 0 0 1px rgba(255,31,69,.55)}
+  50%{box-shadow:0 0 0 3px rgba(255,31,69,.32),0 0 10px 1px rgba(255,31,69,.32)}}
 .due.over{background:#FF1F45;color:#fff;font-weight:700}
 .due.past{background:var(--surface-2);color:var(--faint)}
 /* ---- the queue -----------------------------------------------------------
@@ -2394,50 +2350,7 @@ body.ncheer #toasts{top:18px}
   .door{padding:12px 13px}
   .vitals{padding:10px 14px;gap:14px}
   .cell{min-height:70px;padding:5px 5px 6px;border-radius:10px;gap:3px}
-  /* ---- the calendar on a phone -------------------------------------------
-     He wants the whole month, so the month stays: seven columns, cells that
-     read as bars in the course colours rather than words there is no room for,
-     and a tap opens the day. This week is listed underneath in full, which is
-     where the words go. */
-  .cal{gap:3px}
-  .cal .dow{font-size:8.5px;letter-spacing:.06em;padding:3px 0;border-radius:5px}
-  .cell{min-height:56px;border-width:1.5px;border-radius:9px;padding:4px 4px 5px;gap:3px;box-shadow:none}
-  .cell .d{font-size:10px;padding:0 2px}
-  .cell .drow{gap:2px}
-  .cell .lcount{font-size:8px;letter-spacing:0}
-  .ditems{gap:2px}
-  .ditem{padding:0;border-left-width:0;border-radius:3px;min-height:7px;
-    background:var(--lc,var(--accent));justify-content:center}
-  .ditem .tx{display:none}
-  .ditem .mk{color:#fff;font-size:7px;line-height:7px;margin:0 auto}
-  .ditem.big{min-height:11px}
-  .ditem.big .mk{font-size:8px;line-height:11px}
-  .ditem.done{opacity:.3}
-  .ditem.more{background:transparent;color:var(--faint);font-size:8px;min-height:0;line-height:9px}
-  .ditem.more{justify-content:flex-start}
-  .dclass{gap:2px;padding-top:2px}
-  .dclass i{width:5px;height:5px;padding:0;border-radius:50%;background:var(--lc);
-    box-shadow:none;font-size:0;line-height:0;overflow:hidden}
-  .ahead{grid-template-columns:1fr;gap:8px;margin-bottom:12px}
-  .ahd{padding:9px 11px 9px 13px;border-radius:11px}
-  .ahd .aht{font-size:14px}
-  .calweek{display:block;margin-top:14px}
-  .calweek .eyebrow{display:block;margin-bottom:8px}
-  .cwday{font:700 10.5px "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--faint);margin:12px 0 5px;cursor:pointer}
-  .cwday.now{color:var(--accent-txt)}
-  .cwrow{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;margin-bottom:5px;
-    border-radius:10px;background:var(--surface);border:1px solid var(--line);
-    border-left:3px solid var(--lc,var(--accent))}
-  .cwrow.fyi{background:transparent;border-style:dashed;opacity:.8}
-  .cwrow.off .cwt{opacity:.45;text-decoration:line-through}
-  .cwrow .bigbox.fyi{width:21px;height:21px;flex:none;border-radius:6px;
-    box-shadow:inset 0 0 0 1.5px var(--line);background:transparent}
-  .cwt{flex:1;min-width:0;font-size:14px;line-height:1.35;font-weight:600;color:var(--ink);cursor:pointer}
-  .cwt b{color:var(--lc,var(--accent));font-size:10px}
-  .cwt i{display:block;font:600 10.5px "IBM Plex Mono",monospace;font-style:normal;
-    color:var(--muted);margin-top:2px}
-
+  .cell .d{font-size:11px;padding:0 3px}
   .cell .pill{font-size:9.5px;padding:2px 4px;white-space:normal;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .dots i{width:6px;height:6px}
   .dots b{font-size:9px;margin-left:2px}
@@ -5511,32 +5424,15 @@ function pillSub(e){
 --------------------------------------------------------------------------- */
 const TYPEMARK={Exam:"\u25B2","Med Math":"\u25A0",Quiz:"\u25C6",Clinical:"\u2605",Assignment:"\u25CF",Reading:"\u25CB",Lecture:"\u25CB"};
 function markOf(e){return isFyi(e)?"\u25CB":(TYPEMARK[e.type]||"\u25CF");}
-/* A title short enough to fit a day cell and still say something. The old one
-   trimmed the course number and gave up, so a cell read "Dynamic Quiz -..." and
-   told you nothing. The type is already drawn as a mark beside it, so the words
-   that repeat the type come out and what distinguishes this one stays. */
 function shortTitle(e){
-  const out=String(e.title||"")
+  return String(e.title||"")
     .replace(/^\u2605\s*/,"").replace(/\s*\u2605$/,"")
-    .replace(/^(NUR\s*)?\d{3}[A-Z]?\s*[\u2014\-:]?\s*/,"")   // "308 Exam 1" -> "Exam 1"
-    .replace(/^class\s*-\s*/i,"")                           // "308 class - Wk 3 - Oxygenation"
-    .replace(/^Wk\s*(\d+)\s*-\s*/i,"Wk $1 \u00b7 ")
-    .replace(/^Dynamic Quiz\s*[\u2014\-:]\s*/i,"")            // the mark already says quiz
-    .replace(/\s*\(Authentic Assessment\)/i,"")
-    .replace(/\s*-\s*24 hour window$/i,"")
-    .replace(/\s*-\s*all modules due before class$/i," \u00b7 all modules")
-    .replace(/\s+due by midnight$/i,"")
-    .replace(/\s+due\s+11:59\s*pm$/i,"")
-    .replace(/\s+(closes|opens)\s+11:59\s*pm$/i," $1")
+    .replace(/^(NUR\s*)?\d{3}[A-Z]?\s*[\u2014\-:]?\s*/,"")
     .replace(/\s+(due|due at clinical)\.?$/i,"")
-    .replace(/\bModules?\s*x(\d)/i,"Modules \u00d7$1")
-    .replace(/DQ (\d) initial post\s*[\u2014\-]\s*/i,"DQ $1 post \u00b7 ")
-    .replace(/DQ (\d) reply to peer (\d)\s*[\u2014\-]?\s*/i,"DQ $1 reply $2 \u00b7 ")
     .replace(/reply to peer (\d)/i,"reply $1")
     .replace(/initial post/i,"post")
-    .replace(/\s{2,}/g," ")
-    .trim();
-  return out||String(e.title||"");
+    .replace(/^class\s*-\s*/i,"")
+    .trim()||String(e.title||"");
 }
 function laneOrder(){
   const list=calCourse==="all"?S.courses.slice():S.courses.filter(c=>c.id===calCourse);
@@ -5547,131 +5443,17 @@ function laneItem(e,detail){
   return '<span class="li '+st+'" data-lev="'+e.id+'" title="'+esc(e.title)+'">'+
     '<b class="mk">'+markOf(e)+'</b>'+(detail?'<span class="tx">'+esc(shortTitle(e))+'</span>':'')+'</span>';
 }
-/* ---- what goes inside a day ------------------------------------------------
-   Two ranks, and they do not compete. A deadline - exam, quiz, med math,
-   assignment, clinical - is a full-width line: a bar in the course colour, the
-   type mark, and a title with the whole width of the cell to wrap into. A class
-   meeting is not work, so it drops to a quiet strip of course codes along the
-   bottom. The titles are always in the markup; compact mode hides them in CSS,
-   so switching between the two costs a class name rather than a render. */
-/* shortTitle, trimmed again for a 130px column. The discussion topic never fit
-   there and is not what distinguishes one row from the next; which DQ it is and
-   whether it is the post or the reply is. The topic is still on the day sheet
-   and in the strip above the grid, where there is room for it. */
-function gridTitle(e){
-  let t=shortTitle(e);
-  const dq=t.match(/^DQ (\d+)\s*(post|reply(?:\s*\d+)?|—\s*reply[^·]*)/i);
-  if(dq)return ("DQ "+dq[1]+" "+dq[2].replace(/^—\s*/,"").replace(/reply to \d+ peers?/i,"reply")).replace(/\s+/g," ").trim();
-  /* A quiz topic is written out in full - "Neuro & cognitive (Alzheimer's, ALS,
-     MS, Parkinson's, muscular dystrophy)". The parenthetical is the syllabus
-     talking; the cell only needs the heading, and the day sheet still has all
-     of it. */
-  t=t.replace(/\s*\([^)]*\)\s*$/,"").trim();
-  if(t.length>26){const i=t.search(/[:;]/);if(i>6)t=t.slice(0,i).trim();}
-  return t;
-}
-function cellBody(evs){
-  if(!evs.length)return "";
-  const work=[],classes=[];
-  evs.forEach(e=>{(isFyi(e)?classes:work).push(e);});
-  work.sort((a,b)=>(TYPES.indexOf(a.type)-TYPES.indexOf(b.type))||String(a.title).localeCompare(String(b.title)));
-  let out="";
-  if(work.length){
-    const show=work.slice(0,4), rest=work.length-show.length;
-    const many=calCourse==="all"&&Object.keys(work.reduce((m,e)=>{m[e.courseId]=1;return m;},{})).length>1;
-    out+='<span class="ditems">'+show.map(e=>{
-      const t=(e.type||"").toLowerCase().replace(/\s+/g,"");
-      return '<span class="ditem'+(e.done?" done":"")+(MILESTONE(e)?" big":"")+' t-'+t+'" '+
-        'data-lev="'+e.id+'" style="--lc:'+courseColor(e.courseId)+'" title="'+esc(e.title)+'">'+
-        '<b class="mk">'+markOf(e)+'</b>'+
-        (many?'<b class="cc">'+esc(String(courseCode(e.courseId)).replace(/^NUR\s*/,""))+'</b>':'')+
-        '<span class="tx">'+esc(gridTitle(e))+'</span></span>';
-    }).join("")+(rest>0?'<span class="ditem more">+'+rest+' more</span>':'')+'</span>';
-  }
-  if(classes.length){
-    /* one dot per class that meets, in course order, so the shape of the week
-       is still visible without the meetings taking a line each */
-    const seen={},bits=[];
-    classes.forEach(e=>{const k=e.courseId;if(seen[k])return;seen[k]=1;
-      bits.push('<i data-lev="'+e.id+'" style="--lc:'+courseColor(e.courseId)+'" title="'+esc(e.title)+'">'+
-        esc(String(courseCode(e.courseId)).replace(/^NUR\s*/,""))+'</i>');});
-    out+='<span class="dclass">'+bits.join("")+'</span>';
-  }
-  return out;
-}
-const courseCode=id=>{const c=courseById(id);return c?(c.code||c.name||""):"";};
-/* ---- what is next, above the grid -----------------------------------------
-   The question the calendar gets opened for is "what is coming and how long
-   have I got", and it used to take scrolling and counting to answer. Three
-   tiles: anything late, the next graded thing, the next thing merely due. */
-function calAhead(){
-  const mine=calEvents();
-  const late=todoOf(mine.filter(e=>!e.done&&dayDiff(e.date)<0&&dayDiff(e.date)>=-28))
-    .sort((a,b)=>a.date.localeCompare(b.date));
-  const grade=mine.filter(e=>!e.done&&MILESTONE(e)&&dayDiff(e.date)>=0)
-    .sort((a,b)=>a.date.localeCompare(b.date))[0];
-  const due=todoOf(mine.filter(e=>!e.done&&!MILESTONE(e)&&dayDiff(e.date)>=0))
-    .sort((a,b)=>a.date.localeCompare(b.date))[0];
-  const when=e=>{const n=dayDiff(e.date);
-    return n===0?"today":n===1?"tomorrow":"in "+n+" day"+(n===1?"":"s");};
-  const tile=(kind,label,e,extra)=>{
-    if(!e)return "";
-    const d=parseD(e.date);
-    return '<button type="button" class="ahd '+kind+'" data-more="'+e.date+'" '+
-      'style="--tc:'+courseColor(e.courseId)+'">'+
-      '<span class="ahl">'+esc(label)+'</span>'+
-      '<span class="aht">'+esc(shortTitle(e))+'</span>'+
-      (extra?'<span class="ahe">'+esc(extra)+'</span>':'')+
-      '<span class="ahm">'+esc(String(courseCode(e.courseId)).replace(/^NUR\s*/,""))+
-        ' · '+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]+' '+d.getDate()+' '+MON[d.getMonth()].slice(0,3)+'</span>'+
-      '<span class="ahw">'+esc(when(e))+'</span></button>';
-  };
-  const bits=
-    (late.length?'<button type="button" class="ahd late" data-more="'+late[0].date+'" style="--tc:var(--crimson)">'+
-      '<span class="ahl">Late</span><span class="aht">'+esc(shortTitle(late[0]))+'</span>'+
-      (late.length>1?'<span class="ahe">and '+(late.length-1)+' more still open</span>':'')+
-      '<span class="ahm">'+esc(String(courseCode(late[0].courseId)).replace(/^NUR\s*/,""))+'</span>'+
-      '<span class="ahw">'+Math.abs(dayDiff(late[0].date))+' day'+(Math.abs(dayDiff(late[0].date))===1?"":"s")+' ago</span></button>':'')+
-    tile("grade","Next graded",grade,grade&&typeLabel(grade))+
-    tile("due","Next due",due,"");
-  if(!bits)return "";
-  return '<div class="ahead">'+bits+'</div>';
-}
-/* ---- this week, in words --------------------------------------------------
-   The month grid keeps the whole month in view on a phone, but at 53px a column
-   there is no room for a title. So the week you are actually in is listed under
-   the grid, in full, where there is room for it. Phone only - on a wider screen
-   the cells say it themselves. */
-function calWeek(){
-  const t=parseD(today());
-  const from=new Date(t.getFullYear(),t.getMonth(),t.getDate()-t.getDay());
-  const iso=[];for(let i=0;i<7;i++)iso.push(dkey(new Date(from.getFullYear(),from.getMonth(),from.getDate()+i)));
-  const evs=calEvents().filter(e=>iso.indexOf(e.date)>=0)
-    .sort((a,b)=>a.date.localeCompare(b.date)||(TYPES.indexOf(a.type)-TYPES.indexOf(b.type)));
-  if(!evs.length)return "";
-  const WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  let out='<div class="calweek"><span class="eyebrow">This week</span>',day="";
-  evs.forEach(e=>{
-    if(e.date!==day){day=e.date;const d=parseD(e.date);
-      out+='<div class="cwday'+(e.date===today()?" now":"")+'" data-day="'+e.date+'">'+
-        WD[d.getDay()]+' '+d.getDate()+(e.date===today()?' · today':'')+'</div>';}
-    out+='<div class="cwrow'+(e.done?" off":"")+(isFyi(e)?" fyi":"")+'" style="--lc:'+courseColor(e.courseId)+'">'+
-      (isFyi(e)?'<span class="bigbox fyi" aria-hidden="true"></span>'
-              :'<input type="checkbox" class="bigbox" data-wk="'+e.id+'" data-key="'+esc(evKey(e))+'"'+(e.done?" checked":"")+' aria-label="Mark done">')+
-      '<span class="cwt" data-lev="'+e.id+'"><b>'+markOf(e)+'</b> '+esc(shortTitle(e))+
-        '<i>'+esc(String(courseCode(e.courseId)).replace(/^NUR\s*/,""))+' · '+esc(typeLabel(e)||e.type||"")+'</i></span></div>';
-  });
-  return out+'</div>';
-}
 function cellLanes(evs,detail){
   if(!evs.length)return "";
   const order=laneOrder();
   const rows=order.map(c=>({c:c,list:evs.filter(e=>e.courseId===c.id)}));
-  let last=-1;rows.forEach((r,i)=>{if(r.list.length)last=i;});
   const orphan=evs.filter(e=>!order.some(c=>c.id===e.courseId));
   let out='<span class="lanes">';
-  rows.slice(0,last+1).forEach(r=>{
-    if(!r.list.length){out+='<span class="lane hole"></span>';return;}
+  /* Classes keep their order, but a class with nothing that day takes no room.
+     The reserved empty row used to push the first real item a third of the way
+     down the cell, and the course chip already says which class a row is. */
+  rows.forEach(r=>{
+    if(!r.list.length)return;
     const code=String(r.c.code||r.c.name||"").replace(/^NUR\s*/,"");
     const left=todoOf(r.list).filter(e=>!e.done).length;
     // an exam / quiz / clinical / one-off is worth its name even in the compact view
@@ -5803,7 +5585,7 @@ function calMoreMenu(){
       '<button class="mrow" id="mmPlan"><b>Study blocks</b><i>What to study before each exam</i></button>'+
     '</div>','<button class="btn primary" id="mmClose">Close</button>');
   $("#mmClose").onclick=closeModal;
-  $("#mmDetail").onclick=()=>{closeModal();calDetail=!calDetail;try{localStorage.setItem("cn_detail",calDetail?"1":"0");}catch(e){}render();};
+  $("#mmDetail").onclick=()=>{closeModal();calDetail=!calDetail;try{localStorage.setItem("cn_detail2",calDetail?"1":"0");}catch(e){}render();};
   $("#mmExpand").onclick=()=>{closeModal();calFull=true;render();};
   $("#mmCourses").onclick=()=>{closeModal();courseForm(null);};
   $("#mmPlan").onclick=()=>{closeModal();studyPlanModal();};
@@ -7130,18 +6912,13 @@ function viewCalendar(){
   const first=new Date(calYear,calMonth,1),start=first.getDay(),days=new Date(calYear,calMonth+1,0).getDate();
   let cells="";
   const total=Math.ceil((start+days)/7)*7;
-  /* One pass over the events instead of one scan per cell. At 116 events and
-     42 cells that was 4,872 comparisons a render for no reason, and it grew
-     with every date added. */
-  const byDate={};
-  S.events.forEach(e=>{if(calCourse==="all"||e.courseId===calCourse)(byDate[e.date]=byDate[e.date]||[]).push(e);});
   for(let i=0;i<total;i++){
     const d=new Date(calYear,calMonth,1-start+i);
     const dnum=d.getDate(),iso=dkey(d);
     let cls="cell";
     if(d.getMonth()!==calMonth)cls+=" out";
     if(iso===today())cls+=" today";
-    const evs=byDate[iso]||[];
+    const evs=S.events.filter(e=>e.date===iso&&(calCourse==="all"||e.courseId===calCourse));
     if(evs.some(e=>e.type==="Exam"))cls+=" hasexam";
     else if(evs.some(e=>e.type==="Med Math"))cls+=" hasmm";
     else if(evs.some(e=>e.type==="Quiz"))cls+=" hasquiz";
@@ -7150,36 +6927,32 @@ function viewCalendar(){
       if(td.length&&td.every(e=>e.done))cls+=" alldone";
       /* a day gone by with something still unticked keeps a pulse on it */
       else if(dayDiff(iso)<0&&td.some(e=>!e.done))cls+=" late";}
+    const detail=calDetail||calFull;
     const wd=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
     const left=todoOf(evs).filter(e=>!e.done).length;
-    /* the date and what is still owed on it share the top line, so the cell is
-       only as tall as what is in it rather than stretching to push a footer
-       down to the bottom edge */
-    cells+=(evs.length?'<button type="button" class="'+cls+'" data-day="'+iso+'">':'<div class="'+cls+'">')+
-      '<span class="drow"><span class="d">'+dnum+'</span>'+
-      '<span class="dfull">'+wd+' '+dnum+'</span>'+
-      (left?'<span class="lcount">'+left+' due</span>':'')+'</span>'+
-      cellBody(evs)+
+    cells+=(evs.length?'<button type="button" class="'+cls+'" data-day="'+iso+'">':'<div class="'+cls+'">')+'<span class="d">'+dnum+'</span>'+
+      '<span class="dfull">'+wd+' '+dnum+' '+MON[d.getMonth()].slice(0,3)+(iso===today()?" &middot; today":"")+'</span>'+
+      cellLanes(evs,detail)+
+      (evs.length&&left?'<span class="lcount">'+left+' due</span>':'')+
       (evs.length?'</button>':'</div>');
   }
   return ''+
   courseTabs()+
   '<div class="vhead"><div><h1 class="mh"><span class="mhs" aria-hidden="true">'+STICKER.cal+'</span>'+MON[calMonth]+' <span class="yr">'+calYear+'</span></h1><p>'+(calCourse==="all"?'Every course together. Pick a tab above for one class on its own.':esc((courseById(calCourse)||{}).name||"")+' only.')+'</p>'+monthSummary()+'</div>'+
   '<div class="row">'+monthNav()+
-  '<span class="seg"><button class="segb" data-detail="0" aria-pressed="'+(!calDetail)+'">Compact</button><button class="segb" data-detail="1" aria-pressed="'+calDetail+'">Titles</button></span>'+
+  '<span class="seg"><button class="segb" data-detail="0" aria-pressed="'+(!calDetail)+'">Counts</button><button class="segb" data-detail="1" aria-pressed="'+calDetail+'">Details</button></span>'+
   '<button class="btn sm mapbtn" id="semBtn"><span class="mapico"><i></i><i></i><i></i><i></i></span>Semester map</button>'+
   (sharedRW?'<button class="btn primary sm" id="addEv">Add item</button>':'<span class="chip">Shared schedule &middot; view only</span>')+
   '<button class="btn sm dots" id="calMore" aria-label="More">\u2026</button></div></div>'+
   (S.courses.length?'':'<div class="card pad" style="margin-bottom:14px;border-left:3px solid var(--amber)"><b>Start with your courses.</b><div class="note" style="margin-top:4px">Add each class once, then everything you enter gets its color and its own question bank.</div><div class="row" style="margin-top:11px"><button class="btn primary sm" id="addCourse2">Add a course</button></div></div>')+
     (calCourse!=="all"&&!calEvents().length?'<div class="card pad" style="margin-bottom:14px;border-left:3px solid '+((courseById(calCourse)||{}).color||"var(--accent)")+'"><b>Nothing on the board for '+esc((courseById(calCourse)||{}).code||"this course")+' yet.</b><div class="note" style="margin-top:4px">Use Add item to put a date on the board.</div></div>':'')+
-  calAhead()+
   '<div class="calwrap'+(calFull?" full":"")+'" id="calwrap">'+
    (calFull?courseTabs()+'<div class="fullhead"><h2>'+MON[calMonth]+' '+calYear+'</h2>'+
      monthNav()+
      '<div class="legend"><b><s>\u25B2</s>Exam</b><b><s>\u25C6</s>Quiz</b><b><s>\u2605</s>Clinical</b><b><s>\u25CF</s>Due</b><b><s>\u25CB</s>Turn up</b>'+
      (calCourse==="all"?S.courses:S.courses.filter(c=>c.id===calCourse)).map(c=>'<b><i style="background:'+c.color+'"></i>'+esc(c.code||c.name)+'</b>').join("")+'</div>'+
      '<button class="btn sm primary" id="calShrink">Close</button></div>':'')+
-   '<div class="card calcard scroll" style="margin-bottom:'+(calFull?'0':'16px')+'"><div class="cal'+((calDetail||calFull)?" detail":"")+'">'+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>'<div class="dow">'+d+'</div>').join("")+cells+'</div></div>'+calWeek()+'</div>'+
+   '<div class="card calcard scroll" style="margin-bottom:'+(calFull?'0':'16px')+'"><div class="cal">'+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>'<div class="dow">'+d+'</div>').join("")+cells+'</div></div></div>'+
   semesterMap()+
   (function(){
     const n=upcoming(80).filter(e=>!e.done&&dayDiff(e.date)>=0&&dayDiff(e.date)<=13).length;
@@ -14901,17 +14674,10 @@ function wire(){
     const p=String(sel.value).split("-");
     calYear=+p[0];calMonth=+p[1];render();
   });
-  /* Compact and Titles differ by one class name now - the titles are always in
-     the markup and the CSS decides whether to show them - so this swaps a class
-     rather than throwing the whole view away and building it again. */
   $$("[data-detail]").forEach(b=>b.onclick=()=>{
     calDetail=b.dataset.detail==="1";
-    try{localStorage.setItem("cn_detail",calDetail?"1":"0");}catch(e){}
-    const g=$(".cal");
-    if(g&&!calFull){
-      g.classList.toggle("detail",calDetail);
-      $$("[data-detail]").forEach(x=>x.setAttribute("aria-pressed",String((x.dataset.detail==="1")===calDetail)));
-    }else render();
+    try{localStorage.setItem("cn_detail2",calDetail?"1":"0");}catch(e){}
+    render();
   });
   $$("[data-ctab]").forEach(b=>b.onclick=()=>{
     calCourse=b.dataset.ctab;
@@ -15322,11 +15088,12 @@ function firstRunAvatar(){
   $("#fraNo").onclick=()=>done(false);
 }
 (async function boot(){
-  /* Titles are readable now, so they are what a screen wide enough to hold them
-     starts on. A phone is compact whatever this says - the CSS decides there. */
   try{const t=localStorage.getItem("cn_ctab");if(t)calCourse=t;
-      const d=localStorage.getItem("cn_detail");
-      calDetail=(d===null||d===undefined)?window.innerWidth>=700:d==="1";}catch(e){calDetail=true;}
+      /* Details - the day saying what is due in it rather than a coloured dot -
+         is the point of the calendar, so it is on unless it has been turned off
+         on purpose. New key: an old "counts" must not keep the words hidden. */
+      const d=localStorage.getItem("cn_detail2");
+      calDetail=(d===null||d===undefined)?true:d==="1";}catch(e){calDetail=true;}
   await loadAll();
   dropCourses();
   resetSeeded();
@@ -15355,7 +15122,7 @@ function firstRunAvatar(){
     claude.use("downloads").then(d=>{DL=d;}).catch(()=>{});
   }
   const n=$("#storeNote");
-  if(n&&!DB)n.textContent=LS_OK?"Saved in this browser. Build Sep 6, 7:58 PM":"This browser is not saving anything. Build Sep 6, 7:58 PM";
+  if(n&&!DB)n.textContent=LS_OK?"Saved in this browser. Build Sep 6, 9:01 PM":"This browser is not saving anything. Build Sep 6, 9:01 PM";
 })();
 </script>
 
