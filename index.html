@@ -794,6 +794,14 @@ div.qzcard{cursor:default}
 .advgo .advgotxt b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:19px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
 .advgo .advgotxt i{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:3px;max-width:60ch}
 .advgo .advgoarrow{font-size:22px;color:var(--accent);font-weight:700}
+/* the two ways in, told apart rather than stacked */
+.fsplit{display:flex;align-items:center;gap:12px;margin:0 0 16px;
+  font:700 10px "IBM Plex Mono",monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.fsplit:before,.fsplit:after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.froomhead{margin:0 0 16px}
+.froomhead b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:19px;font-weight:800;
+  letter-spacing:-.01em;color:var(--ink)}
+.froomhead i{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:3px;max-width:60ch}
 .advwrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:#1B1145}
 .advscene{position:relative;width:100%;height:min(78vh,760px);overflow:auto;scrollbar-width:thin;cursor:grab;touch-action:pan-x pan-y}
 .advscene.grab{cursor:grabbing;user-select:none}
@@ -4698,7 +4706,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 8, 5:31 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 8, 7:42 PM";              /* _dist.py stamps the shipped one */
 const LIB_OWNER="trophosapp@gmail.com";             /* who may post to the library; _dist.py fills it */
 const SUPA={url:"https://ezvnzvvdpbrjtdifqjhk.supabase.co",key:"sb_publishable_jiiuzrdjTCiBFj2IV0-0Eg_1vVHIJAb"};
 const supaOn=()=>!!(SUPA.url&&SUPA.key);
@@ -6286,7 +6294,7 @@ function viewTitle(){
   if(tab==="calendar")return "Calendar";
   if(tab==="study")return studyAt==="quiz"?"Weekly quiz":studyAt==="class"?"Class binder":"Study";
   if(tab==="nurse")return "Your nurse";
-  if(tab==="fight")return FIGHT?"In a room":(S.profile.advOn?"Vaelith":"Choose a room");
+  if(tab==="fight")return FIGHT?"In a room":(ADV_OPEN?"Vaelith":"Journey or fight");
   return "Trophies";
 }
 function sayView(){
@@ -6413,6 +6421,8 @@ function render(){
     if(session){renderSession();return;}
     nursePinSync();
     var moved=v.dataset.tab!==tab;
+    /* walking in from another tab puts the choice back in front of you */
+    if(moved&&tab==="fight")ADV_OPEN=false;
     if(tab==="home")v.innerHTML=viewHome();
     else if(tab==="calendar")v.innerHTML=viewCalendar();
     else if(tab==="study")v.innerHTML=viewStudy();
@@ -11698,7 +11708,7 @@ function advDrag(sc){
 }
 function wireAdventure(){
   const sc=$(".advscene");if(sc){advFollow(ADV?ADV.x:0,ADV?ADV.y:0,false);advDrag(sc);}
-  const sk=$("#advSkip");if(sk)sk.onclick=()=>{ADV=null;S.profile.advOn=false;saveCore();render();};
+  const sk=$("#advSkip");if(sk)sk.onclick=()=>{ADV=null;ADV_OPEN=false;render();window.scrollTo(0,0);};
   $$("[data-gochap]").forEach(d=>d.onclick=()=>{
     if(ADV&&ADV.walking)return;
     const k=d.dataset.gochap, mine=advStops().filter(s=>s.grove===k);
@@ -11724,10 +11734,13 @@ function wireAdventure(){
    open inside it. Each step opens under the one above rather than replacing
    it, so the way back is always on screen. */
 var FCOURSE=null, FWING=null;
+/* Whether the wood is open. Not saved: arriving at the tab always offers the
+   choice, and walking into Vaelith is something you do, not something you set. */
+let ADV_OPEN=false;
 function viewFight(){
   const li=levelInfo(S.profile.xp), p=S.profile, beaten=p.beaten||{};
   if(!FIGHT){
-    if(p.advOn)return viewAdventure();
+    if(ADV_OPEN)return viewAdventure();
     /* The corridor. Every disease is a room; the door shows the number and,
        once you have named what is inside, the name. Until then the chart on
        the door is blank - you find out when you walk in. */
@@ -11832,8 +11845,7 @@ function viewFight(){
         '<span class="ctilecaret">'+(open?'⌃':'⌄')+'</span>'+
       '</button>';
     };
-    return '<div class="vhead"><div><h1>Choose a room</h1><p>Pick your course, then the module, and its doors open underneath. Someone is in every room, and the chart on a door is blank until you have been in.</p></div></div>'+
-      '<button type="button" class="advgo" id="advGo"><span class="advgoart">'+advGoArt()+'</span><span class="advgotxt"><b>Go on an Epic Learning Adventure</b><i>Walk the forest. Behind every door is someone who needs a nurse - the angel teaches you first, then you fight. Or skip it and pick a module below.</i></span><span class="advgoarrow">→</span></button>'+
+    return '<div class="vhead"><div><h1>Journey or fight</h1><p>Two ways in. Walk Vaelith and meet the people behind the doors, or go straight to the rooms and take the patients as they come.</p></div></div>'+
       '<div class="corridorhead"><div class="fnurse sm">'+nurseAvatar(li.tier,120)+'</div><div class="corridorsign"><b>'+esc(li.rank)+'</b><i>on shift</i></div></div>'+
       '<div class="frec">'+(p.fightWins||0)+' won · '+((p.fights||0)-(p.fightWins||0))+' lost or escaped'+
         ((p.fightDollars||0)?' · $'+p.fightDollars+' earned':'')+'</div>'+
@@ -11844,6 +11856,9 @@ function viewFight(){
       '<div class="fkitline">'+[owns("k_cart")?'5 hearts':'4 hearts',
         FIGHT_ROUND_S+(owns("k_overtime")?10:0)+'s a round',
         owns("k_second")?'one wrong answer crossed out':''].filter(Boolean).join(' · ')+'</div>'+
+      '<button type="button" class="advgo" id="advGo"><span class="advgoart">'+advGoArt()+'</span><span class="advgotxt"><b>Walk into Vaelith</b><i>Behind every door is someone who needs a nurse. Ilvane teaches you first, then you fight what you found. Your place in the wood is kept.</i></span><span class="advgoarrow">→</span></button>'+
+      '<div class="fsplit"><span>or</span></div>'+
+      '<div class="froomhead"><b>Straight to the rooms</b><i>Pick your course, then the module, and its doors open underneath. Someone is in every room, and the chart on a door is blank until you have been in.</i></div>'+
       cs.map(c=>{
         const M=modulesOf(c);
         if(!M.order.length)return '';
@@ -16391,7 +16406,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 8, 5:31 PM":"This browser is not saving anything. Build Sep 8, 5:31 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 8, 7:42 PM":"This browser is not saving anything. Build Sep 8, 7:42 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -16485,8 +16500,8 @@ function wire(){
   const fn=$("#fNext"); if(fn)fn.onclick=()=>fightNext();
   const fr=$("#fRevBtn"); if(fr)fr.onclick=()=>{const r=$("#fRev");if(!r)return;r.hidden=!r.hidden;fr.textContent=r.hidden?"Review what you got wrong":"Hide the review";if(!r.hidden)r.scrollIntoView({behavior:"smooth",block:"start"});};
   const fa=$("#fAgain"); if(fa)fa.onclick=()=>{const b=FIGHT.b, adv=FIGHT.adv;if(b.ward){const x=b.id.slice(5).split("||");wardStart(x[0],x[1]);}else{fightStart(b.id);if(FIGHT&&adv)FIGHT.adv=true;}};
-  const ff=$("#fForest"); if(ff)ff.onclick=()=>{if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);FIGHT=null;S.profile.advOn=true;saveCore();render();window.scrollTo(0,0);};
-  const ag=$("#advGo"); if(ag)ag.onclick=()=>{S.profile.advOn=true;ADV=null;saveCore();render();window.scrollTo(0,0);};
+  const ff=$("#fForest"); if(ff)ff.onclick=()=>{if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);FIGHT=null;ADV_OPEN=true;render();window.scrollTo(0,0);};
+  const ag=$("#advGo"); if(ag)ag.onclick=()=>{ADV_OPEN=true;ADV=null;render();window.scrollTo(0,0);};
   wireAdventure();
   const leaveFight=()=>{if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);FIGHT=null;render();window.scrollTo(0,0);};
   const fb=$("#fBack"); if(fb)fb.onclick=leaveFight;
@@ -16857,7 +16872,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 8, 5:31 PM":"This browser is not saving anything. Build Sep 8, 5:31 PM");
+    (LS_OK?"Saved in this browser. Build Sep 8, 7:42 PM":"This browser is not saving anything. Build Sep 8, 7:42 PM");
 })();
 </script>
 
