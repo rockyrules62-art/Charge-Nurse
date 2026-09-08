@@ -634,7 +634,9 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .qzdots i.on{background:var(--accent)}
 .qzdots i.at{box-shadow:0 0 0 3px var(--accent-soft);background:var(--accent)}
 .qzcard,.qzres{max-width:100%}
-.qzcard.q,.qzcardbox{}
+.qzcard.q{padding:20px 22px 18px;cursor:default}
+.qzcard.q:hover{transform:none;border-color:var(--line);box-shadow:var(--shadow)}
+.qzcardbox{}
 div.qzcard{cursor:default}
 .qzstem{margin:0 0 14px;font-size:16.5px;line-height:1.5;color:var(--ink);max-width:64ch}
 .qzsata{display:inline-block;margin-bottom:9px;font:700 10px "IBM Plex Mono",monospace;letter-spacing:.14em;
@@ -644,7 +646,10 @@ div.qzcard{cursor:default}
   padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);
   font-size:14.5px;line-height:1.45;color:var(--ink)}
 .qzopts.pick .qzopt{cursor:pointer;transition:.14s}
-.qzopts.pick .qzopt:hover{border-color:var(--accent);background:var(--surface-2)}
+.qzopts.pick .qzopt:not(.on):hover{border-color:var(--accent);background:var(--surface-2)}
+/* hovering something already chosen must read as MORE chosen, never less */
+.qzopts.pick .qzopt.on:hover{border-color:var(--accent);background:var(--accent-soft);
+  box-shadow:0 0 0 2px var(--accent) inset}
 .qzopt.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent) inset}
 .qzopt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .qzlet{font:700 12px "IBM Plex Mono",monospace;color:var(--muted);padding-top:1px}
@@ -688,6 +693,7 @@ div.qzcard{cursor:default}
   .qzcards{grid-template-columns:1fr 1fr;gap:9px}
   .qzcarda{height:74px}.qzcardt{padding:9px 10px 11px}.qzcardt b{font-size:13.5px}
   .qzstem{font-size:15.5px}.qzopt{font-size:14px;padding:10px 11px;gap:8px}
+  .qzcard.q{padding:15px 16px 14px}
   .qzpct b{font-size:32px}.qzpct u{font-size:20px}
   .qzscore{gap:12px;padding:14px 15px}.qzsc{padding-left:12px}
 }
@@ -2683,25 +2689,25 @@ const QUIZZES=[
   covers:"Pharmacokinetics and pharmacodynamics in the older adult, the Beers criteria, polypharmacy, and the module's four drugs.",
   qs:[
   {k:"mc",stem:"An 82-year-old was started three days ago on a scheduled drug that has to be both metabolized and excreted before it leaves the body. Her daughter says she cannot see any effect yet, and the provider is considering raising the dose today. Which response by the nurse is best?",
-   options:["She is not at her plateau yet, so today's lack of effect is not the dose.","Her serum creatinine is normal, so the dose can safely be raised now.","A drug that has not worked within two half-lives will not work at this dose.","A level drawn today will show whether the dose is high enough for her."],
+   options:["The medicine is still building up in her and has not reached its full level yet.","Her kidney test came back normal, so it is safe to raise the dose now.","If a medicine has not helped in the first couple of doses, this dose will not work for her.","A blood test today would tell us whether the dose is high enough for her."],
    answer:0,
-   why:"A drug taken on a schedule keeps accumulating until what goes in each day equals what is cleared each day, and that plateau takes about five to six half-lives. For a drug that needs both metabolism and excretion, the half-life in an older adult can be very long, so three days with no visible effect is not evidence that the dose is too small - the level is still on its way up, and raising the dose now stacks a second climb on top of the first. A normal serum creatinine does not license an increase: older adults carry less muscle and make less creatinine, so the number can sit in range while clearance is well down. There is no rule that a drug failing to act within two half-lives never will; that sounds like pharmacology and is simply not a real principle. Drawing a level today is measuring a number that is still rising, so it does not represent the dose she is actually on, and adjusting from it misleads whoever reads it.",
+   why:"A drug taken on a schedule keeps accumulating until what goes in each day equals what is cleared each day, and that plateau takes about five to six half-lives. For a drug that needs both metabolism and excretion, the half-life in an older adult can be very long, so three days with no visible effect is not evidence that the dose is too small - the level is still on its way up, and raising the dose now stacks a second climb on top of the first. A normal serum creatinine does not license an increase: older adults carry less muscle and make less creatinine, so the number can sit in range while clearance is well down. There is no rule that a drug which has not acted after the first doses never will; that sounds like pharmacology and is simply not a real principle. Drawing a level today is measuring a number that is still rising, so it does not represent the dose she is actually on, and adjusting from it misleads whoever reads it.",
    up:{stem:"A drug given on a schedule has a half-life of about 20 hours in an older adult. When should the nurse expect the amount in the body to stop rising?",
        options:["After about 20 hours","After about 2 days","After about 4 to 5 days","After about two full weeks of dosing"],
        answer:2,
        why:"Steady state arrives after roughly five to six half-lives, so five or six times 20 hours is about four to five days. One half-life gets the level only about halfway there, and two days is still short of the plateau. Two weeks overshoots badly and would have a nurse waiting through days of unexplained accumulation. The useful habit is to multiply: half-life times five tells you when what you are seeing is the drug's real effect."}},
 
   {k:"sata",stem:"An 80-year-old takes several oral medications at home. Which statements about the way her body now handles those drugs are accurate? Select all that apply.",
-   options:["Less of an oral dose is cleared before it reaches her circulation, since first-pass metabolism falls with age.","Drugs the kidneys clear leave her body more slowly, since renal elimination declines with age.","Drugs that dissolve in fat linger longer, since fat makes up more of her body than it once did.","Clearance by oxidation and hydrolysis speeds up with age to make up for the slower excretion.","Oral absorption is substantially less complete for most drugs, since small-bowel surface area is reduced with age."],
+   options:["Less of an oral dose is cleared before it reaches her circulation, since first-pass metabolism falls with age.","Drugs the kidneys clear leave her body more slowly, since renal elimination declines with age.","Drugs that dissolve in fat linger longer, since fat makes up more of her body than it once did.","Clearance by oxidation and hydrolysis speeds up with age to make up for the slower excretion.","Oral absorption is substantially less complete for most drugs, since small intestine surface area is reduced with age."],
    answers:[0, 1, 2],
-   why:"First-pass metabolism drops by roughly one percent a year after age 40, so for the same oral dose more drug survives the trip through the liver and reaches the circulation - nitrates, propranolol, phenobarbital and nifedipine are the standing examples. Renal elimination is the single most important pharmacokinetic change of aging, with glomerular filtration falling about 8 mL/min/1.73 m2 each decade after 40, so renally cleared drugs hang around longer. Body fat increases and total body water decreases, which enlarges the space a lipophilic drug such as diazepam distributes into and lengthens its half-life. Oxidation and hydrolysis are phase I reactions, and their clearance is prolonged in older adults, not accelerated; there is no compensatory speeding-up of one pathway to cover for another, and no such trade exists. Small-bowel surface area does shrink, along with slower gastric emptying and a higher gastric pH, but for most drugs those absorption changes turn out to be clinically inconsequential - the notable exceptions are calcium carbonate and enteric-coated forms.",
+   why:"First-pass metabolism drops by roughly one percent a year after age 40, so for the same oral dose more drug survives the trip through the liver and reaches the circulation - nitrates, propranolol, phenobarbital and nifedipine are the standing examples. Renal elimination is the single most important pharmacokinetic change of aging, with glomerular filtration falling about 8 mL/min/1.73 m2 each decade after 40, so renally cleared drugs hang around longer. Body fat increases and total body water decreases, which enlarges the space a lipophilic drug such as diazepam distributes into and lengthens its half-life. Oxidation and hydrolysis are phase I reactions, and their clearance is prolonged in older adults, not accelerated; there is no compensatory speeding-up of one pathway to cover for another, and no such trade exists. Small intestine surface area does shrink, along with slower gastric emptying and a higher gastric pH, but for most drugs those absorption changes turn out to be clinically inconsequential - the notable exceptions are calcium carbonate and enteric-coated forms.",
    up:{stem:"Why can an older adult end up with a higher blood level than a young adult after the same oral dose?",
        options:["First-pass metabolism removes less of the dose than it once did.","The stomach empties faster, so more of the dose is taken up at once.","The tubule returns absorbed drug to the blood as a person ages.","Conjugation in the liver slows sharply, holding the drug in the body."],
        answer:0,
        why:"An oral dose passes through the liver before it reaches the general circulation, and that first pass removes less with each passing year after 40, so more of the dose arrives. Gastric emptying slows with age rather than speeding up, and slowing it delays a drug instead of increasing what gets in. The tubule does not hand absorbed drug back to the blood as a feature of aging - there is no such mechanism. Conjugation and glucuronidation are phase II reactions, and age does not greatly affect them; it is the phase I pathways that slow."}},
 
   {k:"mc",stem:"An 83-year-old takes a home medication with strong anticholinergic effects. She is given oral acetaminophen for hip pain at 1400. At 1440 she says the pain is unchanged, and a student nurse asks what should be done. Which response by the nurse is best?",
-   options:["Wait and reassess; her anticholinergic slows the drug's move into the small bowel.","Wait and reassess; her stomach pH has to fall before the tablet can dissolve.","Ask the provider to add a different analgesic; this dose has already failed.","Chart it as ineffective; an aging liver clears this drug faster than a young liver does."],
+   options:["Wait and reassess; her anticholinergic slows the drug's move into the small intestine.","Wait and reassess; her stomach pH has to fall before the tablet can dissolve.","Ask the provider to add a different analgesic; this dose has already failed.","Chart it as ineffective; an aging liver clears this drug faster than a young liver does."],
    answer:0,
    why:"Acetaminophen is absorbed in the upper small intestine, and both aging and anticholinergic drugs prolong the movement of a drug from the stomach into that small intestine. The result is a later onset and a lower peak concentration, so at 40 minutes this dose may simply not have arrived yet, and waiting to reassess is what tells you whether it worked. The other reason offered for waiting is not a real one: there is no mechanism by which a raised gastric pH has to come back down before a plain tablet can dissolve. Gastric pH matters for calcium carbonate, which needs acid to dissolve, and for enteric coatings, which can open too early, but not in the way that option describes. Asking for a different analgesic is a reasonable thing to do for pain that genuinely is not responding, and it is the wrong thing to do 40 minutes in, when the first dose has not yet had time to reach the surface that absorbs it. Hepatic metabolism slows with age rather than speeding up, so a faster-clearing liver is the opposite of what is happening, and charting the dose as a failure this early leaves her pain untreated while the drug is still working its way in.",
    up:{stem:"For a drug absorbed in the upper small intestine, what does slowed movement out of the stomach do?",
@@ -2800,9 +2806,9 @@ const QUIZZES=[
        why:"Blood flow, smoking, and drugs that induce or inhibit the cytochrome P-450 enzymes all influence hepatic metabolism, and heart failure is the classic reason that flow drops. An enzyme inducer moves clearance the other way, speeding metabolism rather than slowing it. Total body water falls with age rather than rising, and in any case water affects where a drug distributes, not how the liver handles it. Taking a dose with food can change how fast it is absorbed but it is not what determines the liver's rate of metabolism."}},
 
   {k:"mc",stem:"A 78-year-old tells the nurse, \"I quit the blood pressure pill about two months ago. I never felt any different when I took it, and I feel perfectly fine now.\" Her readings today are higher than the ones recorded at her last two visits. Which response by the nurse is best?",
-   options:["Blood pressure medicine is taken until the vessels relearn their normal tone, and after that it can be stopped.","Feeling nothing at all on a medication is a sign that the dose you were given was too low to be working.","Let's write down everything you were taking and have your provider sort out the pill at your next appointment.","High blood pressure usually gives you nothing to feel, so feeling fine is not a sign that it is gone."],
+   options:["You take it until your vessels get back to normal on their own, and then you can stop.","If you felt nothing on it, the dose you were on was probably too low to help.","Let's list everything you were taking and let your provider decide about it next visit.","High blood pressure has no symptoms, so feeling fine does not mean it is gone."],
    answer:3,
-   why:"The reason this client stopped is a belief, and the belief is what has to be corrected: a condition that produces no symptoms gives her nothing to judge the drug by, so feeling well on it and feeling well off it look identical to her while the numbers move. Naming that directly is what makes the rest of the conversation possible, and her higher readings are the evidence in the room. Saying that feeling nothing means the dose was too low reverses the logic - the absence of a sensation is the expected experience of treating an asymptomatic condition, not a signal about dose. Vessels do not relearn a normal tone that lets the drug be stopped; there is no such process, and it is the kind of explanation that sends a client off treatment for good. Writing the list down and referring it forward is reasonable care and will need to happen, but leaving today without touching the misunderstanding means she has two more months of the same reasoning.",
+   why:"The reason this client stopped is a belief, and the belief is what has to be corrected: a condition that produces no symptoms gives her nothing to judge the drug by, so feeling well on it and feeling well off it look identical to her while the numbers move. Naming that directly is what makes the rest of the conversation possible, and her higher readings are the evidence in the room. Saying that feeling nothing means the dose was too low reverses the logic - the absence of a sensation is the expected experience of treating an asymptomatic condition, not a signal about dose. Vessels do not get back to normal on their own in a way that lets the drug be stopped; there is no such process, and it is the kind of explanation that sends a client off treatment for good. Writing the list down and referring it forward is reasonable care and will need to happen, but leaving today without touching the misunderstanding means she has two more months of the same reasoning.",
    up:{stem:"Why does the nurse pay particular attention to medications prescribed for conditions the client cannot feel?",
        options:["Drugs for those conditions are cleared from the body faster than other drugs","Clients often stop them, since feeling well seems like proof they are not needed","Those conditions are the ones that respond to a smaller dose once a client is over 65","Medications for them have to be taken at the same hour every day to work at all"],
        answer:1,
@@ -2869,14 +2875,14 @@ const QUIZZES=[
   {k:"mc",stem:"A client telephones three days after photodynamic therapy for wet age-related macular degeneration and says the sight in the treated eye dropped suddenly this morning. The nurse arranges for the client to be seen the same day. Which problem should the nurse suspect is behind the call?",
    options:["Normal vessels have been closed off along with the abnormal ones","The dye is still in the eye and is blocking light until it clears","The retina has detached, which is one of the risks of this treatment","Sunlight reached the eye while the drug was still light sensitive"],
    answer:0,
-   why:"Severe vision loss from occlusion of normal vessels is the rare but serious reaction to this treatment. The dye gathers in the abnormal vessels of wet macular degeneration and the laser closes them, and when normal vessels are caught up in that, sight in the treated eye goes suddenly - which is what this client is describing. Retinal detachment is a real risk, but it belongs to the intravitreal injections, whose risks are retinal detachment, stroke and local injection reactions; borrowing it here hangs the wrong treatment's risk list on this client. There is no stretch of time during which the dye sits inside the eye blocking light until it clears - no such thing happens, and nothing about the way this drug is given leaves a shade behind the retina. Light does matter with this drug, but the reason is that the client is photosensitized and has to avoid sun exposure for two to three days to protect the skin; sunlight is not what closes vessels inside a treated eye, and at three days that window has passed besides.",
+   why:"Severe vision loss from occlusion of normal vessels is the rare but serious reaction to this treatment. The dye gathers in the abnormal vessels of wet macular degeneration and the laser closes them, and when normal vessels are caught up in that, sight in the treated eye goes suddenly - which is what this client is describing. Retinal detachment is a real risk, but it belongs to the intravitreal injections, whose risks are retinal detachment, stroke and local injection reactions; borrowing it here hangs the wrong treatment's risk list on this client. There is no stretch of time during which the dye sits inside the eye blocking light until it clears - no such thing happens, and nothing about the way this drug is given leaves a shade behind the retina. Light does matter with this drug, but the reason is that the client is photosensitized and has to keep off sun and bright light afterward to protect the skin and the vessels near its surface; sunlight is not what closes vessels inside a treated eye, so it is not what took this client's sight.",
    up:{stem:"A client reports low back pain during the infusion given before photodynamic therapy. Which statement about this is accurate?",
        options:["It is an allergic reaction, so the drug can never be given again","It means the drug has leaked out of the vein into the tissue","It is a known reaction to this drug and it passes","It means the laser part of the treatment has to be canceled"],
        answer:2,
        why:"Low back pain with this infusion is a recognized reaction and it is reversible, so the client can be reassured and watched. It is not a sign that the infusion has leaked into the surrounding tissue, it is not a reason to cancel the laser that activates the dye, and calling it an allergy would wrongly close off a treatment that can be given again."}},
 
   {k:"mc",stem:"A client with external otitis is starting otic drops that contain neomycin. The client says a sister lost her hearing while on intravenous gentamicin and asks whether these drops carry the same danger. Which response by the nurse is accurate?",
-   options:["The inflamed lining limits how much drug gets through, and loss from these drops is rarely reported","Neomycin tends to harm the cochlea more than gentamicin does, so these drops are the greater worry","The risk is much the same as with the injection, since it is the same drug reaching the same hair cells","The risk grows the longer the drops are used, so harm tends to begin once a course runs past a few days"],
+   options:["Very little of the drop gets past the swollen lining, and hearing loss from drops is rare.","Neomycin is harder on the inner ear than gentamicin, so the drops are the bigger worry.","The risk is about the same as the injection, since the drug reaches the same part of the ear.","The longer you use the drops the greater the risk, so trouble starts after a few days."],
    answer:0,
    why:"Ototopical aminoglycoside drops - gentamicin, tobramycin, and the neomycin-containing preparations - do have the potential to cause ototoxicity, yet sensorineural loss has been reported only in a handful of cases and even there the drops were not clearly the cause. The explanation is that the inflamed mucosa inside the ear keeps the drug from penetrating in any quantity to the oval and round windows, so it never reaches the hair cells in the amounts an intravenous dose does. Neomycin is not the worst offender: the order of cochleotoxicity runs gentamicin, then tobramycin, then amikacin, then neomycin, so that option reverses the ranking. Treating a drop as much the same as an intravenous dose ignores the whole question of how much drug actually arrives at the inner ear, which is what decides the risk. And there is no point in a course at which these drops start doing harm - no such threshold exists, and nothing about a few more days of a drop changes what the inflamed lining is doing to penetration.",
    up:{stem:"Which of these antibiotics does the most damage to the cochlea?",
@@ -2903,7 +2909,7 @@ const QUIZZES=[
        why:"Some aminoglycosides damage the vestibular part of the inner ear more than the cochlear part, so the first sign can be unsteadiness and vertigo rather than anything to do with hearing. Ringing and trouble hearing speech point to the cochlear side of the same drug injury, which is worth reporting for its own sake. Ear pain is not how ototoxicity announces itself; pain belongs to infection of the canal or the middle ear."}},
 
   {k:"mc",stem:"A client with Meniere's disease is still having attacks of vertigo despite a low-sodium diet and meclizine, and surgery has been raised. The client asks what an operation would accomplish. Which response by the nurse is accurate?",
-   options:["It is done to end the attacks of vertigo rather than to bring hearing back","It restores the hearing the attacks have taken, and the dizziness settles along with it","It drains fluid from behind the eardrum so the pressure in the ear evens out","It places an implant that takes over the work of the damaged inner ear"],
+   options:["It is done to stop the dizzy attacks, not to bring your hearing back.","It brings back the hearing you have lost, and the dizziness settles too.","It drains fluid from behind the eardrum so the pressure evens out.","It puts in an implant that does the work of the damaged inner ear."],
    answer:0,
    why:"Surgical management in Meniere's disease - endolymphatic sac decompression, middle and inner ear perfusion, and vestibular nerve sectioning - is undertaken to eliminate the attacks of vertigo. Hearing loss in this disease is fluctuating and progressive, and the operations are not offered as a way to recover it, so promising restored hearing sets the client up for a disappointment surgery was never meant to answer. Draining fluid from behind the eardrum is myringotomy, done for the middle ear fluid of otitis media, and the pressure this client feels comes from the endolymph of the inner ear instead. An implant that stands in for the inner ear is a cochlear implant, and that is for profound bilateral sensorineural loss in someone who gets no benefit from conventional hearing aids, not for controlling vertigo.",
    up:{stem:"Which group of findings fits Meniere's disease?",
@@ -2948,7 +2954,36 @@ function quizPick(i,oi){
   if(q.k==="sata"){const a=QUIZ.picks[i], at=a.indexOf(oi);
     if(at>=0)a.splice(at,1);else a.push(oi);}
   else QUIZ.picks[i]=[oi];
-  render();
+  if(!quizPaint(Q,i))render();
+}
+/* Repaint just what the pick changed: the option itself, the dot for this
+   question, the answered count and the button at the bottom. Returns false if
+   the page is not the one we think it is, and then the caller redraws it all. */
+function quizPaint(Q,i){
+  const view=$("#view"); if(!view)return false;
+  const opts=$$("[data-qzpick]"); if(!opts.length)return false;
+  const pick=QUIZ.picks[i];
+  let mine=0;
+  opts.forEach(b=>{const x=b.dataset.qzpick.split("|");
+    if(+x[0]!==i)return;
+    mine++;
+    b.classList.toggle("on",pick.indexOf(+x[1])>=0);});
+  if(!mine)return false;
+  const dots=$$(".qzdots i");
+  if(dots.length===Q.qs.length)
+    dots.forEach((d,k)=>d.classList.toggle("on",QUIZ.picks[k].length>0));
+  const answered=QUIZ.picks.filter(p=>p.length).length;
+  const bar=$(".qzbar");
+  if(bar){const spans=bar.querySelectorAll("span");
+    const last=spans[spans.length-1];
+    if(last&&!last.classList.contains("qzdots"))last.textContent=answered+" answered";}
+  const next=$("#qzNext");
+  if(next)next.disabled=!pick.length;
+  const sub=$("#qzSubmit");
+  if(sub){const left=Q.qs.length-answered;
+    sub.disabled=left>0;
+    sub.textContent=left>0?left+" still to answer":"Hand it in";}
+  return true;
 }
 /* Select-all is scored the way the NCLEX scores it now: every option you got
    right earns, every wrong one you picked takes away, and the question cannot
@@ -3035,7 +3070,7 @@ const SEED_QUESTIONS=[
   stem:"A nurse is planning care for a group of clients over 75 years old, several of whom take drugs chronically. Which two of the four pharmacokinetic processes decline the most with aging and account for most of the drug toxicity seen in this group?",
   options:["Absorption and distribution", "Metabolism and excretion", "Absorption and metabolism", "Distribution and excretion"],
   answer:1,
-  rationale:"Aging changes all four processes, but not equally. Metabolism and excretion decrease the most, which is why the doses of some drugs must be lowered in older adults and why toxicity develops slowly as a chronically used drug accumulates over five to six half-lives. Absorption does change with age, through a smaller small-bowel surface area, slowed gastric emptying and a higher gastric pH, but those changes are clinically inconsequential for most drugs, so the first and third options overweight a process that rarely matters. Distribution also shifts, because body fat rises and total body water falls, and that matters for fat-soluble drugs, but on its own it does not explain the general pattern of accumulation in older adults, which makes the fourth option only half right. The concept is that the back half of absorption, distribution, metabolism and excretion is where the older adult gets into trouble."},
+  rationale:"Aging changes all four processes, but not equally. Metabolism and excretion decrease the most, which is why the doses of some drugs must be lowered in older adults and why toxicity develops slowly as a chronically used drug accumulates over five to six half-lives. Absorption does change with age, through a smaller small intestine surface area, slowed gastric emptying and a higher gastric pH, but those changes are clinically inconsequential for most drugs, so the first and third options overweight a process that rarely matters. Distribution also shifts, because body fat rises and total body water falls, and that matters for fat-soluble drugs, but on its own it does not explain the general pattern of accumulation in older adults, which makes the fourth option only half right. The concept is that the back half of absorption, distribution, metabolism and excretion is where the older adult gets into trouble."},
  {c:"NUR 314",qid:"314-m1p-04",level:1,k:"mc",prime:true,errs:["stem-misread", "stem-misread", "stem-misread", null],unit:"Module 1 — Principles of pharmacology & the older adult",type:"application",watch:"Which list gets screened",
   stem:"A nurse is deciding which clients on the unit should have their medication lists screened against the Beers criteria. Which client's list should be screened?",
   options:["A 44-year-old taking lisinopril and metformin", "A 52-year-old taking warfarin and furosemide", "A 58-year-old taking diazepam and omeprazole", "A 68-year-old taking gabapentin and glyburide"],
@@ -3053,9 +3088,9 @@ const SEED_QUESTIONS=[
   rationale:"Polypharmacy means a client is taking many medications, and it is common in older adults because the longer a person lives the more chronic conditions accumulate. The danger is not the number itself but what the number hides: when a cardiologist, an endocrinologist and other specialists each prescribe without communicating, no one is looking at the whole list, so the same drug can be ordered twice under two names and drug-drug interactions go unrecognized. Cost is a real barrier to adherence in older adults and belongs in the assessment, but it is a reason clients do not take drugs, not the hazard created by taking many of them. Reduced absorption from the stomach sounds pharmacologic and is not what happens; two drugs can interfere with each other's absorption, but the sheer number of them does not blunt it. Nor does a long list speed anything up: there is no mechanism by which adding drugs raises clearance, and the drift in an older adult runs the other way, toward slower elimination. The concept is that fragmented prescribing is what makes polypharmacy dangerous, and medication reconciliation is the countermeasure."},
  {c:"NUR 314",qid:"314-m1p-07",level:2,k:"mc",prime:true,errs:["knowledge", null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"The change that matters most at 84",
   stem:"An 84-year-old with a creatinine clearance of 38 mL/min is prescribed a drug that is eliminated almost entirely by the kidneys. Which age-related change makes this prescription the greatest concern?",
-  options:["Falling albumin leaves more drug bound", "Renal elimination of drugs falls with age", "Small bowel surface area falls with age", "Liver metabolism slows in the older adult"],
+  options:["Falling albumin leaves more drug bound", "Renal elimination of drugs falls with age", "Small intestine surface area falls with age", "Liver metabolism slows in the older adult"],
   answer:1,
-  rationale:"Decreased renal elimination is one of the most important pharmacokinetic changes associated with aging, and it matters here because this particular drug depends almost entirely on the kidneys to leave the body. When renal elimination carries most of the clearance, a falling filtration rate translates directly into a rising blood level, so the daily dose should be lowered, the dosing interval lengthened, or both, guided by creatinine clearance rather than by age alone. Albumin does fall with age, but it runs the opposite way from the option given: less albumin means less of the drug is bound and more of it circulates free and active. Small bowel surface area does shrink, and liver metabolism does slow, and both are genuine age-related changes a student will recognize, which is what makes them worth offering. Neither one decides the fate of a drug the kidneys clear. The concept is that the clinical weight of a kinetic change depends on how much that process contributes to handling the specific drug in front of you."},
+  rationale:"Decreased renal elimination is one of the most important pharmacokinetic changes associated with aging, and it matters here because this particular drug depends almost entirely on the kidneys to leave the body. When renal elimination carries most of the clearance, a falling filtration rate translates directly into a rising blood level, so the daily dose should be lowered, the dosing interval lengthened, or both, guided by creatinine clearance rather than by age alone. Albumin does fall with age, but it runs the opposite way from the option given: less albumin means less of the drug is bound and more of it circulates free and active. Small intestine surface area does shrink, and liver metabolism does slow, and both are genuine age-related changes a student will recognize, which is what makes them worth offering. Neither one decides the fate of a drug the kidneys clear. The concept is that the clinical weight of a kinetic change depends on how much that process contributes to handling the specific drug in front of you."},
  {c:"NUR 314",qid:"314-m1p-08",level:1,k:"mc",prime:true,errs:["scope", null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"A hit on the screening list",
   stem:"A nurse screens a 79-year-old client's admission medication list against the Beers criteria and finds that one of the drugs appears on it. Which conclusion should the nurse draw?",
   options:["This drug is to be withheld until the provider is called", "This drug is potentially inappropriate and needs review", "This drug is the likely cause of the client's admission", "This drug is acceptable because the client tolerates it"],
@@ -4663,7 +4698,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 8, 9:59 AM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 8, 5:31 PM";              /* _dist.py stamps the shipped one */
 const LIB_OWNER="trophosapp@gmail.com";             /* who may post to the library; _dist.py fills it */
 const SUPA={url:"https://ezvnzvvdpbrjtdifqjhk.supabase.co",key:"sb_publishable_jiiuzrdjTCiBFj2IV0-0Eg_1vVHIJAb"};
 const supaOn=()=>!!(SUPA.url&&SUPA.key);
@@ -9051,7 +9086,7 @@ function viewQuiz(){
     '<div class="qzbar"><span>Question '+(i+1)+' of '+Q.qs.length+'</span>'+
       '<span class="qzdots">'+Q.qs.map((x,k)=>'<i class="'+(QUIZ.picks[k].length?'on':'')+(k===i?' at':'')+'" data-qzgo="'+k+'"></i>').join("")+'</span>'+
       '<span>'+answered+' answered</span></div>'+
-    '<div class="qzcard">'+
+    '<div class="qzcard q">'+
       caseCard(q)+
       (q.k==="sata"?'<span class="qzsata">Select all that apply</span>':'')+
       '<p class="qzstem">'+esc(q.stem)+'</p>'+
@@ -16356,7 +16391,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 8, 9:59 AM":"This browser is not saving anything. Build Sep 8, 9:59 AM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 8, 5:31 PM":"This browser is not saving anything. Build Sep 8, 5:31 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -16822,7 +16857,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 8, 9:59 AM":"This browser is not saving anything. Build Sep 8, 9:59 AM");
+    (LS_OK?"Saved in this browser. Build Sep 8, 5:31 PM":"This browser is not saving anything. Build Sep 8, 5:31 PM");
 })();
 </script>
 
