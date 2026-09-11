@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 9:32 AM-->
+<!--TROPHOS-BUILD:Sep 11, 10:09 AM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -830,8 +830,11 @@ div.qzcard{cursor:default}
 .advchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (max-width:600px){.advchip{padding:6px 10px}.advchip b{font-size:12px}}
 .advscene svg.advsvg{display:block;width:4400px;height:1100px}
-@media (max-width:900px){.advscene svg.advsvg{width:2694px;height:871px}.advscene{height:min(calc(100vh - 100px),780px)}}
-@media (max-width:520px){.advscene svg.advsvg{width:2126px;height:688px}.advscene{height:min(calc(100vh - 200px),700px)}}
+/* Phones used to get the wood shrunk to fit, and the huts read as toys. It is
+   full size everywhere now - the same trees, doors and plates as a laptop -
+   and the view pans to follow the nurse. The scene takes most of the screen. */
+@media (max-width:900px){.advscene{height:min(calc(100vh - 110px),820px)}}
+@media (max-width:520px){.advscene{height:min(calc(100vh - 130px),760px)}}
 .advsvg .advdoor{cursor:pointer}
 .advsvg .advdoor:hover .advtree{filter:brightness(1.1)}
 .advsvg .advglow{animation:advglow 2.6s ease-in-out infinite alternate}
@@ -871,6 +874,13 @@ div.qzcard{cursor:default}
 .advroomcap b{font-size:13px}.advroomcap i{font:600 10px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#7FD9CC;font-style:normal}
 @media (max-width:760px){.advsheet.inside{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.advsvg .advglow,.advsvg .advstar,.advsvg .advff,.advsvg .advaurora,.advsvg .advrays,.advsvg .advwater,.advsvg .advbf,.advsvg .advbob,.advsvg #advNurse.walking svg.nurse{animation:none}}
+.advwhere{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;background:#0F1B19;color:#fff;border-top:1px solid rgba(255,255,255,.12)}
+.advwhere-t{display:flex;flex-direction:column;gap:2px;flex:1;min-width:160px}
+.advwhere-t b{font:700 13.5px/1.25 "IBM Plex Sans",sans-serif}
+.advwhere-t i{font:600 11.5px/1.3 "IBM Plex Mono",monospace;font-style:normal;color:#CFE3DD}
+.advwhere .btn{white-space:nowrap}
+.advwhere .btn.ghost{color:#fff;border-color:rgba(255,255,255,.45)}
+@media (max-width:520px){.advwhere{gap:8px;padding:10px 12px}.advwhere-t{flex-basis:100%}.advwhere-t b{font-size:13px}.advwhere .btn{flex:1}}
 .advhint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font:600 12.5px "IBM Plex Mono",monospace;color:#fff;background:rgba(15,27,25,.62);padding:7px 12px;border-radius:99px;pointer-events:none;letter-spacing:.04em}
 .advsheet{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;padding:16px 18px;background:var(--surface);border-top:1px solid var(--line)}
 .advnpc{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:110px;padding:10px 8px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
@@ -5589,7 +5599,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 9:32 AM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 11, 10:09 AM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -6958,7 +6968,10 @@ function dqOf(e){
   const m=/reply to peer\s*(\d+)/i.exec(e.title||"");
   return {wk:wk, part:m?+m[1]:0};          // 0 = the initial post
 }
-const MILESTONE=e=>e&&(e.type==="Exam"||e.type==="Med Math"||e.type==="Quiz");
+/* Exams and the med-math windows are milestones - dated, not ticked. The ATI
+   Dynamic Quizzes are weekly homework with a due date, so they are to-do items
+   with a box like any assignment. */
+const MILESTONE=e=>e&&(e.type==="Exam"||e.type==="Med Math");
 function milestones(n){
   return calEvents().filter(e=>!e.done&&MILESTONE(e)&&dayDiff(e.date)>=0)
     .sort((a,b)=>a.date.localeCompare(b.date)).slice(0,n||4);
@@ -12800,7 +12813,7 @@ function viewAdventure(){
   if(!ADV){const s=advStops().find(x=>x.id===A.at);ADV={at:A.at||"home",x:s?s.x+(s.kind==="hut"?30:44):ADV_HOME.x,y:s?(s.gy||s.y)+6:ADV_HOME.y,visit:null,beat:0,walking:false};}
   const stops=advStops();
   const done=Object.keys(A.healed).filter(k=>A.healed[k]).length;
-  const toldWhere=ADV.visit||ADV.story?"":'<div class="advhint">Tap a door — or a signpost to hear about the place.</div>';
+  const toldWhere=ADV.visit||ADV.story?"":advWhereBar();
   if(!A.introDone&&!ADV.story&&!ADV.visit)ADV.story={kind:"intro",i:0};
   if(A.cheer&&!ADV.story&&!ADV.visit){
     const s=advStops().find(x=>x.id===A.cheer);
@@ -12816,6 +12829,30 @@ function viewAdventure(){
       (ADV.visit?advVisitPanel():ADV.story?advStoryPanel():toldWhere)+
     '</div>'+
     '<div class="advfoot"><span>'+done+' of '+stops.length+' healed</span><span>'+Object.keys(A.visited).length+' taught</span><span>The trees blossom when the patient is well. Drag the scene to look around.</span></div>';
+}
+/* Where you are, and what to do next. Sits over the scene whenever nothing
+   else is open, because a wood with sixty doors and no pointer left people
+   standing at the gate. The next door is the nearest one not yet healed,
+   in the chapter you are standing in first. */
+function advNextStop(){
+  const A=advState(), stops=advStops();
+  const here=stops.find(s=>s.id===ADV.at);
+  const open=stops.filter(s=>!A.healed[s.id]);
+  if(!open.length)return null;
+  const d=s=>Math.hypot(s.x-ADV.x,(s.gy||s.y)-ADV.y)+(here&&s.grove!==here.grove?800:0)+(A.visited[s.id]?0:-1);
+  return open.slice().sort((a,b)=>d(a)-d(b))[0];
+}
+function advWhereBar(){
+  const A=advState(), stops=advStops();
+  const here=stops.find(s=>s.id===ADV.at);
+  const next=advNextStop();
+  const C=here?(ADV_STORY.chapters[here.grove]||{name:here.grove}):null;
+  const mine=here?stops.filter(s=>s.grove===here.grove):[], done=mine.filter(s=>A.healed[s.id]).length;
+  const where=here?('You are at '+esc(C.sign||C.name)+' \u2014 '+done+' of '+mine.length+' healed here'):'You are at the gate of '+ADV_WOOD;
+  const what=next?(A.visited[next.id]?'Next: fight for '+esc(advNpc(next.b).split(",")[0]):'Next: meet '+esc(advNpc(next.b).split(",")[0])+' \u2014 '+esc(next.b.name)):'Every door is lit.';
+  return '<div class="advwhere"><span class="advwhere-t"><b>'+where+'</b><i>'+what+'</i></span>'+
+    (next?'<button type="button" class="btn primary sm" data-adv="'+next.id+'">Walk there</button>':'')+
+    '<button type="button" class="btn sm ghost" id="advHow">How this works</button></div>';
 }
 /* The chapters, as a bar over the scene. Tapping one carries you to that part
    of the forest and reads you its sign - so Module 2 is one tap away from the
@@ -13135,6 +13172,7 @@ function wireAdventure(){
     const sh=$(".advsheet");if(sh)sh.scrollIntoView({behavior:"smooth",block:"nearest"});
   });
   $$("[data-chapter]").forEach(d=>d.onclick=()=>{if(ADV.walking)return;ADV.visit=null;ADV.story={kind:"chapter",key:d.dataset.chapter};render();const sh=$(".advsheet");if(sh)sh.scrollIntoView({behavior:"smooth",block:"nearest"});});
+  const hw=$("#advHow");if(hw)hw.onclick=()=>{if(ADV.walking)return;ADV.visit=null;ADV.story={kind:"intro",i:0,again:true};render();};
   const sn=$("#advStoryNext");if(sn)sn.onclick=()=>{const st=ADV.story;if(st.i>=ADV_STORY.intro.length-1){advState().introDone=true;saveCore();ADV.story=null;}else st.i++;render();};
   const sb=$("#advStoryBack");if(sb)sb.onclick=()=>{ADV.story.i=Math.max(0,ADV.story.i-1);render();};
   const sc2=$("#advStoryClose");if(sc2)sc2.onclick=()=>{if(ADV.story&&ADV.story.kind==="dawn"){advState().dawnDone=true;saveCore();}ADV.story=null;render();};
@@ -17857,7 +17895,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 9:32 AM":"This browser is not saving anything. Build Sep 11, 9:32 AM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 10:09 AM":"This browser is not saving anything. Build Sep 11, 10:09 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -18352,7 +18390,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 9:32 AM":"This browser is not saving anything. Build Sep 11, 9:32 AM");
+    (LS_OK?"Saved in this browser. Build Sep 11, 10:09 AM":"This browser is not saving anything. Build Sep 11, 10:09 AM");
 })();
 </script>
 
