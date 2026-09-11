@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 2:39 PM-->
+<!--TROPHOS-BUILD:Sep 11, 3:23 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -469,6 +469,10 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .tourveil{position:fixed;inset:0;z-index:70;background:rgba(10,20,18,.55);
   animation:fade .2s ease both;display:flex;align-items:flex-end;justify-content:center;padding:18px}
 @keyframes fade{from{opacity:0}}
+.tourveil.light{background:rgba(10,20,18,.18)}
+.tourveil.welcome{align-items:center}
+.tourveil.welcome .tourcard{margin-bottom:0;max-width:460px}
+.tourveil.welcome h3{font-size:24px}
 .tourcard{background:var(--surface);border-radius:16px;padding:18px;max-width:420px;width:100%;
   box-shadow:0 20px 50px rgba(0,0,0,.3);margin-bottom:84px;
   animation:rise .28s cubic-bezier(.2,.8,.3,1) both}
@@ -506,6 +510,28 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .fvs{font-family:"Bricolage Grotesque",sans-serif;font-size:26px;font-weight:900;color:var(--coral);
   align-self:center;z-index:1;text-shadow:0 2px 0 rgba(0,0,0,.08)}
 .fhearts{display:flex;gap:3px}
+/* ---- the fight, full screen. The room bar and the floor stick to the top of
+   the scrolling area, the answers scroll beneath them, and Lock in sticks to
+   the bottom, so nurse, patient and choices share one screen. ---- */
+body.fightfull{overflow:hidden}
+body.fightfull .ffull{position:fixed;inset:0;z-index:1000;overflow:auto;background:var(--bg);
+  padding:env(safe-area-inset-top) max(12px,calc((100vw - 960px)/2)) calc(10px + env(safe-area-inset-bottom))}
+body.fightfull .ffull > .vhead{position:sticky;top:0;z-index:8;background:var(--bg);margin:0;padding:8px 0 6px;display:flex;align-items:center;gap:10px;min-height:44px}
+body.fightfull .ffull > .vhead > div{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+body.fightfull .ffull > .vhead h1{font-size:18px;margin:0!important;line-height:1.2}
+body.fightfull .ffull .farena.onfloor{position:sticky;top:46px;z-index:7;height:clamp(170px,31vh,320px);height:clamp(170px,31dvh,320px);border-radius:14px;box-shadow:0 8px 24px rgba(8,22,20,.18)}
+body.fightfull .ffull .fmsg{margin:8px 0}
+body.fightfull .ffull .fact{position:sticky;bottom:0;z-index:8;margin:0;padding:10px 0 6px;background:linear-gradient(180deg,rgba(0,0,0,0),var(--bg) 45%)}
+body.fightfull .ffull .fopts{margin-bottom:6px}
+body.fightfull .ffull .fq{margin:6px 0 8px}
+@media (max-height:760px){
+  body.fightfull .ffull .farena.onfloor .fnurse svg{height:min(158px,22vh)}
+  body.fightfull .ffull .farena.onfloor .foe{width:min(112px,16vh);height:min(112px,16vh)}
+  body.fightfull .ffull .fpanel{padding:5px 8px 6px}
+  body.fightfull .ffull .fpanel .fhpn{display:none}
+  body.fightfull .ffull .fopt{padding:9px 11px;font-size:14px}
+  body.fightfull .ffull .fq{font-size:14.5px}
+}
 .fheart{font-size:19px;color:var(--faint);line-height:1}
 .fheart.on{color:#FF3B5C;text-shadow:0 2px 6px rgba(255,59,92,.35)}
 .fhp{width:130px;height:10px;border-radius:99px;background:rgba(16,30,28,.15);overflow:hidden}
@@ -832,7 +858,12 @@ body.advfull .advscene{position:absolute;inset:0;height:auto}
 body.advfull .advscene svg.advsvg{margin-bottom:150px}   /* room to scroll the ground floor out from under the bar */
 body.advfull .advwrap > :not(.advscene):not(.advtool):not(.advtools){position:absolute;left:0;right:0;bottom:0;max-height:60vh;max-height:60dvh;overflow:auto;padding-bottom:calc(12px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 body.advfull .advwhere{background:linear-gradient(180deg,rgba(15,27,25,0) 0%,rgba(15,27,25,.55) 22%,rgba(15,27,25,.82) 100%);border-top:0;padding-top:26px;-webkit-backdrop-filter:none;backdrop-filter:none}
-body.advfull .advsheet{background:color-mix(in srgb,var(--surface) 84%,transparent);border-top:1px solid rgba(255,255,255,.14);border-radius:18px 18px 0 0}
+/* inside a door the room takes the whole screen, and the page scrolls as one
+   piece - a sheet that scrolled inside itself lost the story below the fold */
+body.advfull .advsheet{background:color-mix(in srgb,var(--surface) 88%,transparent);border-top:1px solid rgba(255,255,255,.14);border-radius:18px 18px 0 0;max-height:74vh;max-height:74dvh}
+body.advfull .advwrap > .advsheet.inside{position:absolute;inset:0;max-height:none!important;height:auto;border-radius:0;border-top:0;overflow:auto;background:var(--surface);align-content:start;
+  padding-top:calc(64px + env(safe-area-inset-top));padding-bottom:calc(24px + env(safe-area-inset-bottom));-webkit-backdrop-filter:none;backdrop-filter:none}
+body.advfull .advwrap:has(.advsheet.inside) .advtools,body.advfull .advwrap:has(.advsheet.inside) .advback{display:none}   /* the room has its own Back and Leave the door */
 body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .advtools{top:calc(10px + env(safe-area-inset-top))}
 /* the chapter bar over the Grove */
 .advchapbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
@@ -5728,7 +5759,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 2:39 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 11, 3:23 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -7517,6 +7548,8 @@ function render(){
   /* Nobody answers questions with a nurse standing on the buttons. She steps
      off screen for the length of any run, quiz, Gauntlet or fight. */
   document.body.classList.toggle("answering",!!(session||QUIZ||GAME||FIGHT));
+  /* a fight takes the whole screen: nurse and patient stay in view while the answers scroll under them */
+  document.body.classList.toggle("fightfull",!!FIGHT&&tab==="fight");
   if(USE&&useTab!==tab)useTick();
   /* whatever the keyboard was on, before the view is thrown away */
   const act=document.activeElement;
@@ -13611,7 +13644,7 @@ function viewFight(){
        :esc(F.rounds[F.r].title)+' — go.')+'</div>';
   if(F.over){
     const won=F.over==="won";
-    return head+arena+
+    return '<div class="ffull" id="ffull">'+head+arena+
       '<div class="card pad fover">'+
         '<div class="shbig">'+(won?"Resolved":F.over==="lost"?"Backup called":"Still on the floor")+'</div>'+
         '<div class="fbigline">'+(won?esc(b.name)+' is under control.':F.over==="lost"?'Out of hearts. '+esc(b.name)+' is still on the unit.':'Shift ended with '+esc(b.name)+' at '+condWord(F.hp,F.hpMax).w.toLowerCase()+'.')+'</div>'+
@@ -13624,10 +13657,10 @@ function viewFight(){
           (F.adv?'<button class="btn" id="fForest">Back to the forest</button>':'<button class="btn" id="fDone">Next patient</button>')+'</div>'+
         fightReview(F)+
       '</div>'+
-      takeawayCard(b.unit?[b.unit]:[],"What this was about",true);
+      takeawayCard(b.unit?[b.unit]:[],"What this was about",true)+'</div>';
   }
   const left=Math.max(0,F.ends-Date.now());
-  return head+arena+
+  return '<div class="ffull" id="ffull">'+head+arena+
     '<div class="fround">'+
       '<div class="frt"><span class="frn">Round '+(F.r+1)+' of '+F.rounds.length+'</span><b>'+esc(R.title)+'</b></div>'+
       (F.locked?'':'<div class="fclockwrap"><span id="fclock">'+Math.ceil(left/1000)+'</span><div class="ftime"><i id="fbar" style="width:'+(left/(F.secs*1000)*100).toFixed(1)+'%"></i></div></div>')+
@@ -13643,8 +13676,8 @@ function viewFight(){
     (F.locked
       ?'<div class="fres '+(F.result.ouch?'no':'ok')+'">'+F.result.hits+' hit'+(F.result.hits===1?'':'s')+
          (F.result.ouch?' · took '+F.result.ouch:'')+(F.result.missed?' · missed '+F.result.missed:'')+'</div>'+
-       '<div class="row" style="justify-content:flex-end"><button class="btn primary" id="fNext"'+(F.played?'':' disabled')+'>'+(F.hp<=0||F.r>=F.rounds.length-1?'Finish':'Next round')+'</button></div>'
-      :'<div class="row" style="justify-content:flex-end"><button class="btn primary" id="fLock">Lock in</button></div>');
+       '<div class="row fact" style="justify-content:flex-end"><button class="btn primary" id="fNext"'+(F.played?'':' disabled')+'>'+(F.hp<=0||F.r>=F.rounds.length-1?'Finish':'Next round')+'</button></div>'
+      :'<div class="row fact" style="justify-content:flex-end"><button class="btn primary" id="fLock">Lock in</button></div>')+'</div>';
 }
 /* ---- 4. what you need to work on --------------------------------------- */
 function studyDrugs(){
@@ -14048,36 +14081,45 @@ function week1Have(){
    nothing until you can see which button it is.
 --------------------------------------------------------------------------- */
 const TOUR=[
- {nav:"calendar",t:"Calendar",d:"Every due date for all four courses in one place. Tick things off here and you earn XP for them."},
- {nav:"study",t:"Study",d:"Practice questions written from your own slides and lectures \u2014 nothing from outside your material. Four ways to run them."},
- {nav:"trophies",t:"Progress",d:"Your rank, your accuracy, and the trophies. Thirteen ranks, and the higher ones stay hidden until you reach them."},
- {nav:"nurse",t:"Nurse",d:"Build a nurse who ranks up as you work. The locker is in here too \u2014 spend what you earn on how they look."}];
-let tourAt=-1;
+ {welcome:true,t:"Welcome to Trophos",d:"New here? The tutorial takes about a minute and walks you through every tab, opening each one as it goes. One thing worth doing first: on the Calendar, tick the box on anything you have already finished \u2014 Trophos gives you the XP for it and stops counting it as late."},
+ {nav:"home",t:"Home",d:"Your day at a glance: what is due next, the next exam, the day\u2019s target, and what to do right now. Anything late shows up here until it is ticked off."},
+ {nav:"calendar",t:"Calendar",d:"Every due date for every course in one place. Tick the box when something is done \u2014 including the things you finished before you found Trophos \u2014 and you earn XP for it. Tap a day to see its details."},
+ {nav:"study",t:"Study",d:"Practice questions written only from your own slides and lectures. Pick a class, run a practice round, take the module quiz, try the Gauntlet, and open \u201cWhat you need to work on\u201d to see what you keep missing."},
+ {nav:"fight",t:"Fight",d:"Every disease is a patient. Journey walks you through Vaelith, the wood, door to door with a nurse angel beside you; or choose Just fight instead for the plain corridor. Healing a patient means answering their questions right."},
+ {nav:"trophies",t:"Progress",d:"Your rank, your accuracy, your strengths by topic and by kind of question, and the trophies. Tap a kind of question to see every one you have answered in it."},
+ {nav:"nurse",t:"Nurse",d:"Build a nurse who ranks up as you work. The locker is in here, and so are Settings \u2014 backups, the theme, and this walkthrough if you want it again."}];
+let tourAt=-1, tourFrom=null;
 function tourStep(n){
   $$(".navbtn").forEach(b=>b.classList.remove("lit"));
   const host=$("#tourHost");
   if(n<0||n>=TOUR.length){
     if(host)host.innerHTML="";
-    tourAt=-1;
+    const was=tourAt;tourAt=-1;
     /* Marked on open, not here - see maybeTour. This still writes, because a
        replay from Settings has to leave the flag set too. */
     if(!S.profile.toured){S.profile.toured=today();saveCore();}
+    /* back to where they started - Home for a first open */
+    if(was>=0){tab=tourFrom||"home";resetTab(tab);render();window.scrollTo(0,0);}
     // hand off rather than swallow it - otherwise anything else with something
     // to say on first open waits a whole session for its turn
     setTimeout(()=>{grantToast();maybeTierPrompt();},400);
     return;
   }
+  if(tourAt<0)tourFrom=tab;
   tourAt=n;
   const st=TOUR[n];
-  const btn=$('.navbtn[data-nav="'+st.nav+'"]');
+  /* the tutorial opens the tab it is talking about, so the words sit on the thing itself */
+  if(st.nav&&tab!==st.nav){if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);FIGHT=null;session=null;ADV_OPEN=false;resetTab(st.nav);tab=st.nav;render();window.scrollTo(0,0);}
+  const btn=st.nav?$('.navbtn[data-nav="'+st.nav+'"]'):null;
   if(btn)btn.classList.add("lit");
-  host.innerHTML='<div class="tourveil"><div class="tourcard">'+
-    '<span class="eyebrow">'+(n+1)+' of '+TOUR.length+'</span>'+
+  const steps=TOUR.length-1;
+  host.innerHTML='<div class="tourveil'+(st.welcome?' welcome':' light')+'"><div class="tourcard">'+
+    (st.welcome?'':'<span class="eyebrow">'+n+' of '+steps+'</span>')+
     '<h3>'+esc(st.t)+'</h3><p>'+esc(st.d)+'</p>'+
     '<div class="tourfoot"><span class="tourdots">'+
-      TOUR.map((x,i)=>'<i class="'+(i===n?"on":"")+'"></i>').join("")+'</span>'+
-      '<button class="btn sm" id="tourSkip">Skip</button>'+
-      '<button class="btn sm primary" id="tourNext">'+(n===TOUR.length-1?"Got it":"Next")+'</button>'+
+      (st.welcome?'':TOUR.slice(1).map((x,i)=>'<i class="'+(i===n-1?"on":"")+'"></i>').join(""))+'</span>'+
+      '<button class="btn sm" id="tourSkip">'+(st.welcome?'Skip the tutorial':'Skip')+'</button>'+
+      '<button class="btn sm primary" id="tourNext">'+(st.welcome?'Start the tutorial':n===TOUR.length-1?"Got it":"Next")+'</button>'+
     '</div></div></div>';
   $("#tourSkip").onclick=()=>tourStep(TOUR.length);
   $("#tourNext").onclick=()=>tourStep(n+1);
@@ -18163,7 +18205,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 2:39 PM":"This browser is not saving anything. Build Sep 11, 2:39 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 3:23 PM":"This browser is not saving anything. Build Sep 11, 3:23 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -18662,7 +18704,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 2:39 PM":"This browser is not saving anything. Build Sep 11, 2:39 PM");
+    (LS_OK?"Saved in this browser. Build Sep 11, 3:23 PM":"This browser is not saving anything. Build Sep 11, 3:23 PM");
 })();
 </script>
 
