@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 3:23 PM-->
+<!--TROPHOS-BUILD:Sep 11, 6:35 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -107,6 +107,21 @@ button{cursor:pointer}
   display:flex;align-items:center;gap:22px;padding:12px 26px;flex-wrap:wrap
 }
 .vitals .rank{color:#0E7C70}
+/* The strip stays out of the way: it is gone on most pages, a slim version on
+   Progress and Nurse, and it comes up in full for ten seconds on a level up. */
+.vitals.slim{padding:6px 14px;gap:14px;flex-wrap:nowrap}
+.vitals.slim .vx{display:none}
+.vitals.slim .vital .l{white-space:nowrap}
+.vitals.slim .rank{font-size:13px}
+.vitals.slim .vital{gap:1px}
+.vitals.slim .vital .n{font-size:15px}
+.vitals.slim .vital .l{font-size:9px}
+.vitals.slim .xpwrap{min-width:120px;max-width:260px}
+.vitals.slim .xpbar{height:5px;margin-top:4px}
+.vitals.slim .ring{width:30px;height:30px}
+.vitals.flash{animation:vitalsin .35s cubic-bezier(.2,.8,.3,1)}
+@keyframes vitalsin{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.vitals.flash{animation:none}}
 .vital{display:flex;flex-direction:column;gap:3px;min-width:0}
 .vital .n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;line-height:1.1}
 .vital .l{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint)}
@@ -510,20 +525,33 @@ button.cell{font:inherit;color:inherit;text-align:left;-webkit-appearance:none;a
 .fvs{font-family:"Bricolage Grotesque",sans-serif;font-size:26px;font-weight:900;color:var(--coral);
   align-self:center;z-index:1;text-shadow:0 2px 0 rgba(0,0,0,.08)}
 .fhearts{display:flex;gap:3px}
-/* ---- the fight, full screen. The room bar and the floor stick to the top of
-   the scrolling area, the answers scroll beneath them, and Lock in sticks to
-   the bottom, so nurse, patient and choices share one screen. ---- */
+/* ---- the fight, full screen. The room bar sticks to the top, the floor and
+   the answers scroll as one page, and Lock in sits on a solid bar at the
+   bottom that says when there is more underneath. ---- */
 body.fightfull{overflow:hidden}
-body.fightfull .ffull{position:fixed;inset:0;z-index:1000;overflow:auto;background:var(--bg);
+body.fightfull .ffull{position:fixed;inset:0;z-index:1000;overflow:auto;background:var(--bg);overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  scroll-padding-top:52px;scroll-padding-bottom:84px;
   padding:env(safe-area-inset-top) max(12px,calc((100vw - 960px)/2)) calc(10px + env(safe-area-inset-bottom))}
 body.fightfull .ffull > .vhead{position:sticky;top:0;z-index:8;background:var(--bg);margin:0;padding:8px 0 6px;display:flex;align-items:center;gap:10px;min-height:44px}
 body.fightfull .ffull > .vhead > div{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 body.fightfull .ffull > .vhead h1{font-size:18px;margin:0!important;line-height:1.2}
-body.fightfull .ffull .farena.onfloor{position:sticky;top:46px;z-index:7;height:clamp(170px,31vh,320px);height:clamp(170px,31dvh,320px);border-radius:14px;box-shadow:0 8px 24px rgba(8,22,20,.18)}
+/* the floor scrolls with everything else - nobody needs the nurse pinned over
+   half a phone - it is just kept short enough that the chart shows under it */
+body.fightfull .ffull .farena.onfloor{height:clamp(170px,30vh,320px);height:clamp(170px,30dvh,320px);border-radius:14px}
 body.fightfull .ffull .fmsg{margin:8px 0}
-body.fightfull .ffull .fact{position:sticky;bottom:0;z-index:8;margin:0;padding:10px 0 6px;background:linear-gradient(180deg,rgba(0,0,0,0),var(--bg) 45%)}
+/* Lock in lives on a solid bar across the bottom; while anything is still
+   below the fold, the bar says so, and tapping the cue scrolls to it */
+body.fightfull .ffull .fact{position:sticky;bottom:calc(-10px - env(safe-area-inset-bottom));z-index:8;margin:0 -12px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+  background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -8px 18px -10px rgba(8,22,20,.25);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:nowrap}
+body.fightfull .ffull .fact .btn.primary{margin-left:auto}
 body.fightfull .ffull .fopts{margin-bottom:6px}
 body.fightfull .ffull .fq{margin:6px 0 8px}
+.fmore{appearance:none;border:0;background:transparent;color:var(--accent);font:inherit;font-size:13.5px;font-weight:800;letter-spacing:.01em;padding:8px 2px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;animation:fmorebob 1.3s ease-in-out infinite}
+.fmore[hidden]{display:none}
+.fmore i{display:inline-block;font-style:normal;transform:translateY(1px)}
+@keyframes fmorebob{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+@media (prefers-reduced-motion:reduce){.fmore{animation:none}}
 @media (max-height:760px){
   body.fightfull .ffull .farena.onfloor .fnurse svg{height:min(158px,22vh)}
   body.fightfull .ffull .farena.onfloor .foe{width:min(112px,16vh);height:min(112px,16vh)}
@@ -840,7 +868,7 @@ div.qzcard{cursor:default}
   letter-spacing:-.01em;color:var(--ink)}
 .froomhead i{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:3px;max-width:60ch}
 .advwrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:#1B1145}
-.advscene{position:relative;width:100%;height:min(calc(100vh - 90px),900px);overflow:auto;scrollbar-width:thin;cursor:grab;touch-action:pan-x pan-y}
+.advscene{position:relative;width:100%;height:min(calc(100vh - 90px),900px);overflow:auto;scrollbar-width:thin;cursor:grab;touch-action:pan-x pan-y;overscroll-behavior:contain}
 .advscene.grab{cursor:grabbing;user-select:none}
 /* the wood full screen: the wrap covers the window, the chrome goes under it,
    a Back button top left, zoom top right; pinch zooms on a touch screen */
@@ -2620,6 +2648,19 @@ label.f.acf{margin-bottom:11px}
 .sheet header h3{font-size:17px;font-weight:700}
 .sheet .bd{padding:18px;display:flex;flex-direction:column;gap:13px}
 .sheet footer{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:9px}
+/* Today's count, in the corner of Study for a moment after each answer; any
+   tap sends it off, and it stops once the day's target is met. */
+.daychip{position:fixed;right:18px;bottom:14px;z-index:45;pointer-events:none;display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 18px -8px rgba(8,22,20,.35);
+  font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+  transition:opacity .4s ease,transform .4s ease}
+.daychip b{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:0;font-variant-numeric:tabular-nums}
+.daychip .ring{width:26px;height:26px}
+.daychip.bye{opacity:0;transform:translateY(8px)}
+@keyframes daychipin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.daychip:not([hidden]):not(.bye){animation:daychipin .3s ease}
+@media (prefers-reduced-motion:reduce){.daychip:not([hidden]):not(.bye){animation:none}}
+body:has(.ndock.in) .daychip{right:210px}
 #toasts{position:fixed;right:18px;top:18px;z-index:80;display:flex;flex-direction:column;gap:9px;align-items:flex-end}
 /* the companion dock */
 .ndock{position:fixed;right:18px;bottom:14px;z-index:46;pointer-events:none;
@@ -2676,6 +2717,8 @@ body.ncheer #toasts{top:18px}
 }
 @media (max-width:760px){
   .ndock{right:10px;bottom:78px}
+  .daychip{right:10px;bottom:calc(76px + env(safe-area-inset-bottom))}
+  body:has(.ndock.in) .daychip{right:auto;left:10px}
   .ndock .nfig{width:86px}
   .ndock .nbub{max-width:150px;margin-bottom:16px;padding:7px 11px}
 }
@@ -2797,6 +2840,7 @@ body.ncheer #toasts{top:18px}
 <div id="modalHost"></div>
 <div id="tourHost"></div>
 <div id="toasts" aria-live="polite"></div>
+<div id="daychip" class="daychip" hidden aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
@@ -3256,7 +3300,7 @@ function recolourCourses(){
   });
   return did;
 }
-const WEEKLY=[{"code": "NUR 314", "distinct": true, "weeks": [{"n": 1, "mon": "2026-08-31", "wed": "2026-09-02", "sun": "2026-09-06", "topic": "Pharmacodynamics & pharmacokinetics of the older adult", "fri": "2026-09-04"}, {"n": 2, "mon": "2026-09-07", "wed": "2026-09-09", "sun": "2026-09-13", "topic": "Sensory disorders", "fri": "2026-09-11"}, {"n": 3, "mon": "2026-09-14", "wed": "2026-09-16", "sun": "2026-09-20", "topic": "Neurological & cognitive degenerative disorders", "fri": "2026-09-18"}, {"n": 4, "mon": "2026-09-21", "wed": "2026-09-23", "sun": "2026-09-27", "topic": "Oxygenation problems", "fri": "2026-09-25"}, {"n": 5, "mon": "2026-09-28", "wed": "2026-09-30", "sun": "2026-10-04", "topic": "Cardiovascular disease", "fri": "2026-10-02"}, {"n": 6, "mon": "2026-10-05", "wed": "2026-10-07", "sun": "2026-10-11", "topic": "Inflammatory disorders — upper GI", "fri": "2026-10-09"}, {"n": 7, "mon": "2026-10-12", "wed": "2026-10-14", "sun": "2026-10-18", "topic": "Inflammatory disorders — lower GI", "fri": "2026-10-16"}, {"n": 8, "mon": "2026-10-19", "wed": "2026-10-21", "sun": "2026-10-25", "topic": "Hepatic & biliary disorders", "fri": "2026-10-23"}, {"n": 9, "mon": "2026-10-26", "wed": "2026-10-28", "sun": "2026-11-01", "topic": "Diabetes", "fri": "2026-10-30"}, {"n": 10, "mon": "2026-11-02", "wed": "2026-11-04", "sun": "2026-11-08", "topic": "Metabolic disorders", "fri": "2026-11-06"}, {"n": 11, "mon": "2026-11-09", "wed": "2026-11-11", "sun": "2026-11-15", "topic": "Renal disease", "fri": "2026-11-13"}, {"n": 12, "mon": "2026-11-16", "wed": "2026-11-18", "sun": "2026-11-22", "topic": "Immunity diseases", "fri": "2026-11-20"}, {"n": 13, "mon": "2026-11-23", "wed": "2026-11-25", "sun": "2026-11-29", "topic": "Regulation disorders", "fri": "2026-11-27"}, {"n": 14, "mon": "2026-11-30", "wed": "2026-12-02", "sun": "2026-12-06", "topic": "End-of-life", "fri": "2026-12-04"}], "slots": [{"k": "post", "label": "Initial post", "day": "wed"}, {"k": "r1", "label": "Reply to peer 1", "day": "fri"}, {"k": "r2", "label": "Reply to peer 2", "day": "sun"}]}, {"code": "NUR 305", "distinct": false, "weeks": [{"n": 1, "mon": "2026-08-31", "wed": "2026-09-02", "sun": "2026-09-06", "topic": "Philosophy of the healthy nurse"}, {"n": 2, "mon": "2026-09-07", "wed": "2026-09-09", "sun": "2026-09-13", "topic": "Nurse as educator / health literacy"}, {"n": 3, "mon": "2026-09-14", "wed": "2026-09-16", "sun": "2026-09-20", "topic": "Learning theories & learning styles"}, {"n": 4, "mon": "2026-09-21", "wed": "2026-09-23", "sun": "2026-09-27", "topic": "Objectives & teaching plans"}, {"n": 5, "mon": "2026-09-28", "wed": "2026-09-30", "sun": "2026-10-04", "topic": "Instructional methods"}, {"n": 6, "mon": "2026-10-05", "wed": "2026-10-07", "sun": "2026-10-11", "topic": "Instructional materials"}, {"n": 7, "mon": "2026-10-12", "wed": "2026-10-14", "sun": "2026-10-18", "topic": "Evaluation"}, {"n": 8, "mon": "2026-10-19", "wed": "2026-10-21", "sun": "2026-10-25", "topic": "Nurse's role in health promotion / levels of prevention"}, {"n": 9, "mon": "2026-10-26", "wed": "2026-10-28", "sun": "2026-11-01", "topic": "Health promotion strategies & behavior change theory"}, {"n": 10, "mon": "2026-11-02", "wed": "2026-11-04", "sun": "2026-11-08", "topic": "Nutrition & childhood obesity"}, {"n": 11, "mon": "2026-11-09", "wed": "2026-11-11", "sun": "2026-11-15", "topic": "Women and heart disease"}, {"n": 12, "mon": "2026-11-16", "wed": "2026-11-18", "sun": "2026-11-22", "topic": "Environmental health"}], "slots": [{"k": "post", "label": "Initial post", "day": "wed"}, {"k": "r1", "label": "Reply to peer 1", "day": "sun"}, {"k": "r2", "label": "Reply to peer 2", "day": "sun"}]}];
+const WEEKLY=[{"code": "NUR 314", "distinct": true, "weeks": [{"n": 1, "mon": "2026-08-31", "wed": "2026-09-02", "sun": "2026-09-06", "topic": "Pharmacodynamics & pharmacokinetics of the older adult", "fri": "2026-09-04", "sat": "2026-09-05"}, {"n": 2, "mon": "2026-09-07", "wed": "2026-09-09", "sun": "2026-09-13", "topic": "Sensory disorders", "fri": "2026-09-11", "sat": "2026-09-12"}, {"n": 3, "mon": "2026-09-14", "wed": "2026-09-16", "sun": "2026-09-20", "topic": "Neurological & cognitive degenerative disorders", "fri": "2026-09-18", "sat": "2026-09-19"}, {"n": 4, "mon": "2026-09-21", "wed": "2026-09-23", "sun": "2026-09-27", "topic": "Oxygenation problems", "fri": "2026-09-25", "sat": "2026-09-26"}, {"n": 5, "mon": "2026-09-28", "wed": "2026-09-30", "sun": "2026-10-04", "topic": "Cardiovascular disease", "fri": "2026-10-02", "sat": "2026-10-03"}, {"n": 6, "mon": "2026-10-05", "wed": "2026-10-07", "sun": "2026-10-11", "topic": "Inflammatory disorders — upper GI", "fri": "2026-10-09", "sat": "2026-10-10"}, {"n": 7, "mon": "2026-10-12", "wed": "2026-10-14", "sun": "2026-10-18", "topic": "Inflammatory disorders — lower GI", "fri": "2026-10-16", "sat": "2026-10-17"}, {"n": 8, "mon": "2026-10-19", "wed": "2026-10-21", "sun": "2026-10-25", "topic": "Hepatic & biliary disorders", "fri": "2026-10-23", "sat": "2026-10-24"}, {"n": 9, "mon": "2026-10-26", "wed": "2026-10-28", "sun": "2026-11-01", "topic": "Diabetes", "fri": "2026-10-30", "sat": "2026-10-31"}, {"n": 10, "mon": "2026-11-02", "wed": "2026-11-04", "sun": "2026-11-08", "topic": "Metabolic disorders", "fri": "2026-11-06", "sat": "2026-11-07"}, {"n": 11, "mon": "2026-11-09", "wed": "2026-11-11", "sun": "2026-11-15", "topic": "Renal disease", "fri": "2026-11-13", "sat": "2026-11-14"}, {"n": 12, "mon": "2026-11-16", "wed": "2026-11-18", "sun": "2026-11-22", "topic": "Immunity diseases", "fri": "2026-11-20", "sat": "2026-11-21"}, {"n": 13, "mon": "2026-11-23", "wed": "2026-11-25", "sun": "2026-11-29", "topic": "Regulation disorders", "fri": "2026-11-27", "sat": "2026-11-28"}, {"n": 14, "mon": "2026-11-30", "wed": "2026-12-02", "sun": "2026-12-06", "topic": "End-of-life", "fri": "2026-12-04", "sat": "2026-12-05"}], "slots": [{"k": "post", "label": "Initial post", "day": "wed"}, {"k": "r1", "label": "Reply to peer 1", "day": "sat"}, {"k": "r2", "label": "Reply to peer 2", "day": "sun"}]}, {"code": "NUR 305", "distinct": false, "weeks": [{"n": 1, "mon": "2026-08-31", "wed": "2026-09-02", "sun": "2026-09-06", "topic": "Philosophy of the healthy nurse"}, {"n": 2, "mon": "2026-09-07", "wed": "2026-09-09", "sun": "2026-09-13", "topic": "Nurse as educator / health literacy"}, {"n": 3, "mon": "2026-09-14", "wed": "2026-09-16", "sun": "2026-09-20", "topic": "Learning theories & learning styles"}, {"n": 4, "mon": "2026-09-21", "wed": "2026-09-23", "sun": "2026-09-27", "topic": "Objectives & teaching plans"}, {"n": 5, "mon": "2026-09-28", "wed": "2026-09-30", "sun": "2026-10-04", "topic": "Instructional methods"}, {"n": 6, "mon": "2026-10-05", "wed": "2026-10-07", "sun": "2026-10-11", "topic": "Instructional materials"}, {"n": 7, "mon": "2026-10-12", "wed": "2026-10-14", "sun": "2026-10-18", "topic": "Evaluation"}, {"n": 8, "mon": "2026-10-19", "wed": "2026-10-21", "sun": "2026-10-25", "topic": "Nurse's role in health promotion / levels of prevention"}, {"n": 9, "mon": "2026-10-26", "wed": "2026-10-28", "sun": "2026-11-01", "topic": "Health promotion strategies & behavior change theory"}, {"n": 10, "mon": "2026-11-02", "wed": "2026-11-04", "sun": "2026-11-08", "topic": "Nutrition & childhood obesity"}, {"n": 11, "mon": "2026-11-09", "wed": "2026-11-11", "sun": "2026-11-15", "topic": "Women and heart disease"}, {"n": 12, "mon": "2026-11-16", "wed": "2026-11-18", "sun": "2026-11-22", "topic": "Environmental health"}], "slots": [{"k": "post", "label": "Initial post", "day": "wed"}, {"k": "r1", "label": "Reply to peer 1", "day": "sun"}, {"k": "r2", "label": "Reply to peer 2", "day": "sun"}]}];
 const SEED_VERSION=2;
 /* Question banks shipped with the app. Each id is a hash of the question's own
    content, so re-publishing a bigger bank keeps every existing question's id —
@@ -5470,72 +5514,72 @@ const SEED_EVENTS=[
  {c:"NUR 308T",t:"308 Final Exam",y:"Exam",d:"2026-12-17",n:"Week 15. Final exam week. NCLEX-style questions.",sid:"308T-c2b4fb16af"},
  {c:"NUR 305",t:"305 DQ 1 initial post — Philosophy of the healthy nurse",y:"Assignment",d:"2026-09-02",n:"Module 1. Initial post due by midnight Wednesday.",sid:"305-f365ce8723"},
  {c:"NUR 314",t:"314 DQ 1 initial post — Pharmacodynamics & pharmacokinetics of the older adult",y:"Assignment",d:"2026-09-02",n:"Module 1, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 5, 55",sid:"314-0a6cb73005"},
- {c:"NUR 314",t:"314 DQ 1 — reply to peer 1",y:"Assignment",d:"2026-09-04",n:"Module 1, login 2 of 3. Must be a different day from your initial post.",sid:"314-5363dc911d"},
+ {c:"NUR 314",t:"314 DQ 1 — reply to peer 1",y:"Assignment",d:"2026-09-05",n:"Module 1, login 2 of 3. Must be a different day from your initial post.",sid:"314-5363dc911d"},
  {c:"NUR 305",t:"305 DQ 1 — reply to 2 peers",y:"Assignment",d:"2026-09-06",n:"Module 1. Two peer replies, both due by midnight Sunday.",sid:"305-d1fdc4b5c7"},
  {c:"NUR 314",t:"314 DQ 1 — reply to peer 2",y:"Assignment",d:"2026-09-06",n:"Module 1, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-0a7c094563"},
  {c:"NUR 305",t:"305 DQ 2 initial post — Nurse as educator / health literacy",y:"Assignment",d:"2026-09-09",n:"Module 2. Initial post due by midnight Wednesday.",sid:"305-b3480611b5"},
  {c:"NUR 314",t:"314 DQ 2 initial post — Sensory disorders",y:"Assignment",d:"2026-09-09",n:"Module 2, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 59 (eye), 60 (ear)",sid:"314-a1f4ff7c1c"},
  {c:"NUR 308T",t:"Dynamic Quiz — Gerontology; sensory (visual, auditory, balance)",y:"Quiz",d:"2026-09-10",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-6a1d552e05"},
- {c:"NUR 314",t:"314 DQ 2 — reply to peer 1",y:"Assignment",d:"2026-09-11",n:"Module 2, login 2 of 3. Must be a different day from your initial post.",sid:"314-c4ecba3471"},
+ {c:"NUR 314",t:"314 DQ 2 — reply to peer 1",y:"Assignment",d:"2026-09-12",n:"Module 2, login 2 of 3. Must be a different day from your initial post.",sid:"314-c4ecba3471"},
  {c:"NUR 305",t:"305 DQ 2 — reply to 2 peers",y:"Assignment",d:"2026-09-13",n:"Module 2. Two peer replies, both due by midnight Sunday.",sid:"305-073faff164"},
  {c:"NUR 314",t:"314 DQ 2 — reply to peer 2",y:"Assignment",d:"2026-09-13",n:"Module 2, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-514e024c40"},
  {c:"NUR 305",t:"305 DQ 3 initial post — Learning theories & learning styles",y:"Assignment",d:"2026-09-16",n:"Module 3. Initial post due by midnight Wednesday.",sid:"305-66c1be40dd"},
  {c:"NUR 314",t:"314 DQ 3 initial post — Neurological & cognitive degenerative disorders",y:"Assignment",d:"2026-09-16",n:"Module 3, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 47, 48",sid:"314-13df45c8df"},
  {c:"NUR 308T",t:"Dynamic Quiz — Neuro & cognitive (Alzheimer's, ALS, MS, Parkinson's, muscular dystrophy)",y:"Quiz",d:"2026-09-17",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-92d3beea05"},
- {c:"NUR 314",t:"314 DQ 3 — reply to peer 1",y:"Assignment",d:"2026-09-18",n:"Module 3, login 2 of 3. Must be a different day from your initial post.",sid:"314-2cfd28edce"},
+ {c:"NUR 314",t:"314 DQ 3 — reply to peer 1",y:"Assignment",d:"2026-09-19",n:"Module 3, login 2 of 3. Must be a different day from your initial post.",sid:"314-2cfd28edce"},
  {c:"NUR 305",t:"305 DQ 3 — reply to 2 peers",y:"Assignment",d:"2026-09-20",n:"Module 3. Two peer replies, both due by midnight Sunday.",sid:"305-d65f4bd931"},
  {c:"NUR 314",t:"314 DQ 3 — reply to peer 2",y:"Assignment",d:"2026-09-20",n:"Module 3, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-9c36a7c9a0"},
  {c:"NUR 314",t:"314 Exam 1",y:"Exam",d:"2026-09-22",n:"Content from modules 1, 2, 3",sid:"314-3997640035"},
  {c:"NUR 305",t:"305 DQ 4 initial post — Objectives & teaching plans",y:"Assignment",d:"2026-09-23",n:"Module 4. Initial post due by midnight Wednesday.",sid:"305-56ee3a24d9"},
  {c:"NUR 314",t:"314 DQ 4 initial post — Oxygenation problems",y:"Assignment",d:"2026-09-23",n:"Module 4, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 33",sid:"314-6431e7ba4a"},
  {c:"NUR 308T",t:"Dynamic Quiz — Respiratory",y:"Quiz",d:"2026-09-24",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-4cd0050efd"},
- {c:"NUR 314",t:"314 DQ 4 — reply to peer 1",y:"Assignment",d:"2026-09-25",n:"Module 4, login 2 of 3. Must be a different day from your initial post.",sid:"314-15addb7d10"},
+ {c:"NUR 314",t:"314 DQ 4 — reply to peer 1",y:"Assignment",d:"2026-09-26",n:"Module 4, login 2 of 3. Must be a different day from your initial post.",sid:"314-15addb7d10"},
  {c:"NUR 305",t:"305 DQ 4 — reply to 2 peers",y:"Assignment",d:"2026-09-27",n:"Module 4. Two peer replies, both due by midnight Sunday.",sid:"305-53507f7382"},
  {c:"NUR 314",t:"314 DQ 4 — reply to peer 2",y:"Assignment",d:"2026-09-27",n:"Module 4, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-3f474b9788"},
  {c:"NUR 305",t:"305 DQ 5 initial post — Instructional methods",y:"Assignment",d:"2026-09-30",n:"Module 5. Initial post due by midnight Wednesday.",sid:"305-97fcabca6c"},
  {c:"NUR 314",t:"314 DQ 5 initial post — Cardiovascular disease",y:"Assignment",d:"2026-09-30",n:"Module 5, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 30, 26; Hinkle 24, 25, 27",sid:"314-6b63a09451"},
  {c:"NUR 308T",t:"308 Exam 1 — content 1-4",y:"Exam",d:"2026-10-01",n:"Exam first, covering weeks 1-4. Class continues after: introduction to nutrition. Exemplars: GERD; gastritis; peptic ulcer disease; upper GI disorders.",sid:"308T-3e94175f66"},
- {c:"NUR 314",t:"314 DQ 5 — reply to peer 1",y:"Assignment",d:"2026-10-02",n:"Module 5, login 2 of 3. Must be a different day from your initial post.",sid:"314-ac7eac6fcb"},
+ {c:"NUR 314",t:"314 DQ 5 — reply to peer 1",y:"Assignment",d:"2026-10-03",n:"Module 5, login 2 of 3. Must be a different day from your initial post.",sid:"314-ac7eac6fcb"},
  {c:"NUR 305",t:"305 DQ 5 — reply to 2 peers",y:"Assignment",d:"2026-10-04",n:"Module 5. Two peer replies, both due by midnight Sunday.",sid:"305-1445cd5e5e"},
  {c:"NUR 305",t:"Educational assessment paper due",y:"Assignment",d:"2026-10-04",n:"Module 5",sid:"305-5f420b5866"},
  {c:"NUR 314",t:"314 DQ 5 — reply to peer 2",y:"Assignment",d:"2026-10-04",n:"Module 5, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-8f33129907"},
  {c:"NUR 305",t:"305 DQ 6 initial post — Instructional materials",y:"Assignment",d:"2026-10-07",n:"Module 6. Initial post due by midnight Wednesday.",sid:"305-aa5f3e8dcb"},
  {c:"NUR 314",t:"314 DQ 6 initial post — Inflammatory disorders — upper GI",y:"Assignment",d:"2026-10-07",n:"Module 6, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 37, 38",sid:"314-0121202165"},
  {c:"NUR 308T",t:"Dynamic Quiz — Cardiac",y:"Quiz",d:"2026-10-08",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-0a0c46f81b"},
- {c:"NUR 314",t:"314 DQ 6 — reply to peer 1",y:"Assignment",d:"2026-10-09",n:"Module 6, login 2 of 3. Must be a different day from your initial post.",sid:"314-670781dbc1"},
+ {c:"NUR 314",t:"314 DQ 6 — reply to peer 1",y:"Assignment",d:"2026-10-10",n:"Module 6, login 2 of 3. Must be a different day from your initial post.",sid:"314-670781dbc1"},
  {c:"NUR 305",t:"305 DQ 6 — reply to 2 peers",y:"Assignment",d:"2026-10-11",n:"Module 6. Two peer replies, both due by midnight Sunday.",sid:"305-63e49b970f"},
  {c:"NUR 314",t:"314 DQ 6 — reply to peer 2",y:"Assignment",d:"2026-10-11",n:"Module 6, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-1e94cd530b"},
  {c:"NUR 305",t:"305 DQ 7 initial post — Evaluation",y:"Assignment",d:"2026-10-14",n:"Module 7. Initial post due by midnight Wednesday.",sid:"305-3e82e98ea8"},
  {c:"NUR 314",t:"314 DQ 7 initial post — Inflammatory disorders — lower GI",y:"Assignment",d:"2026-10-14",n:"Module 7, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 39, 40",sid:"314-e65423fc6a"},
  {c:"NUR 308T",t:"Dynamic Quiz — GI",y:"Quiz",d:"2026-10-15",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-88a2889e39"},
- {c:"NUR 314",t:"314 DQ 7 — reply to peer 1",y:"Assignment",d:"2026-10-16",n:"Module 7, login 2 of 3. Must be a different day from your initial post.",sid:"314-523682800d"},
+ {c:"NUR 314",t:"314 DQ 7 — reply to peer 1",y:"Assignment",d:"2026-10-17",n:"Module 7, login 2 of 3. Must be a different day from your initial post.",sid:"314-523682800d"},
  {c:"NUR 305",t:"305 DQ 7 — reply to 2 peers",y:"Assignment",d:"2026-10-18",n:"Module 7. Two peer replies, both due by midnight Sunday.",sid:"305-c56db730ae"},
  {c:"NUR 314",t:"314 DQ 7 — reply to peer 2",y:"Assignment",d:"2026-10-18",n:"Module 7, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-9180de1cbe"},
  {c:"NUR 314",t:"314 Exam 2",y:"Exam",d:"2026-10-20",n:"Content from modules 4, 5, 6, 7",sid:"314-79df55af00"},
  {c:"NUR 305",t:"305 DQ 8 initial post — Nurse's role in health promotion / levels of prevention",y:"Assignment",d:"2026-10-21",n:"Module 8. Initial post due by midnight Wednesday.",sid:"305-1fd0ab529e"},
  {c:"NUR 314",t:"314 DQ 8 initial post — Hepatic & biliary disorders",y:"Assignment",d:"2026-10-21",n:"Module 8, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 23",sid:"314-66271702b5"},
  {c:"NUR 308T",t:"Dynamic Quiz — Elimination: GI & urinary",y:"Quiz",d:"2026-10-22",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-35a5e67e8f"},
- {c:"NUR 314",t:"314 DQ 8 — reply to peer 1",y:"Assignment",d:"2026-10-23",n:"Module 8, login 2 of 3. Must be a different day from your initial post.",sid:"314-be7aed795e"},
+ {c:"NUR 314",t:"314 DQ 8 — reply to peer 1",y:"Assignment",d:"2026-10-24",n:"Module 8, login 2 of 3. Must be a different day from your initial post.",sid:"314-be7aed795e"},
  {c:"NUR 305",t:"305 DQ 8 — reply to 2 peers",y:"Assignment",d:"2026-10-25",n:"Module 8. Two peer replies, both due by midnight Sunday.",sid:"305-d1210b5f31"},
  {c:"NUR 314",t:"314 DQ 8 — reply to peer 2",y:"Assignment",d:"2026-10-25",n:"Module 8, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-91f9604018"},
  {c:"NUR 305",t:"305 DQ 9 initial post — Health promotion strategies & behavior change theory",y:"Assignment",d:"2026-10-28",n:"Module 9. Initial post due by midnight Wednesday.",sid:"305-6941ea102f"},
  {c:"NUR 314",t:"314 DQ 9 initial post — Diabetes",y:"Assignment",d:"2026-10-28",n:"Module 9, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 41",sid:"314-2126c6a931"},
  {c:"NUR 308T",t:"308 Exam 2 — content 5, 6, 7, 8",y:"Exam",d:"2026-10-29",n:"Exam first, covering weeks 5-8. Class continues after: introduction to hormonal regulation & metabolism. Exemplars: endocrine; diabetes; thyroid disorders; adrenal disorders.",sid:"308T-e3f3179eb7"},
- {c:"NUR 314",t:"314 DQ 9 — reply to peer 1",y:"Assignment",d:"2026-10-30",n:"Module 9, login 2 of 3. Must be a different day from your initial post.",sid:"314-9f72c8ebba"},
+ {c:"NUR 314",t:"314 DQ 9 — reply to peer 1",y:"Assignment",d:"2026-10-31",n:"Module 9, login 2 of 3. Must be a different day from your initial post.",sid:"314-9f72c8ebba"},
  {c:"NUR 305",t:"305 DQ 9 — reply to 2 peers",y:"Assignment",d:"2026-11-01",n:"Module 9. Two peer replies, both due by midnight Sunday.",sid:"305-3727764040"},
  {c:"NUR 305",t:"Teaching plan assignment due",y:"Assignment",d:"2026-11-01",n:"Module 9",sid:"305-f9da99f26d"},
  {c:"NUR 314",t:"314 DQ 9 — reply to peer 2",y:"Assignment",d:"2026-11-01",n:"Module 9, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-5e13c9bc98"},
  {c:"NUR 305",t:"305 DQ 10 initial post — Nutrition & childhood obesity",y:"Assignment",d:"2026-11-04",n:"Module 10. Initial post due by midnight Wednesday.",sid:"305-48a7d0dc01"},
  {c:"NUR 314",t:"314 DQ 10 initial post — Metabolic disorders",y:"Assignment",d:"2026-11-04",n:"Module 10, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 42, 43, 45",sid:"314-eb5d92a0cd"},
  {c:"NUR 308T",t:"Dynamic Quiz — Biliary: pancreatitis, liver, gallbladder",y:"Quiz",d:"2026-11-05",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-6353e8c568"},
- {c:"NUR 314",t:"314 DQ 10 — reply to peer 1",y:"Assignment",d:"2026-11-06",n:"Module 10, login 2 of 3. Must be a different day from your initial post.",sid:"314-f40399f7eb"},
+ {c:"NUR 314",t:"314 DQ 10 — reply to peer 1",y:"Assignment",d:"2026-11-07",n:"Module 10, login 2 of 3. Must be a different day from your initial post.",sid:"314-f40399f7eb"},
  {c:"NUR 305",t:"305 DQ 10 — reply to 2 peers",y:"Assignment",d:"2026-11-08",n:"Module 10. Two peer replies, both due by midnight Sunday.",sid:"305-a2d3e1148a"},
  {c:"NUR 314",t:"314 DQ 10 — reply to peer 2",y:"Assignment",d:"2026-11-08",n:"Module 10, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-097b68c547"},
  {c:"NUR 305",t:"PowerPoint presentation topic due",y:"Assignment",d:"2026-11-09",n:"Module 10",sid:"305-5be5f3639c"},
  {c:"NUR 305",t:"305 DQ 11 initial post — Women and heart disease",y:"Assignment",d:"2026-11-11",n:"Module 11. Initial post due by midnight Wednesday.",sid:"305-e86ccd3023"},
  {c:"NUR 314",t:"314 DQ 11 initial post — Renal disease",y:"Assignment",d:"2026-11-11",n:"Module 11, login 1 of 3. Initial post by midnight Wednesday. Reading: Brunner ch. 48",sid:"314-5bc45d71c9"},
  {c:"NUR 308T",t:"Dynamic Quiz — Endocrine: diabetes",y:"Quiz",d:"2026-11-12",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-26776bc075"},
- {c:"NUR 314",t:"314 DQ 11 — reply to peer 1",y:"Assignment",d:"2026-11-13",n:"Module 11, login 2 of 3. Must be a different day from your initial post.",sid:"314-0de60b7ae3"},
+ {c:"NUR 314",t:"314 DQ 11 — reply to peer 1",y:"Assignment",d:"2026-11-14",n:"Module 11, login 2 of 3. Must be a different day from your initial post.",sid:"314-0de60b7ae3"},
  {c:"NUR 305",t:"305 DQ 11 — reply to 2 peers",y:"Assignment",d:"2026-11-15",n:"Module 11. Two peer replies, both due by midnight Sunday.",sid:"305-b7d87ab521"},
  {c:"NUR 314",t:"314 DQ 11 — reply to peer 2",y:"Assignment",d:"2026-11-15",n:"Module 11, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-81b49acf2e"},
  {c:"NUR 314",t:"314 Exam 3",y:"Exam",d:"2026-11-17",n:"Content from modules 8, 9, 10, 11",sid:"314-91212aa7b6"},
@@ -5543,16 +5587,16 @@ const SEED_EVENTS=[
  {c:"NUR 314",t:"314 DQ 12 initial post — Immunity diseases",y:"Assignment",d:"2026-11-18",n:"Module 12, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 13",sid:"314-14bfbb7bde"},
  {c:"NUR 308T",t:"308 Exam 3 — content 9-11",y:"Exam",d:"2026-11-19",n:"Exam first, covering weeks 9-11. Class continues after: immunity. Exemplars: HIV & AIDS; rheumatoid arthritis.",sid:"308T-ddc27d536f"},
  {c:"NUR 308T",t:"Dynamic Quiz — Fluid, electrolyte & acid-base",y:"Quiz",d:"2026-11-19",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-2a7a51859b"},
- {c:"NUR 314",t:"314 DQ 12 — reply to peer 1",y:"Assignment",d:"2026-11-20",n:"Module 12, login 2 of 3. Must be a different day from your initial post.",sid:"314-636855a2fc"},
+ {c:"NUR 314",t:"314 DQ 12 — reply to peer 1",y:"Assignment",d:"2026-11-21",n:"Module 12, login 2 of 3. Must be a different day from your initial post.",sid:"314-636855a2fc"},
  {c:"NUR 305",t:"305 DQ 12 — reply to 2 peers",y:"Assignment",d:"2026-11-22",n:"Module 12. Two peer replies, both due by midnight Sunday.",sid:"305-bc2fcc710e"},
  {c:"NUR 305",t:"Group PowerPoint presentation due",y:"Assignment",d:"2026-11-22",n:"Module 12 — due for all groups",sid:"305-a62ae712c2"},
  {c:"NUR 314",t:"314 DQ 12 — reply to peer 2",y:"Assignment",d:"2026-11-22",n:"Module 12, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-fd60289379"},
  {c:"NUR 314",t:"314 DQ 13 initial post — Regulation disorders",y:"Assignment",d:"2026-11-25",n:"Module 13, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 11, 14",sid:"314-ec0f7a60f9"},
- {c:"NUR 314",t:"314 DQ 13 — reply to peer 1",y:"Assignment",d:"2026-11-27",n:"Module 13, login 2 of 3. Must be a different day from your initial post.",sid:"314-9f0f3f4e38"},
+ {c:"NUR 314",t:"314 DQ 13 — reply to peer 1",y:"Assignment",d:"2026-11-28",n:"Module 13, login 2 of 3. Must be a different day from your initial post.",sid:"314-9f0f3f4e38"},
  {c:"NUR 314",t:"314 DQ 13 — reply to peer 2",y:"Assignment",d:"2026-11-29",n:"Module 13, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-b83d6a3522"},
  {c:"NUR 314",t:"314 DQ 14 initial post — End-of-life",y:"Assignment",d:"2026-12-02",n:"Module 14, login 1 of 3. Initial post by midnight Wednesday. Reading: See article",sid:"314-82045b3c2c"},
  {c:"NUR 308T",t:"Dynamic Quiz — Immune & infection",y:"Quiz",d:"2026-12-03",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-9ef6ac6832"},
- {c:"NUR 314",t:"314 DQ 14 — reply to peer 1",y:"Assignment",d:"2026-12-04",n:"Module 14, login 2 of 3. Must be a different day from your initial post.",sid:"314-4e4261fc7f"},
+ {c:"NUR 314",t:"314 DQ 14 — reply to peer 1",y:"Assignment",d:"2026-12-05",n:"Module 14, login 2 of 3. Must be a different day from your initial post.",sid:"314-4e4261fc7f"},
  {c:"NUR 305",t:"Module 13 — PowerPoint presentations",y:"Assignment",d:"2026-12-06",n:"Presentation week, Nov 30 – Dec 6",sid:"305-799c484bd0"},
  {c:"NUR 314",t:"314 DQ 14 — reply to peer 2",y:"Assignment",d:"2026-12-06",n:"Module 14, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-4a445913d5"},
  {c:"NUR 308T",t:"Dynamic Quiz — End-of-life",y:"Quiz",d:"2026-12-10",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-f9390583f0"},
@@ -5759,7 +5803,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 3:23 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 11, 6:35 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -6718,7 +6762,7 @@ function syncLatches(){
   allGates().forEach(g=>{if(g.earned&&!p.gatesOpen[g.ex.sid]){p.gatesOpen[g.ex.sid]=today();changed=true;}});
   if(!p.lvl65){p.rankMax=1;p.lvl65=true;changed=true;}   // the old 1-13 latch is not a level
   const li=levelInfo(p.xp).lvl;
-  if(li>(p.rankMax||1)){p.rankMax=li;changed=true;}
+  if(li>(p.rankMax||1)){p.rankMax=li;changed=true;vitalsFlash();}
   return changed;
 }
 function awardMilestones(silent){
@@ -6751,7 +6795,7 @@ function awardMilestones(silent){
 function checkTrophies(silent){
   /* a new week can open a rank while the app is still open */
   const lv=levelInfo(S.profile.xp).lvl;
-  if(lv>(S.profile.rankMax||1))S.profile.rankMax=lv;
+  if(lv>(S.profile.rankMax||1)){S.profile.rankMax=lv;vitalsFlash();}
   awardMilestones(silent);
   let got=false;
   TROPHIES.forEach(tr=>{
@@ -6764,6 +6808,69 @@ function checkTrophies(silent){
   if(got)saveCore();
 }
 function addXp(n){S.profile.xp=Math.max(0,(S.profile.xp||0)+n);}
+/* WHEN THE STRIP SHOWS
+   Home is the front door and the other pages need the room, so the strip is
+   off almost everywhere. Progress and Nurse - the pages about the nurse - get
+   a slim one. A level up brings the full strip in for ten seconds, wherever
+   you are, unless you are in the middle of questions or full screen, where
+   nothing should slide in over the work. */
+let VITALS_UNTIL=0, VITALS_TIMER=null, VITALS_ARMED=false;   // armed after the first paint, so a level that rose while you were away does not slide in at boot
+function vitalsBusy(){
+  /* at boot some of these are not declared yet; before the page is up, nothing shows anyway */
+  try{return !!(session||QUIZ||GAME||FIGHT||ADV_FULL||(tab==="fight"&&ADV_OPEN)||document.body.classList.contains("fightfull"));}
+  catch(e){return true;}
+}
+function vitalsMode(){
+  if(vitalsBusy())return "off";
+  if(Date.now()<VITALS_UNTIL)return "full";
+  return (tab==="trophies"||tab==="nurse")?"small":"off";
+}
+function applyVitals(){
+  const vt=document.getElementById("vitals");if(!vt)return;
+  VITALS_ARMED=true;
+  const m=vitalsMode();
+  vt.style.display=m==="off"?"none":"";
+  vt.classList.toggle("slim",m==="small");
+  vt.classList.toggle("flash",m==="full"&&Date.now()<VITALS_UNTIL);
+}
+/* THE CORNER COUNT
+   On Study, a small pill in the corner says where today stands - but only
+   for a moment after each answer is counted, and any tap sends it off early.
+   Nothing lives in the corner: it is a nudge toward ten, not a fixture. It
+   stays out of full screen, and once the day's target is met it stops. Taps
+   pass straight through it, so it never sits between you and a button. */
+let DAYCHIP_T=null;
+function dayChipHide(now){
+  const el=document.getElementById("daychip");if(!el||el.hidden)return;
+  if(DAYCHIP_T){clearTimeout(DAYCHIP_T);DAYCHIP_T=null;}
+  if(now){el.hidden=true;el.classList.remove("bye");return;}
+  el.classList.add("bye");
+  DAYCHIP_T=setTimeout(()=>{el.hidden=true;el.classList.remove("bye");DAYCHIP_T=null;},450);
+}
+function dayChipPop(){
+  const el=document.getElementById("daychip");if(!el)return;
+  let busy=false;try{busy=ADV_FULL||document.body.classList.contains("fightfull");}catch(e){busy=true;}
+  const g=dayTarget(), n=dayN(today());
+  if(tab!=="study"||busy||n>=g){dayChipHide(true);return;}
+  if(DAYCHIP_T){clearTimeout(DAYCHIP_T);DAYCHIP_T=null;}
+  el.classList.remove("bye");
+  const C=2*Math.PI*15, pct=Math.min(1,n/g);
+  el.innerHTML='<svg class="ring" viewBox="0 0 38 38" aria-hidden="true"><circle class="trk" cx="19" cy="19" r="15"/><circle class="val" cx="19" cy="19" r="15" stroke-dasharray="'+(C*pct).toFixed(1)+' 999"/></svg><span><b>'+n+'</b>/'+g+' today</span>';
+  el.hidden=false;
+  DAYCHIP_T=setTimeout(()=>{DAYCHIP_T=null;dayChipHide(false);},2600);
+}
+/* a re-render is a change of scene: whatever was up goes, so it is never left
+   over a page it was not counting for */
+function applyDayChip(){ if(tab!=="study")dayChipHide(true); }
+document.addEventListener("pointerdown",()=>{const el=document.getElementById("daychip");if(el&&!el.hidden)dayChipHide(false);},true);
+function vitalsFlash(){
+  if(!VITALS_ARMED)return;
+  VITALS_UNTIL=Date.now()+10000;
+  if(VITALS_TIMER)clearTimeout(VITALS_TIMER);
+  VITALS_TIMER=setTimeout(()=>{VITALS_TIMER=null;VITALS_UNTIL=0;applyVitals();},10050);
+  try{renderVitals();}catch(e){}
+  applyVitals();
+}
 /* ---------------------------------------------------------------------------
    COMMITMENT TIERS
    A goal you typed in yourself is a goal you can retype at 11pm to save a
@@ -6893,6 +7000,7 @@ function bumpToday(n){
   const before=rec.n||0, wt=weekTarget(), wk=wkStart(t);
   rec.n=before+n;
   p.todayDate=t;p.todayCount=rec.n;
+  try{dayChipPop();}catch(e){}
   if(before<rec.g&&rec.n>=rec.g){
     p.goalHits=(p.goalHits||0)+1;
     p.streak=(p.lastHit===dshift(t,-1)?(p.streak||0)+1:1);
@@ -6962,14 +7070,13 @@ function renderVitals(){
   $("#vitals").innerHTML=
    '<div class="vital"><div class="rank">'+esc(li.rank)+'</div><div class="l">Level '+li.lvl+'</div></div>'+
    '<div class="xpwrap">'+
-     '<div class="mono" style="font-size:11px;color:var(--faint);display:flex;justify-content:space-between;gap:10px">'+
-       '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(rankWhy(li))+'</span>'+
+     '<div class="mono" style="font-size:11px;color:var(--faint);display:flex;justify-content:flex-end;gap:10px">'+
        '<span>'+p.xp+' XP</span></div>'+
      '<div class="xpbar'+(li.heldBy==="assignments"?' behind':'')+'"><i style="width:'+(li.pct*100).toFixed(1)+'%"></i></div></div>'+
    '<div class="goalbox"><svg class="ring" viewBox="0 0 38 38"><circle class="trk" cx="19" cy="19" r="15"/><circle class="val" cx="19" cy="19" r="15" stroke-dasharray="'+(C*pct).toFixed(1)+' 999"/></svg>'+
      '<div class="vital"><div class="n">'+cnt+'<span style="font-size:12px;color:var(--faint)">/'+g+'</span></div><div class="l">Today</div></div></div>'+
-   '<div class="vital"><div class="n">'+(p.streak||0)+'</div><div class="l">Day streak</div></div>'+
-   '<div class="vital"><div class="n">'+acc+'%</div><div class="l">Accuracy</div></div>'+
+   '<div class="vital vx"><div class="n">'+(p.streak||0)+'</div><div class="l">Day streak</div></div>'+
+   '<div class="vital vx"><div class="n">'+acc+'%</div><div class="l">Accuracy</div></div>'+
    '';
 }
 
@@ -7558,9 +7665,7 @@ function render(){
      lands there with the locker already open, so old links keep working. */
   if(tab==="shop"){tab="nurse";DRAWER.locker=true;}   // the rollover lives here, and only here, so its notices always land
   renderVitals();renderBuild();
-  // Home is the front door, not a scoreboard - the vitals strip lives on the
-  // pages that are actually about progress
-  const vt=$("#vitals"); if(vt)vt.style.display=(tab==="home"?"none":"");
+  applyVitals();applyDayChip();
   $$(".navbtn").forEach(b=>b.setAttribute("aria-current",String(b.dataset.nav===tab)));
   const v=$("#view");
   /* A view that throws used to leave the previous one on screen: the tab you
@@ -7717,63 +7822,66 @@ function trophyDrawer(){
 --------------------------------------------------------------------------- */
 /* WHAT THE LOCKER COSTS, AND WHAT THE JOB PAYS
 
-   The 26 items add up to $2,455. The old ladder paid $100 + $1,440 in rank
-   purses + $960 in gate money = $2,500 at an absolute theoretical maximum, and
-   since no gate could ever open (see gateState) the real ceiling was $868.
-   Twelve items were unbuyable by any play pattern, which is a shop that exists
-   to be looked at.
+   The 34 items add up to $8,555 (raised 11 September - the old shelf was
+   $5,695 and cleared too early once the fights started paying; each item keeps
+   its old tag in `was` so anyone who bought before the rise is billed what
+   they paid, never the new price).
 
-   The purse now clears the shelf with room to spare, and pays on a flat, round
-   ladder that is easy to read: rank 2 pays $100 and every rank after adds $20,
-   so rank 13 pays $320. Ranks 2-13 come to $2,520; eight gates at $100 add
-   $960; with the opening grant that is $3,580 against $2,455 of costume and a
-   $90 shift swap whenever you want one.
+   The purse pays on a flat, round ladder that is easy to read: rank 2 pays
+   $100 and every rank after adds $20, so rank 13 pays $320. Ranks 2-13 come to
+   $2,520. Six exam gates at $150 and the two finals at $300 add $1,500; with
+   the opening grant that is $4,120 before a single fight - about half the
+   shelf. The other half is the floor: a first clean win over each of the 50
+   diseases pays up to $2,645 (see FIGHT_PURSE), which lands everything done
+   once at roughly $6,765, and ward rounds and repeats carry the rest.
 
    The shape matters as much as the total. Stopping at the XP cap (rank 9)
-   without touching a gate leaves you around $1,460 - most of the way, not all
-   of it. Reaching rank 10 with every gate open clears the whole shelf with
-   $225 to spare, and it climbs from there. So the locker is finishable, and
-   finishing it means having done the work. */
+   without touching a gate leaves you around $1,460 - the PPE bay and a few
+   things in the kit. Every rank and every gate, no fights, reaches the energy
+   bay but not the fight kit. The whole shelf takes the whole game, finals
+   included, which is the point of a shelf. */
 const GRANT=100;                      // enough to walk in and buy something
 const RANK_PURSE=L=>60+20*L;          // rank 2 pays $100, and $20 more each rank
-const GATE_BONUS=120;
+const GATE_BONUS=150;                 // an exam gate
+const FINAL_BONUS=300;                // the two finals pay double
+const gateBonus=sid=>{const e=S.events.find(x=>x.sid===sid);return e&&/final/i.test(e.title||"")?FINAL_BONUS:GATE_BONUS;};
 const LOCKER=[
- {id:"mask",     p:40, n:"Surgical mask",   d:"The pleated blue one"},
- {id:"n95",      p:50, n:"N95 respirator",  d:"Molded, for airborne precautions"},
- {id:"shield",   p:55, n:"Face shield",     d:"Clear visor on a headband"},
- {id:"cap",      p:50, n:"Scrub cap",       d:"The fitted cap, with side ties"},
- {id:"fits",     p:90, n:"Fitted scrub pants", d:"Slim, tapered and jogger cuts"},
- {id:"fits2",    p:110,n:"Statement scrub pants",d:"Bootcut, wide leg and cargo"},
- {id:"shoes1",   p:80, n:"Court & slip-on", d:"Two more shoes on the rack"},
- {id:"shoes2",   p:100,n:"Clogs & chunky",  d:"The heavy-duty end of the rack"},
- {id:"shoecol",  p:110,n:"Shoe colors",    d:"Everything except white"},
- {id:"ear",      p:120,n:"Earrings",        d:"Studs, pearls, hoops and drops"},
- {id:"silver",   p:60, n:"Silver",          d:"Silver as well as gold"},
- {id:"butterfly",p:150,n:"Butterflies",     d:"The colorful ones"},
- {id:"specs",    p:130,n:"Glasses rack",    d:"Rectangle, thin oval, cat eye, hearts, stars"},
- {id:"hijabcol", p:120,n:"Bold hijabs",     d:"The bright half of the palette"},
- {id:"rainbow",  p:170,n:"Rainbow hair",    d:"Rainbow, unicorn, galaxy, rose and teal"},
- {id:"cuts",     p:140,n:"Statement cuts",  d:"Box braids, bantu knots, wild mane, spikes and more"},
- {id:"gown",     p:240,n:"Surgical gown",   d:"Sterile blue, wrap front, knit cuffs"},
- {id:"nline",    p:60, n:"Necklines",       d:"V-neck, mock wrap, notch and henley"},
- {id:"under",    p:70, n:"Under-layer",     d:"A long-sleeve tee under the scrubs, five colors"},
- {id:"jacket",   p:150,n:"White warm-up",   d:"Zip front, worn open so the uniform reads underneath"},
- {id:"socks",    p:60, n:"Compression socks",d:"Solid, striped and argyle, eight colors"},
- {id:"scope",    p:80, n:"Stethoscope colors",d:"Eight, instead of black for everyone"},
- {id:"penlight", p:35, n:"Pen light",       d:"Clipped into the chest pocket"},
- {id:"watch",    p:90, n:"Watches",         d:"A wrist watch, and a fob shaped like a smart watch"},
- {id:"badge",    p:35, n:"ID badge",        d:"Clipped on, without waiting for the rank"},
- {id:"hairacc",  p:60, n:"Hair accessories",d:"Headband, bandana and a scrunchie"},
+ {id:"mask",     p:60,was:40,n:"Surgical mask",   d:"The pleated blue one"},
+ {id:"n95",      p:75,was:50,n:"N95 respirator",  d:"Molded, for airborne precautions"},
+ {id:"shield",   p:85,was:55,n:"Face shield",     d:"Clear visor on a headband"},
+ {id:"cap",      p:75,was:50,n:"Scrub cap",       d:"The fitted cap, with side ties"},
+ {id:"fits",     p:140,was:90,n:"Fitted scrub pants", d:"Slim, tapered and jogger cuts"},
+ {id:"fits2",    p:170,was:110,n:"Statement scrub pants",d:"Bootcut, wide leg and cargo"},
+ {id:"shoes1",   p:120,was:80,n:"Court & slip-on", d:"Two more shoes on the rack"},
+ {id:"shoes2",   p:150,was:100,n:"Clogs & chunky",  d:"The heavy-duty end of the rack"},
+ {id:"shoecol",  p:170,was:110,n:"Shoe colors",    d:"Everything except white"},
+ {id:"ear",      p:180,was:120,n:"Earrings",        d:"Studs, pearls, hoops and drops"},
+ {id:"silver",   p:90,was:60,n:"Silver",          d:"Silver as well as gold"},
+ {id:"butterfly",p:230,was:150,n:"Butterflies",     d:"The colorful ones"},
+ {id:"specs",    p:200,was:130,n:"Glasses rack",    d:"Rectangle, thin oval, cat eye, hearts, stars"},
+ {id:"hijabcol", p:180,was:120,n:"Bold hijabs",     d:"The bright half of the palette"},
+ {id:"rainbow",  p:260,was:170,n:"Rainbow hair",    d:"Rainbow, unicorn, galaxy, rose and teal"},
+ {id:"cuts",     p:220,was:140,n:"Statement cuts",  d:"Box braids, bantu knots, wild mane, spikes and more"},
+ {id:"gown",     p:380,was:240,n:"Surgical gown",   d:"Sterile blue, wrap front, knit cuffs"},
+ {id:"nline",    p:90,was:60,n:"Necklines",       d:"V-neck, mock wrap, notch and henley"},
+ {id:"under",    p:100,was:70,n:"Under-layer",     d:"A long-sleeve tee under the scrubs, five colors"},
+ {id:"jacket",   p:240,was:150,n:"White warm-up",   d:"Zip front, worn open so the uniform reads underneath"},
+ {id:"socks",    p:90,was:60,n:"Compression socks",d:"Solid, striped and argyle, eight colors"},
+ {id:"scope",    p:120,was:80,n:"Stethoscope colors",d:"Eight, instead of black for everyone"},
+ {id:"penlight", p:50,was:35,n:"Pen light",       d:"Clipped into the chest pocket"},
+ {id:"watch",    p:140,was:90,n:"Watches",         d:"A wrist watch, and a fob shaped like a smart watch"},
+ {id:"badge",    p:50,was:35,n:"ID badge",        d:"Clipped on, without waiting for the rank"},
+ {id:"hairacc",  p:90,was:60,n:"Hair accessories",d:"Headband, bandana and a scrunchie"},
  /* bay 109 - what comes out of the hand in a fight */
- {id:"en_solar", p:270,n:"Solar flare",     d:"Healing energy in gold, orange and red"},
- {id:"en_tide",  p:270,n:"Deep tide",       d:"Healing energy in blue, indigo and violet"},
- {id:"en_scrub", p:330,n:"Scrub green",     d:"Healing energy in the green of the scrubs"},
- {id:"en_star",  p:420,n:"Starlight",       d:"White healing energy, silver at the edges"},
- {id:"en_nova",  p:540,n:"Nova",            d:"Eleven streams, the whole spectrum, wider"},
+ {id:"en_solar", p:400,was:270,n:"Solar flare",     d:"Healing energy in gold, orange and red"},
+ {id:"en_tide",  p:400,was:270,n:"Deep tide",       d:"Healing energy in blue, indigo and violet"},
+ {id:"en_scrub", p:500,was:330,n:"Scrub green",     d:"Healing energy in the green of the scrubs"},
+ {id:"en_star",  p:650,was:420,n:"Starlight",       d:"White healing energy, silver at the edges"},
+ {id:"en_nova",  p:800,was:540,n:"Nova",            d:"Eleven streams, the whole spectrum, wider"},
  /* bay 110 - a real edge in the fight */
- {id:"k_cart",   p:600,n:"Crash cart",      d:"A fifth heart in every fight"},
- {id:"k_second", p:450,n:"Second opinion",  d:"One wrong answer crossed out before every round"},
- {id:"k_overtime",p:360,n:"Overtime",       d:"Ten more seconds on every round"}];
+ {id:"k_cart",   p:900,was:600,n:"Crash cart",      d:"A fifth heart in every fight"},
+ {id:"k_second", p:650,was:450,n:"Second opinion",  d:"One wrong answer crossed out before every round"},
+ {id:"k_overtime",p:500,was:360,n:"Overtime",       d:"Ten more seconds on every round"}];
 const LOCKER_BY={};LOCKER.forEach(i=>{LOCKER_BY[i.id]=i;});
 /* A wall of lockers rather than a price list: each one carries a category and
    you open it to see what is inside. */
@@ -8060,7 +8168,8 @@ function dollarsEarned(){
   const p=S.profile;
   let d=GRANT;
   for(let L=2;L<=tierOfLevel(p.rankMax||1);L++)d+=RANK_PURSE(L);
-  return d+GATE_BONUS*Object.keys(p.gatesOpen||{}).length+(p.fightDollars||0);
+  Object.keys(p.gatesOpen||{}).forEach(sid=>{d+=gateBonus(sid);});
+  return d+(p.fightDollars||0);
 }
 /* Items handed over by grandfatherLocker were never bought, so charging list
    price for them is inventing a debt. A level-5 user whose saved nurse already
@@ -8069,7 +8178,10 @@ function dollarsEarned(){
    $0 with every door greyed out and nothing on screen explaining why. Gifts are
    recorded in `gifted` and skipped here. */
 const isGift=id=>!!(S.profile.gifted||{})[id];
-const dollarsSpent=()=>LOCKER.reduce((s,i)=>s+((owns(i.id)&&!isGift(i.id))?i.p:0),0)+(S.profile.swapSpent||0);
+/* What was paid, not what it costs today: prices went up on 11 September, and
+   anything bought before then without a receipt is charged the old tag (`was`). */
+const pricePaid=i=>{const r=(S.profile.paid||{})[i.id];return r!=null?r:(i.was!=null?i.was:i.p);};
+const dollarsSpent=()=>LOCKER.reduce((s,i)=>s+((owns(i.id)&&!isGift(i.id))?pricePaid(i):0),0)+(S.profile.swapSpent||0);
 /* The one consumable in the building. It is not costume, so it lives outside the
    lockers and is tracked by count, not by an owned flag. */
 function buySwap(){
@@ -8139,6 +8251,7 @@ function buyPack(id){
   if(dollars()<it.p)return false;
   S.profile.bought=S.profile.bought||{};
   S.profile.bought[id]=today();
+  S.profile.paid=S.profile.paid||{};S.profile.paid[id]=it.p;   // the price on the day, so a later rise is never billed backwards
   saveCore();
   toast("Bought — "+it.n,it.d,true);
   return true;
@@ -10786,7 +10899,7 @@ function studyClass(){
     const mine=QUIZZES.filter(q=>q.c===(c.code||""));
     if(!mine.length)return '';
     return '<span class="eyebrow" style="display:block;margin:4px 0 8px">Weekly quiz</span>'+
-      '<p class="qzlede">One per module, opening the Tuesday after that week. Nothing is marked until you hand it in. Select-all is scored the way the NCLEX does it: <b>+1</b> for each correct option you pick, <b>−1</b> for each wrong one, and a question never drops below zero. A select-all is worth as many points as it has right answers. <b>90% first time out earns a trophy.</b></p>'+
+      '<p class="qzlede">One quiz per module. <b>90% on the first attempt earns a trophy.</b></p>'+
       '<div class="qzcards" style="margin-bottom:18px">'+mine.map(q=>{
         const open=quizOpen(q), st=quizState(q.id);
         const num=(q.unit.match(/^(Content|Module|Unit|Week)\s*\d+/i)||[""])[0];
@@ -11964,15 +12077,37 @@ function fightLock(){
     opts:F.opts.map((o,i)=>({t:o.t,ok:o.ok,picked:!!F.picked[i],cut:!!o.cut}))});
   F.played=false;
   render();
-  /* the fight is at the top of the page and the options are below it; the
-     bolts are the point, so bring the arena back into view before they fly */
-  window.scrollTo({top:0,behavior:"smooth"});
+  /* the floor is at the top and the options below it; the bolts are the
+     point, so the fresh screen starts at the top before they fly */
+  {const ff=document.getElementById("ffull");if(ff)ff.scrollTop=0;}
   fightPlay(hits,ouch,()=>{
     F.played=true;
     if(F.hearts<=0)return fightEnd("lost");
     const nx=document.getElementById("fNext");if(nx)nx.disabled=false;
     setDH(F.hp,F.hpMax);
+    /* then the answer: the marked options and the why slide up into view
+       on their own, so nobody has to guess that there is more underneath */
+    const why=document.querySelector("#ffull .fwhy, #ffull .fres");
+    if(why)why.scrollIntoView({behavior:"smooth",block:"end"});
   });
+}
+/* The fight screen scrolls; the bar at the bottom says so while anything is
+   still under the fold, and a tap on the cue takes you there. */
+function fightScrollCue(){
+  const ff=document.getElementById("ffull"), cue=document.getElementById("fmore");
+  if(!ff||!cue)return;
+  const upd=()=>{
+    cue.hidden=ff.scrollHeight-ff.scrollTop-ff.clientHeight<=12;
+    /* "See why" while the why itself is still under the fold; plain "More below" after */
+    const why=ff.querySelector(".fwhy"), r=why?why.getBoundingClientRect():null, ffr=ff.getBoundingClientRect();
+    const whyBelow=!!(r&&r.bottom>ffr.bottom-70);
+    cue.innerHTML=(whyBelow?'See why':'More below')+' <i>\u2193</i>';};
+  ff.onscroll=upd;upd();requestAnimationFrame(upd);
+  cue.onclick=()=>{
+    const why=ff.querySelector(".fwhy");
+    if(why&&FIGHT&&FIGHT.locked)why.scrollIntoView({behavior:"smooth",block:"end"});
+    else ff.scrollBy({top:Math.round(ff.clientHeight*0.7),behavior:"smooth"});
+  };
 }
 /* ---------------------------------------------------------------------------
    THE ATTACK ANIMATION
@@ -13053,7 +13188,7 @@ function advScene(){
 /* ---- the view ---- */
 function viewAdventure(){
   const A=advState();
-  if(!ADV){const s=advStops().find(x=>x.id===A.at), rp=advRest(s);ADV={at:s?s.id:"home",x:rp.x,y:rp.y,visit:null,beat:0,walking:false};}
+  if(!ADV){const s=advStops().find(x=>x.id===A.at), rp=(A.at==="spot"&&A.spot)?A.spot:advRest(s);ADV={at:s?s.id:(A.at==="spot"&&A.spot?"spot":"home"),x:rp.x,y:rp.y,visit:null,beat:0,walking:false};}
   const stops=advStops();
   const done=Object.keys(A.healed).filter(k=>A.healed[k]).length;
   const toldWhere=ADV.visit||ADV.story?"":advWhereBar();
@@ -13093,7 +13228,11 @@ function advWhereBar(){
   const next=advNextStop();
   const C=here?(ADV_STORY.chapters[here.grove]||{name:here.grove}):null;
   const mine=here?stops.filter(s=>s.grove===here.grove):[], done=mine.filter(s=>A.healed[s.id]).length;
-  const where=here?('You are at '+esc(C.sign||C.name)+' \u2014 '+done+' of '+mine.length+' healed here'):'You are at the gate of '+ADV_WOOD;
+  const nearG=(!here&&ADV.at==="spot"&&stops.length)?stops.slice().sort((a,b)=>Math.hypot(a.x-ADV.x,(a.gy||a.y)-ADV.y)-Math.hypot(b.x-ADV.x,(b.gy||b.y)-ADV.y))[0].grove:null;
+  const NC=nearG?(ADV_STORY.chapters[nearG]||{name:nearG}):null, nMine=nearG?stops.filter(s=>s.grove===nearG):[], nDone=nMine.filter(s=>A.healed[s.id]).length;
+  const where=here?('You are at '+esc(C.sign||C.name)+' \u2014 '+done+' of '+mine.length+' healed here')
+    :NC?('You are on the path near '+esc(NC.sign||NC.name)+' \u2014 '+nDone+' of '+nMine.length+' healed there')
+    :'You are at the gate of '+ADV_WOOD;
   const what=next?(A.visited[next.id]?'Next: fight for '+esc(advNpc(next.b).split(",")[0]):'Next: meet '+esc(advNpc(next.b).split(",")[0])+' \u2014 '+esc(next.b.name)):'Every door is lit.';
   return '<div class="advwhere"><span class="advwhere-t"><b>'+where+'</b><i>'+what+'</i></span>'+
     (next?'<button type="button" class="btn primary sm" data-adv="'+next.id+'">Walk there</button>':'')+
@@ -13340,7 +13479,32 @@ function advPlace(N,G,x,y){
 function advWalkTo(id){
   const s=advStops().find(x=>x.id===id);if(!s||ADV.walking)return;
   if(ADV.story&&ADV.story.kind==="intro")return;
-  const to=advRest(s);
+  advWalk(advRest(s),()=>{
+    ADV.at=id;ADV.visit=id;ADV.beat=0;ADV.again=false;ADV.story=null;
+    const A=advState();A.at=id;A.visited[id]=true;saveCore();
+    render();
+    const sh=$(".advsheet");if(sh)sh.scrollIntoView({behavior:"smooth",block:"nearest"});
+  });
+}
+/* Anywhere on the ground is a place to stand. A tap on the wood itself walks
+   the nurse there - beside a tree, on the bridge, halfway down the path -
+   with no door involved; the ground runs from the far edge of the path to the
+   near edge of the picture. */
+const ADV_GROUND={top:740,bottom:1075,left:40};
+function advWalkSpot(x,y){
+  if(!ADV||ADV.walking)return false;
+  if(ADV.story&&ADV.story.kind==="intro")return false;
+  if(y<520)return false;                              // sky and canopy: not a place to stand
+  const to={x:Math.round(Math.max(ADV_GROUND.left,Math.min(ADV_W-ADV_GROUND.left,x))),
+            y:Math.round(Math.max(ADV_GROUND.top,Math.min(ADV_GROUND.bottom,y)))};
+  advWalk(to,()=>{
+    ADV.at="spot";ADV.visit=null;ADV.story=null;
+    const A=advState();A.at="spot";A.spot={x:to.x,y:to.y};saveCore();
+    render();
+  });
+  return true;
+}
+function advWalk(to,onArrive){
   const way=advRoute({x:ADV.x,y:ADV.y},to);
   let total=0;for(let i=1;i<way.length;i++)total+=Math.hypot(way[i].x-way[i-1].x,way[i].y-way[i-1].y);
   const still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -13351,10 +13515,8 @@ function advWalkTo(id){
   if(G)G.style.transition="none";
   let seg=1, along=0, last=performance.now();
   const arrive=()=>{
-    ADV.x=to.x;ADV.y=to.y;ADV.at=id;ADV.walking=false;ADV.visit=id;ADV.beat=0;ADV.again=false;ADV.story=null;
-    const A=advState();A.at=id;A.visited[id]=true;saveCore();
-    render();
-    const sh=$(".advsheet");if(sh)sh.scrollIntoView({behavior:"smooth",block:"nearest"});
+    ADV.x=to.x;ADV.y=to.y;ADV.walking=false;
+    onArrive();
   };
   if(still){arrive();return;}
   const step=(now)=>{
@@ -13393,13 +13555,53 @@ function advDrag(sc){
   const up=()=>{down=null;sc.classList.remove("grab");};
   sc.addEventListener("pointermove",e=>{if(!down)return;sc.scrollLeft=down.l-(e.clientX-down.x);sc.scrollTop=down.t-(e.clientY-down.y);});
   sc.addEventListener("pointerup",up);sc.addEventListener("pointerleave",up);sc.addEventListener("pointercancel",up);
-  /* two fingers: pinch to zoom about the midpoint */
+  /* a tap on the ground (not a drag, not a door) walks the nurse there */
+  let tap=null, lastPinch=0;
+  sc.addEventListener("pointerdown",e=>{if(e.target.closest("[data-adv],[data-chapter],[data-gochap],button,a,.advsheet,.advwhere,.advtools,.advback"))return;tap={x:e.clientX,y:e.clientY,t:Date.now(),id:e.pointerId};});
+  sc.addEventListener("pointerup",e=>{
+    const t=tap;tap=null;if(!t||t.id!==e.pointerId)return;
+    if(Math.hypot(e.clientX-t.x,e.clientY-t.y)>10||Date.now()-t.t>600||Date.now()-lastPinch<400)return;
+    const svg=sc.querySelector("svg.advsvg");if(!svg)return;
+    const r=svg.getBoundingClientRect();
+    advWalkSpot((e.clientX-r.left)/r.width*ADV_W,(e.clientY-r.top)/r.height*ADV_H);
+  });
+  /* Two fingers: pinch to zoom about the midpoint. While the fingers are
+     down the picture is only scaled with a transform - cheap, one frame at a
+     time - and the real size is committed when they lift; resizing a
+     4,800-px drawing on every move is what made it shake. The scene stops
+     scrolling for the duration so the browser's own pan cannot fight it. */
   let pinch=null;
   const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
   const mid=t=>{const r=sc.getBoundingClientRect();return {x:(t[0].clientX+t[1].clientX)/2-r.left,y:(t[0].clientY+t[1].clientY)/2-r.top};};
-  sc.addEventListener("touchstart",e=>{if(e.touches.length===2){pinch={d:dist(e.touches),z:ADV_ZOOM};e.preventDefault();}},{passive:false});
-  sc.addEventListener("touchmove",e=>{if(!pinch||e.touches.length!==2)return;e.preventDefault();const m=mid(e.touches);advZoomTo(pinch.z*dist(e.touches)/pinch.d,m.x,m.y);},{passive:false});
-  const endPinch=e=>{if(pinch&&e.touches.length<2)pinch=null;};
+  let raf=0;
+  const paint=()=>{raf=0;if(!pinch)return;const svg=sc.querySelector("svg.advsvg");if(!svg)return;
+    const k=pinch.zTo/pinch.z;
+    svg.style.transformOrigin=pinch.ox+"px "+pinch.oy+"px";
+    svg.style.transform="translate("+(pinch.mx-pinch.m0.x)+"px,"+(pinch.my-pinch.m0.y)+"px) scale("+k.toFixed(4)+")";};
+  sc.addEventListener("touchstart",e=>{
+    if(e.touches.length!==2)return;
+    e.preventDefault();tap=null;
+    const m=mid(e.touches);
+    pinch={d:dist(e.touches),z:ADV_ZOOM,zTo:ADV_ZOOM,m0:m,mx:m.x,my:m.y,ox:sc.scrollLeft+m.x,oy:sc.scrollTop+m.y,l:sc.scrollLeft,t:sc.scrollTop};
+    sc.style.overflow="hidden";sc.scrollLeft=pinch.l;sc.scrollTop=pinch.t;
+    const svg=sc.querySelector("svg.advsvg");if(svg)svg.style.willChange="transform";
+  },{passive:false});
+  sc.addEventListener("touchmove",e=>{
+    if(!pinch||e.touches.length!==2)return;e.preventDefault();
+    const m=mid(e.touches);
+    pinch.zTo=Math.max(ADV_ZMIN,Math.min(ADV_ZMAX,pinch.z*dist(e.touches)/pinch.d));pinch.mx=m.x;pinch.my=m.y;
+    if(!raf)raf=requestAnimationFrame(paint);
+  },{passive:false});
+  const endPinch=e=>{
+    if(!pinch||e.touches.length>=2)return;
+    const P=pinch;pinch=null;lastPinch=Date.now();if(raf){cancelAnimationFrame(raf);raf=0;}
+    const svg=sc.querySelector("svg.advsvg");
+    if(svg){svg.style.transform="";svg.style.transformOrigin="";svg.style.willChange="";}
+    sc.style.overflow="";
+    sc.scrollLeft=P.l;sc.scrollTop=P.t;
+    advZoomTo(P.zTo,P.m0.x,P.m0.y);
+    sc.scrollLeft-=P.mx-P.m0.x;sc.scrollTop-=P.my-P.m0.y;
+  };
   sc.addEventListener("touchend",endPinch);sc.addEventListener("touchcancel",endPinch);
   /* ctrl or cmd and the wheel, on a desktop */
   sc.addEventListener("wheel",e=>{if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();const r=sc.getBoundingClientRect();advZoomTo(ADV_ZOOM*(e.deltaY<0?1.1:1/1.1),e.clientX-r.left,e.clientY-r.top);},{passive:false});
@@ -13452,7 +13654,12 @@ var FCOURSE=null, FWING=null;
 /* Whether the wood is open. Not saved: arriving at the tab always offers the
    choice, and walking into Vaelith is something you do, not something you set. */
 let ADV_OPEN=false, ADV_ENTER=false, ADV_FULL=false, ADV_ZOOM=1;
-const ADV_ZMIN=0.45, ADV_ZMAX=2.6;
+const ADV_ZMIN=0.45;
+/* How far in you can zoom depends on the screen: a phone at 3x cannot paint a
+   picture more than about 16,000 device pixels wide, and past that iOS quietly
+   leaves parts of it blank - which is what a flick at high zoom looked like on
+   11 Sep. So the ceiling is set by the pixels, not by taste. */
+const ADV_ZMAX=Math.max(1,Math.min(2.6,16000/(ADV_W*(window.devicePixelRatio||1))));
 /* zoom the wood about a point of the view (client coords inside the scene) */
 function advZoomTo(z,cx,cy){
   const sc=$(".advscene"), svg=sc&&sc.querySelector("svg.advsvg");if(!sc||!svg)return;
@@ -13676,8 +13883,8 @@ function viewFight(){
     (F.locked
       ?'<div class="fres '+(F.result.ouch?'no':'ok')+'">'+F.result.hits+' hit'+(F.result.hits===1?'':'s')+
          (F.result.ouch?' · took '+F.result.ouch:'')+(F.result.missed?' · missed '+F.result.missed:'')+'</div>'+
-       '<div class="row fact" style="justify-content:flex-end"><button class="btn primary" id="fNext"'+(F.played?'':' disabled')+'>'+(F.hp<=0||F.r>=F.rounds.length-1?'Finish':'Next round')+'</button></div>'
-      :'<div class="row fact" style="justify-content:flex-end"><button class="btn primary" id="fLock">Lock in</button></div>')+'</div>';
+       '<div class="row fact"><button type="button" class="fmore" id="fmore" hidden>'+(R.why?'See why':'More below')+' <i>\u2193</i></button><button class="btn primary" id="fNext"'+(F.played?'':' disabled')+'>'+(F.hp<=0||F.r>=F.rounds.length-1?'Finish':'Next round')+'</button></div>'
+      :'<div class="row fact"><button type="button" class="fmore" id="fmore" hidden>More below <i>\u2193</i></button><button class="btn primary" id="fLock">Lock in</button></div>')+'</div>';
 }
 /* ---- 4. what you need to work on --------------------------------------- */
 function studyDrugs(){
@@ -16857,7 +17064,7 @@ function gateSection(){
   if(!gs.length)return "";
   /* the same violet-into-scrubs run the Home boards wear */
   const open=gs.filter(g=>g.open).length;
-  const money=GATE_BONUS*(gs.length-open);
+  const money=gs.filter(g=>!g.open).reduce((a,g)=>a+gateBonus(g.ex.sid),0);
   return drawer("gates","\u25C8","Exam gates",
     open+" of "+gs.length+" cleared"+(money?" \u00b7 $"+money+" still out there":""),
     gateCards(), open<gs.length&&open>0);
@@ -16868,7 +17075,7 @@ function gateCards(){
   const bit=(ok,label,pending)=>'<span class="req-bit '+(ok?"ok":pending?"pending":"no")+'">'+(ok?"\u2713 ":pending?"\u00b7 ":"\u00d7 ")+label+'</span>';
   return '<div class="card" style="margin-bottom:16px"><div class="pad" style="padding-bottom:8px">'+
     '<span class="eyebrow">Exam gates &middot; '+gs.filter(g=>g.open).length+' of '+gs.length+' cleared</span>'+
-    '<div class="note" style="margin-top:4px">Every gate needs the coursework checked off and the exam taken. Where the exam has a question bank, levels 1\u20132 have to be clear too \u2014 send Claude the slides for an exam and its levels appear here. Each gate pays $'+GATE_BONUS+', and all of them together carry you to rank 10.</div></div>'+
+    '<div class="note" style="margin-top:4px">Every gate needs the coursework checked off and the exam taken. Where the exam has a question bank, levels 1\u20132 have to be clear too \u2014 send Claude the slides for an exam and its levels appear here. Each gate pays $'+GATE_BONUS+' and a final pays $'+FINAL_BONUS+'; all of them together carry you to rank 10.</div></div>'+
     gs.map(g=>{
       const c=courseById(g.ex.courseId)||{color:"var(--accent)"};
       const doneN=g.checklist.filter(e=>e.done).length;
@@ -18205,7 +18412,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 3:23 PM":"This browser is not saving anything. Build Sep 11, 3:23 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 6:35 PM":"This browser is not saving anything. Build Sep 11, 6:35 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -18302,6 +18509,7 @@ function wire(){
   $$("[data-drug-unit]").forEach(b=>b.onclick=()=>{DRUG_UNIT=b.dataset.drugUnit;render();});
   {const x=$("#drugQ");if(x){x.oninput=()=>{DRUG_Q=x.value;const pos=x.selectionStart;render();const y=$("#drugQ");if(y){y.focus();try{y.setSelectionRange(pos,pos);}catch(e){}}};}}
   const fl=$("#fLock"); if(fl)fl.onclick=()=>fightLock();
+  fightScrollCue();
   const fn=$("#fNext"); if(fn)fn.onclick=()=>fightNext();
   const fr=$("#fRevBtn"); if(fr)fr.onclick=()=>{const r=$("#fRev");if(!r)return;r.hidden=!r.hidden;fr.textContent=r.hidden?"Review what you got wrong":"Hide the review";if(!r.hidden)r.scrollIntoView({behavior:"smooth",block:"start"});};
   const fa=$("#fAgain"); if(fa)fa.onclick=()=>{const b=FIGHT.b, adv=FIGHT.adv;if(b.ward){const x=b.id.slice(5).split("||");wardStart(x[0],x[1]);}else{fightStart(b.id);if(FIGHT&&adv)FIGHT.adv=true;}};
@@ -18491,7 +18699,8 @@ setInterval(updCheck,20*60*1000);
    them away because you checked the calendar would be its own bug. */
 function resetTab(name){
   if(name==="study"){
-    if(GAME||QUIZ)return;                 /* mid-run or mid-quiz: leave it be */
+    if((GAME&&!GAME.over)||(QUIZ&&!QUIZ.done))return;   /* mid-run or mid-quiz: leave it be */
+    GAME=null;QUIZ=null;                  /* a finished run: the tab is a way out */
     studyAt="pick";studyExam=null;courseFilter="all";LIB_SHUT=null;DRUG_UNIT=null;DRUG_Q="";
   }else if(name==="fight"){
     if(FIGHT)return;
@@ -18704,7 +18913,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 3:23 PM":"This browser is not saving anything. Build Sep 11, 3:23 PM");
+    (LS_OK?"Saved in this browser. Build Sep 11, 6:35 PM":"This browser is not saving anything. Build Sep 11, 6:35 PM");
 })();
 </script>
 
