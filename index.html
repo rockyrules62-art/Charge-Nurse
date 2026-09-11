@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 1:30 PM-->
+<!--TROPHOS-BUILD:Sep 11, 2:39 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -816,6 +816,24 @@ div.qzcard{cursor:default}
 .advwrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:#1B1145}
 .advscene{position:relative;width:100%;height:min(calc(100vh - 90px),900px);overflow:auto;scrollbar-width:thin;cursor:grab;touch-action:pan-x pan-y}
 .advscene.grab{cursor:grabbing;user-select:none}
+/* the wood full screen: the wrap covers the window, the chrome goes under it,
+   a Back button top left, zoom top right; pinch zooms on a touch screen */
+.advtools{position:absolute;top:10px;right:10px;z-index:6;display:flex;gap:6px}
+.advtool{width:40px;height:40px;border-radius:11px;background:rgba(15,27,25,.8);color:#fff;border:1px solid rgba(255,255,255,.28);font:700 20px/1 "IBM Plex Mono",monospace;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:0}
+.advtool:hover{background:rgba(15,27,25,.95)}
+.advback{position:absolute;top:10px;left:10px;z-index:6;width:auto;padding:0 14px 0 10px;font-size:15px;letter-spacing:.02em}
+body.advfull{overflow:hidden}
+body.advfull .advwrap{position:fixed;inset:0;z-index:1000;border-radius:0;border:0;box-shadow:none;display:flex;flex-direction:column;overflow:auto;background:#1B1145;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+/* like a reel: the scene fills the screen edge to edge and everything else
+   floats over it - the tools at the top, the bar or the sheet at the bottom,
+   translucent, so the wood shows through */
+body.advfull .advwrap{overflow:hidden;display:block;padding:0}
+body.advfull .advscene{position:absolute;inset:0;height:auto}
+body.advfull .advscene svg.advsvg{margin-bottom:150px}   /* room to scroll the ground floor out from under the bar */
+body.advfull .advwrap > :not(.advscene):not(.advtool):not(.advtools){position:absolute;left:0;right:0;bottom:0;max-height:60vh;max-height:60dvh;overflow:auto;padding-bottom:calc(12px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+body.advfull .advwhere{background:linear-gradient(180deg,rgba(15,27,25,0) 0%,rgba(15,27,25,.55) 22%,rgba(15,27,25,.82) 100%);border-top:0;padding-top:26px;-webkit-backdrop-filter:none;backdrop-filter:none}
+body.advfull .advsheet{background:color-mix(in srgb,var(--surface) 84%,transparent);border-top:1px solid rgba(255,255,255,.14);border-radius:18px 18px 0 0}
+body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .advtools{top:calc(10px + env(safe-area-inset-top))}
 /* the chapter bar over the Grove */
 .advchapbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
 .advchip{display:flex;align-items:baseline;gap:8px;padding:7px 13px;border-radius:99px;cursor:pointer;
@@ -1865,6 +1883,13 @@ div.qzcard{cursor:default}
 .avopts{flex:1;min-width:190px;display:flex;flex-direction:column;gap:13px}
 .swatch{width:26px;height:26px;border-radius:99px;border:2px solid var(--line);cursor:pointer;padding:0}
 .swatch[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.cwheelwrap{display:flex;gap:14px;align-items:center;margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.cwheel{position:relative;width:150px;height:150px;border-radius:50%;flex:0 0 auto;cursor:crosshair;touch-action:none;
+  background:radial-gradient(circle,#fff 0,rgba(255,255,255,0) 72%),conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
+.cwdot{position:absolute;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.4);transform:translate(-50%,-50%);pointer-events:none}
+.cwside{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.cwprev{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);display:block}
+.cwside input[type=range]{width:120px}
 .rankhead{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .rankname{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em;margin-top:2px}
 /* NO drop-shadow on an avatar, at any size. The arms hang a few units clear of
@@ -2119,6 +2144,16 @@ div.qzcard{cursor:default}
   width:100%;text-align:left;padding:9px 4px;border:0;border-bottom:1px solid var(--line-soft);
   background:none;color:var(--ink);cursor:pointer;font-family:inherit}
 .tsrow:last-child{border-bottom:0}
+button.tsrow{width:100%;background:none;border:0;border-bottom:1px solid var(--line);text-align:left;cursor:pointer;font:inherit;color:inherit}
+.kq{border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--surface)}
+.kq summary{list-style:none;cursor:pointer;padding:10px 12px;display:grid;gap:4px}
+.kq summary::-webkit-details-marker{display:none}
+.kqs{font:600 10.5px "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+.kqs.good{color:var(--accent)}.kqs.poor{color:var(--bad,#B31F38)}
+.kqt{font-size:14px;line-height:1.35}.kqm{font:11px "IBM Plex Mono",monospace;color:var(--muted);font-style:normal}
+.kqbody{padding:0 12px 12px;border-top:1px solid var(--line)}
+.kqo{margin:10px 0 0;padding-left:22px}.kqo li{margin:4px 0;font-size:13.5px}.kqo li.key{font-weight:700;color:var(--accent)}
+.kqwhy{margin-top:10px;font-size:13px;line-height:1.5;color:var(--muted)}.kqwhy b{display:block;font:600 10.5px "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;color:var(--ink)}
 .tsrow:hover .tst b{color:var(--accent)}
 .tst{min-width:0}
 .tst b{display:block;font-size:13.5px;font-weight:600;line-height:1.3;
@@ -3196,66 +3231,6 @@ const SEED_VERSION=2;
    content, so re-publishing a bigger bank keeps every existing question's id —
    and therefore each person's answered/missed history — intact. */
 const SEED_QUESTIONS=[
- {c:"NUR 314",qid:"314-m1p-01",level:1,k:"mc",prime:true,errs:["knowledge", null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"application",watch:"Naming the concept behind a dose change",
-  stem:"A provider lowers an 84-year-old client's dose of a drug the kidneys clear after reviewing the creatinine clearance. A nursing student asks which drug concept this dose change is based on. Which response by the nurse is correct?",
-  options:["Pharmacokinetics, which is drug action on the target cell", "Pharmacokinetics, which is what the body does to a drug", "Pharmacodynamics, which is receptor binding at the cell", "Pharmacodynamics, which is what a drug does to the body"],
-  answer:1,
-  rationale:"Pharmacokinetics is what the body does to a drug: the movement of the drug into, through and out of the body, covering absorption, bioavailability, distribution, metabolism and excretion. A dose change made because the kidneys are eliminating the drug more slowly is a change made for excretion, so it is a pharmacokinetic decision. Pharmacodynamics is what a drug does to the body, so the second option names the right definition but the wrong concept for this situation. The third option gives a true description of pharmacodynamics, receptor binding at the target cell, but the client's kidney function has nothing to do with receptors. The fourth option is the trap that costs the most points on an exam: it pairs the correct label with the pharmacodynamic definition, and a student who has memorized the words but not the meaning will take it. The concept is that kinetics is about the drug's journey and dynamics is about the drug's action, and organ function questions are always kinetic questions."},
- {c:"NUR 314",qid:"314-m1p-02",level:1,k:"mc",prime:true,errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"recall",watch:"What the dynamics half actually covers",
-  stem:"Two clients receive the same dose of the same drug and one has a far stronger response at the cellular level. The nurse identifies this as a difference in pharmacodynamics, which involves:",
-  options:["Bioavailability of the drug reaching the circulation", "How long receptors take to open after a dose", "Receptor binding and the change in cell function", "Absorption, distribution, metabolism and excretion"],
-  answer:2,
-  rationale:"Pharmacodynamics involves drug action on target cells and the resulting alterations in cellular reactions and functions, which comes down to receptor binding, post-receptor effects and chemical interactions. Absorption, distribution, metabolism and excretion are the four processes of pharmacokinetics, and swapping these two is the single most common error in this content. There is no waiting period during which receptors open after a dose; a receptor is either occupied or it is not, and the response follows from that binding rather than from any delay built into the receptor itself. Bioavailability, the fraction of a dose that reaches the circulation, describes the drug's movement through the body and therefore belongs to pharmacokinetics as well. The concept is that dynamics starts where kinetics ends: once the drug has arrived, what it does at the receptor is dynamics."},
- {c:"NUR 314",qid:"314-m1p-03",level:1,k:"mc",prime:true,errs:["knowledge", null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"application",watch:"Where aging does the most damage",
-  stem:"A nurse is planning care for a group of clients over 75 years old, several of whom take drugs chronically. Which two of the four pharmacokinetic processes decline the most with aging and account for most of the drug toxicity seen in this group?",
-  options:["Absorption and metabolism", "Metabolism and excretion", "Absorption and distribution", "Distribution and excretion"],
-  answer:1,
-  rationale:"Aging changes all four processes, but not equally. Metabolism and excretion decrease the most, which is why the doses of some drugs must be lowered in older adults and why toxicity develops slowly as a chronically used drug accumulates over five to six half-lives. Absorption does change with age, through a smaller small intestine surface area, slowed gastric emptying and a higher gastric pH, but those changes are clinically inconsequential for most drugs, so the first and third options overweight a process that rarely matters. Distribution also shifts, because body fat rises and total body water falls, and that matters for fat-soluble drugs, but on its own it does not explain the general pattern of accumulation in older adults, which makes the fourth option only half right. The concept is that the back half of absorption, distribution, metabolism and excretion is where the older adult gets into trouble."},
- {c:"NUR 314",qid:"314-m1p-04",level:1,k:"mc",prime:true,errs:[null, "stem-misread", "stem-misread", "stem-misread"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"application",watch:"Which list gets screened",
-  stem:"A nurse is deciding which clients on the unit should have their medication lists screened against the Beers criteria. Which client's list should be screened?",
-  options:["A 68-year-old taking gabapentin and glyburide", "A 58-year-old taking diazepam and omeprazole", "A 44-year-old taking lisinopril and metformin", "A 52-year-old taking warfarin and furosemide"],
-  answer:0,
-  rationale:"The Beers criteria list potentially inappropriate medications for adults 65 years of age and older, and 65 is the number used to define the older adult. Only the 68-year-old meets that threshold, so that is the list to screen. The other three clients are all in the adult years, defined as 19 to 64, where age-related physiologic changes have begun but the criteria do not yet apply. The drugs in the wrong options are chosen deliberately: diazepam and warfarin are exactly the kinds of drugs students associate with the criteria, and a student who selects a client because the drug looks risky rather than because the client is old enough has answered a different question than the one asked. Nothing in this item says the younger clients' medications are safe or unmonitored; it says the criteria are age-defined. The concept is that this tool is applied by age first, then by drug."},
- {c:"NUR 314",qid:"314-m1p-05",level:1,k:"mc",prime:true,errs:[null, "knowledge", "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"recall",watch:"When age-related change actually starts",
-  stem:"A 52-year-old client asks whether age-related changes in the way the body handles medication have started yet. The nurse's answer is based on the fact that these changes begin during the adult years, which are defined as:",
-  options:["19 to 64 years of age", "40 to 64 years of age", "25 to 60 years of age", "21 to 64 years of age"],
-  answer:0,
-  rationale:"Aging is a continuous process that begins at birth, and age-related change is described as beginning in the adult years, which are 19 to 64 years of age. This client at 52 is well inside that window, so the honest answer is yes, the changes have started. The 21-year and 25-year starting points are close enough to be tempting but are not the boundary used, and choosing them suggests a student is guessing at a plausible round number rather than recalling a definition. The 40-year option is the most attractive wrong answer because 40 is a real landmark in this content: it is the age after which glomerular filtration begins its average decline of 8 mL/min/1.73 m2 per decade and first-pass metabolism begins falling about 1 percent per year. Those are specific kinetic changes, not the start of the adult years. The concept is that adult equals 19 to 64 and older adult equals 65 and up."},
- {c:"NUR 314",qid:"314-m1p-06",level:1,k:"mc",prime:true,errs:[null, "knowledge", "stem-misread", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"application",watch:"What fourteen bottles actually threaten",
-  stem:"A 77-year-old with heart failure, type 2 diabetes, atrial fibrillation and osteoarthritis takes fourteen medications prescribed by four different providers. The nurse documents polypharmacy. Which risk does this situation create for the client?",
-  options:["Duplicate drugs and interactions that go unnoticed", "Higher out-of-pocket costs the client cannot cover", "Faster clearance of every drug as the list grows", "Reduced absorption of each drug from the stomach"],
-  answer:0,
-  rationale:"Polypharmacy means a client is taking many medications, and it is common in older adults because the longer a person lives the more chronic conditions accumulate. The danger is not the number itself but what the number hides: when a cardiologist, an endocrinologist and other specialists each prescribe without communicating, no one is looking at the whole list, so the same drug can be ordered twice under two names and drug-drug interactions go unrecognized. Cost is a real barrier to adherence in older adults and belongs in the assessment, but it is a reason clients do not take drugs, not the hazard created by taking many of them. Reduced absorption from the stomach sounds pharmacologic and is not what happens; two drugs can interfere with each other's absorption, but the sheer number of them does not blunt it. Nor does a long list speed anything up: there is no mechanism by which adding drugs raises clearance, and the drift in an older adult runs the other way, toward slower elimination. The concept is that fragmented prescribing is what makes polypharmacy dangerous, and medication reconciliation is the countermeasure."},
- {c:"NUR 314",qid:"314-m1p-07",level:2,k:"mc",prime:true,errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"The change that matters most at 84",
-  stem:"An 84-year-old with a creatinine clearance of 38 mL/min is prescribed a drug that is eliminated almost entirely by the kidneys. Which age-related change makes this prescription the greatest concern?",
-  options:["Liver metabolism slows in the older adult", "Small intestine surface area falls with age", "Renal elimination of drugs falls with age", "Falling albumin leaves more drug bound"],
-  answer:2,
-  rationale:"Decreased renal elimination is one of the most important pharmacokinetic changes associated with aging, and it matters here because this particular drug depends almost entirely on the kidneys to leave the body. When renal elimination carries most of the clearance, a falling filtration rate translates directly into a rising blood level, so the daily dose should be lowered, the dosing interval lengthened, or both, guided by creatinine clearance rather than by age alone. Albumin does fall with age, but it runs the opposite way from the option given: less albumin means less of the drug is bound and more of it circulates free and active. Small intestine surface area does shrink, and liver metabolism does slow, and both are genuine age-related changes a student will recognize, which is what makes them worth offering. Neither one decides the fate of a drug the kidneys clear. The concept is that the clinical weight of a kinetic change depends on how much that process contributes to handling the specific drug in front of you."},
- {c:"NUR 314",qid:"314-m1p-08",level:1,k:"mc",prime:true,errs:["knowledge", null, "scope", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"A hit on the screening list",
-  stem:"A nurse screens a 79-year-old client's admission medication list against the Beers criteria and finds that one of the drugs appears on it. Which conclusion should the nurse draw?",
-  options:["This drug is the likely cause of the client's admission", "This drug is potentially inappropriate and needs review", "This drug is to be withheld until the provider is called", "This drug is acceptable because the client tolerates it"],
-  answer:1,
-  rationale:"Appearing on the criteria means the drug is potentially inappropriate for an older adult, which is a flag for review and not a verdict. The list is a prompt to look: at why the drug was started, at whether it is still needed, at whether a safer alternative exists, and at whether the client is showing any of the effects the listing warns about. Withholding the dose treats the flag as an order and stops a medication the nurse has no authority to stop and no evidence to stop; the review happens with the drug still running unless something is actually wrong. Calling it the likely cause of the admission leaps past the assessment to a conclusion nothing in the list supports, since most clients on a listed drug are admitted for something else entirely. Calling it acceptable because the client tolerates it is the opposite error, and tolerance is exactly what these drugs look like until the fall or the confusion arrives. The concept is that a screening tool identifies candidates for review, and the review is the nursing work that follows."},
- {c:"NUR 314",qid:"314-m1p-09",level:2,k:"mc",prime:true,errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"application",watch:"Matching a client to the kidney section",
-  stem:"A nurse is reviewing the medication lists of four older adults. Which situation is addressed by the section of the Beers criteria that deals with kidney function?",
-  options:["A client on omeprazole who takes calcium carbonate daily", "A client on warfarin who was just started on an NSAID", "A client on gabapentin with a creatinine clearance of 22", "A client on diazepam who lives alone and uses a walker"],
-  answer:2,
-  rationale:"One of the five sections of the Beers criteria covers medications that should be used at limited doses or avoided because of their effects in clients with renal impairment. Gabapentin is eliminated by the kidneys, and a creatinine clearance of 22 mL/min means it will accumulate at a standard dose, so this is the client the renal section is written for. The warfarin client has one of the drug pairings the criteria single out, an anticoagulant alongside an NSAID, which raises bleeding risk and belongs to the section on harmful drug and drug interactions instead. The diazepam client is a genuine concern, since benzodiazepines carry half-lives up to 96 hours in older adults and a client who lives alone and uses a walker is a fall waiting to happen, but that is the section on drugs whose harms outweigh their benefits, not the renal one. The omeprazole and calcium carbonate pairing is an absorption problem, solved by switching to calcium citrate rather than by adjusting for kidney function. The concept is that each section of the criteria answers a different question, and matching the client to the right one is what makes the tool usable."},
- {c:"NUR 314",qid:"314-m1p-10",level:1,k:"mc",prime:true,errs:["knowledge", "knowledge", "knowledge", null],unit:"Module 1 — Principles of pharmacology & the older adult",type:"recall",watch:"Naming what the provider just did",
-  stem:"A client on lithium has a serum level drawn, and the provider then adjusts the daily dose based on that result and on the client's kidney function. Applying pharmacokinetic principles to individualize therapy in this way is called:",
-  options:["Medication reconciliation", "Therapeutic substitution", "Symptom-based dose titration", "Therapeutic drug monitoring"],
-  answer:3,
-  rationale:"Applying pharmacokinetic principles to individualize pharmacotherapy is termed therapeutic drug monitoring, and lithium is the classic example because the dose is set by the measured level rather than by how the client says they feel. Medication reconciliation is a different process entirely: comparing everything the client actually takes against the record to find duplicates and interactions, usually at admission or at every visit. Therapeutic substitution means exchanging one drug for another in the same class, often a formulary decision, and it says nothing about levels. Symptom-based titration is the older empiric approach of adjusting the dose until the therapeutic objective appears to be met, which is frequently inadequate because it can delay optimal response or produce adverse effects along the way, and it is precisely what drug level monitoring improves on. The concept is that a measured level lets the dose be built around this client's own handling of the drug."},
- {c:"NUR 314",qid:"314-m1p-11",level:2,k:"mc",prime:true,errs:["scope", null, "knowledge", "safety"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"teaching",watch:"A list that arrived with the client",
-  stem:"A nursing student admitting an 80-year-old from a long-term care facility says, \"The medication list came over with her, so the reconciliation is already done.\" Which response by the nurse is best?",
-  options:["\"We'll go over the whole list with her once she settles in.\"", "\"It's a starting point; we still ask her what she takes.\"", "\"The list is accurate because the facility has to maintain it.\"", "\"The pharmacy checks the list again before it dispenses.\""],
-  answer:1,
-  rationale:"Reconciliation means asking the client to name everything she is actually taking, including over-the-counter products, and then comparing that against the list that arrived, because a transferred list records what was prescribed rather than what is being swallowed. Treating the document as accurate because the facility maintains it mistakes a record for the truth; providers sometimes order similar drugs, and the same drug has been ordered twice under two names, so a list can be internally inconsistent no matter who keeps it. A pharmacy check catches a dispensing problem and cannot catch what is missing, because the pharmacy only ever sees what was written down. Waiting until the client settles in makes reconciliation reactive, which defeats its purpose, since the whole point is to catch a duplication or interaction before it produces the symptom. The concept is that reconciliation is an active interview, done at admission and at every visit, and never an assumption that someone upstream already did it."},
- {c:"NUR 314",qid:"314-m1p-12",level:1,k:"mc",prime:true,errs:["knowledge", null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"assessment",watch:"Pairing a med with its check",
-  stem:"An older adult has regular insulin, acetaminophen for a fever, metoprolol and a stool softener all due at 0800. Which pairing of a medication with the assessment that must precede it is correct?",
-  options:["Metoprolol and an oral temperature before the dose", "Insulin and a capillary blood glucose before the dose", "Acetaminophen and a capillary glucose before the dose", "Stool softener and a blood pressure before the dose"],
-  answer:1,
-  rationale:"There is almost always an assessment attached to giving a medication, and the assessment has to be the one that tells you whether this particular drug is safe right now. Insulin is given against a capillary glucose, because giving insulin to a client whose glucose is already low makes the problem worse rather than better. Acetaminophen is assessed with a temperature when it is given for fever or a pain rating when it is given for mild pain; a glucose reading tells the nurse nothing about either. Metoprolol is assessed with a blood pressure and pulse, since the risk of that drug is dropping a pressure or a rate that is already low, and an oral temperature does not address that risk. A stool softener is judged against bowel pattern, not blood pressure. The concept is that you cannot intervene before you assess, and the assessment that matters is the one matched to the specific hazard of the drug in your hand."},
  {c:"NUR 314",qid:"314-m1-01",level:1,k:"mc",gate:"314-3997640035",errs:["knowledge", null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"recall",watch:"How fast filtration falls with age",
   stem:"A 72-year-old asks why the provider reduced the dose of a medication the kidneys clear. The nurse explains that after the age of 40 the glomerular filtration rate falls by an average of:",
   options:["4 mL/min/1.73 m2 per decade", "8 mL/min/1.73 m2 per decade", "6 mL/min/1.73 m2 per decade", "12 mL/min/1.73 m2 per decade"],
@@ -5753,7 +5728,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 1:30 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 11, 2:39 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -6114,12 +6089,14 @@ function reapplyDone(){
    lecture existed were written from general pharmacology, not from that deck,
    and were labelled as if they came off those slides. They are gone from the
    seed; this clears them from anyone who already has them. */
-/* Retired on purpose. The 314 p1-* six were invented from general pharmacology
+/* Retired on purpose. The twelve 314 m1p-* "before class" questions went on
+   11 Sep at Jeremy's request - he will write his own before a class if he wants
+   them. The 314 p1-* six were invented from general pharmacology
    before the real lecture arrived. The 308 four are statistics - the 308
    instructor said in class she does not test on statistics, so a question whose
    whole answer is "6 in 10" or "56%" is time spent on something that cannot be
    on the exam. */
-const DEAD_QUESTIONS=["308-w1-12","308-w1-10","308-w1-73","308-w1-18","308-w1-64","308-w1-62","308-w1-60","308-sata-04","308-n-04","308-n-34","314-m2-119","314-m2-133","314-m2-116","314-m2-104","314-m2-112","314-m2-123","314-m2-110","314-m2-114","308-w1-26","308-w1-31","308-t-a04","308-t-a01","308-t-a06","308-w1-36","314-p1-01","314-p1-02","314-p1-03","314-p1-04","314-p1-05","314-p1-06",
+const DEAD_QUESTIONS=["314-m1p-01","314-m1p-02","314-m1p-03","314-m1p-04","314-m1p-05","314-m1p-06","314-m1p-07","314-m1p-08","314-m1p-09","314-m1p-10","314-m1p-11","314-m1p-12","308-w1-12","308-w1-10","308-w1-73","308-w1-18","308-w1-64","308-w1-62","308-w1-60","308-sata-04","308-n-04","308-n-34","314-m2-119","314-m2-133","314-m2-116","314-m2-104","314-m2-112","314-m2-123","314-m2-110","314-m2-114","308-w1-26","308-w1-31","308-t-a04","308-t-a01","308-t-a06","308-w1-36","314-p1-01","314-p1-02","314-p1-03","314-p1-04","314-p1-05","314-p1-06",
   "308-w1-25","308-w1-43","308-w1-44","308-w1-48","308-w1-52"];
 /* Everything answered before the schedule existed has no box and no due date,
    so without this every one of them would read as due the moment it shipped -
@@ -7535,6 +7512,7 @@ window.addEventListener("unhandledrejection",function(ev){
 var keepFocus=null;
 function render(){
   tickDay();
+  if(ADV_FULL&&!(tab==="fight"&&ADV_OPEN&&!FIGHT&&!session)){ADV_FULL=false;document.body.classList.remove("advfull");}
   gateShow();
   /* Nobody answers questions with a nurse standing on the buttons. She steps
      off screen for the length of any run, quiz, Gauntlet or fight. */
@@ -8752,7 +8730,11 @@ function avatarSetup(seed){
       '<label class="f">Brow shape<div class="row" id="avBR">'+chips("br",[["","Default"],["natural","Natural"],["soft","Soft"],["straight","Straight"],["arched","Arched"],["rounded","Rounded"],["angled","Angled"],["thick","Thick"],["thin","Thin"]])+'</div></label>'+
       '<label class="f">Brow height<div class="row" id="avBY">'+chips("by",[["low","Low"],["","Default"],["raised","Raised"],["high","High"]])+'</div></label>'+
       '<label class="f">Hair color<div class="row" id="avC">'+sw("c",HAIRS)+'</div></label>'+
-      '<label class="f">Eye color<div class="row" id="avE">'+sw("e",EYES)+'</div></label>'+
+      '<label class="f">Eye color<div class="row" id="avE">'+sw("e",EYES)+
+        '<button class="swatch" id="avEWheel" data-e="custom" title="Any color" style="background:conic-gradient(#e33,#ec3,#3c3,#3cc,#33e,#c3c,#e33)"></button></div>'+
+        '<div id="avEPick" class="cwheelwrap" hidden><div class="cwheel" id="avEWheelPad"><i class="cwdot"></i></div>'+
+          '<div class="cwside"><span class="cwprev" id="avEPrev"></span><input type="range" id="avELight" min="18" max="70" value="40" aria-label="Lightness">'+
+          '<button type="button" class="btn sm primary" id="avEUse">Use this color</button></div></div></label>'+
       '<label class="f">Eye makeup<span class="note" style="font-weight:400"> \u00b7 combine any</span><div class="row" id="avM">'+chips("m",[["none","None"],["liner","Liner"],["lashes","Lashes"],["smoky","Smoky"]])+'</div></label>'+
       '<label class="f">Cheeks<div class="row" id="avCH">'+chips("ch",[["","None"],["soft","Soft"],["blush","Blush"],["rosy","Rosy"],["peach","Peach"],["sun","Sun-kissed"],["freckles","Freckles"],["frecfull","Freckles + blush"]])+'</div></label>'+
       '<label class="f">Ears<div class="row" id="avEA">'+chips("ea",[["","Default"],["oval","Oval"],["pointed","Pointed"],["lobed","Long lobe"],["tucked","Tucked"],["broad","Broad"],["small","Small"],["large","Large"],["hidden","Hidden by hair"]])+'</div></label>'+
@@ -8804,7 +8786,8 @@ function avatarSetup(seed){
     $$("#avP .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p===pick.pres));
     $$("#avH .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.h===pick.cut));
     $$("#avC .swatch").forEach(b=>b.setAttribute("aria-pressed",b.dataset.c===pick.color));
-    $$("#avE .swatch").forEach(b=>b.setAttribute("aria-pressed",b.dataset.e===pick.eyes));
+    $$("#avE .swatch").forEach(b=>b.setAttribute("aria-pressed",b.dataset.e===pick.eyes||(b.dataset.e==="custom"&&/^#/.test(pick.eyes||""))));
+    {const w=$("#avEWheel");if(w&&/^#/.test(pick.eyes||""))w.style.background=pick.eyes;}
     $$("#avS .swatch").forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===pick.skin));
     $$("#avES .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.es===pick.eyeshape));
     $$("#avG .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.g===pick.specs));
@@ -8847,7 +8830,24 @@ function avatarSetup(seed){
   });
   bindHair();
   $$("#avC .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.color=b.dataset.c;sync();});
-  $$("#avE .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.eyes=b.dataset.e;sync();});
+  $$("#avE .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);
+    if(b.dataset.e==="custom"){const w=$("#avEPick");w.hidden=!w.hidden;return;}pick.eyes=b.dataset.e;sync();});
+  /* the wheel: hue round the ring, saturation out from the middle, lightness on the slider */
+  (function(){
+    const pad=$("#avEWheelPad"), dot=pad&&pad.querySelector(".cwdot"), prev=$("#avEPrev"), light=$("#avELight"), use=$("#avEUse");if(!pad)return;
+    let h=25,sat=70;
+    const hex=()=>{const l=+light.value/100, s_=sat/100, c=(1-Math.abs(2*l-1))*s_, x=c*(1-Math.abs((h/60)%2-1)), m=l-c/2;
+      const [r,g,b]=h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];
+      return "#"+[r,g,b].map(v=>Math.round((v+m)*255).toString(16).padStart(2,"0")).join("");};
+    const show=()=>{const c=hex();prev.style.background=c;dot.style.left=(50+Math.cos(h*Math.PI/180)*sat/2)+"%";dot.style.top=(50+Math.sin(h*Math.PI/180)*sat/2)+"%";pick.eyes=c;draw();};
+    const at=e=>{const r=pad.getBoundingClientRect(), dx=e.clientX-r.left-r.width/2, dy=e.clientY-r.top-r.height/2;
+      h=(Math.atan2(dy,dx)*180/Math.PI+360)%360;sat=Math.min(100,Math.hypot(dx,dy)/(r.width/2)*100);show();};
+    let on=false;pad.addEventListener("pointerdown",e=>{on=true;pad.setPointerCapture(e.pointerId);at(e);});
+    pad.addEventListener("pointermove",e=>{if(on)at(e);});pad.addEventListener("pointerup",()=>{on=false;});pad.addEventListener("pointercancel",()=>{on=false;});
+    light.oninput=show;
+    use.onclick=()=>{pick.eyes=hex();$("#avEPick").hidden=true;sync();};
+    show();
+  })();
   $$("#avS .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.skin=b.dataset.s;sync();});
   $$("#avES .chip").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.eyeshape=b.dataset.es;sync();});
   $$("#avG .chip").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.specs=b.dataset.g;sync();});
@@ -12951,7 +12951,7 @@ function advScene(){
   const stage='<g id="advStage">'+items.map(i=>i.html).join("")+'</g>'+
     '<g id="advPlates">'+stops.map(s=>advPlate(s,A.healed[s.id])).join("")+'</g>';
   const dawn=advAllHealed();
-  return '<svg class="advsvg'+(dawn?' dawn':'')+'" viewBox="0 0 '+ADV_W+' '+ADV_H+'" role="img" aria-label="Vaelith, the wood">'+
+  return '<svg class="advsvg'+(dawn?' dawn':'')+'" viewBox="0 0 '+ADV_W+' '+ADV_H+'" style="width:'+Math.round(ADV_W*ADV_ZOOM)+'px;height:'+Math.round(ADV_H*ADV_ZOOM)+'px" role="img" aria-label="Vaelith, the wood">'+
    '<defs>'+
     '<linearGradient id="advsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1230"/><stop offset=".28" stop-color="#2A2D66"/><stop offset=".5" stop-color="#5A5C95"/><stop offset=".68" stop-color="#8A93B4"/><stop offset=".82" stop-color="#CBB985"/><stop offset="1" stop-color="#EBE1C2"/></linearGradient>'+
     '<linearGradient id="advday" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6F9BCB"/><stop offset=".5" stop-color="#B7D3E6"/><stop offset=".8" stop-color="#EFE6CB"/><stop offset="1" stop-color="#F7F1DF"/></linearGradient>'+
@@ -13035,7 +13035,9 @@ function viewAdventure(){
   return '<div class="vhead"><div><h1>Vaelith<span class="advtongue">the Wood</span></h1><p>Sickness hides in people, and the people live in the trees. Ilvane, a nurse of the old kind, walks with you door to door. Six chapters — Sennavar, Oruvenne, Lissieth, Meruost, Meruael and Thessaly — and every door you heal sets a light back in the wood.</p></div>'+
       '<button type="button" class="btn ghost" id="advSkip">Just fight instead</button></div>'+
     advChapterBar()+
-    '<div class="advwrap"><div class="advscene">'+advScene()+'</div>'+
+    '<div class="advwrap">'+(ADV_FULL?'<button type="button" class="advtool advback" id="advExit" aria-label="Leave full screen">\u2039 Back</button>':'')+
+      '<div class="advtools">'+(ADV_FULL?'<button type="button" class="advtool" data-zoom="out" aria-label="Zoom out">\u2212</button><button type="button" class="advtool" data-zoom="in" aria-label="Zoom in">+</button>':'<button type="button" class="advtool" id="advFull" aria-label="Full screen" title="Full screen">\u2922</button>')+'</div>'+
+      '<div class="advscene">'+advScene()+'</div>'+
       (ADV.visit?advVisitPanel():ADV.story?advStoryPanel():toldWhere)+
     '</div>'+
     '<div class="advfoot"><span>'+done+' of '+stops.length+' healed</span><span>'+Object.keys(A.visited).length+' taught</span><span>Every healed door brings the wood back to life — flowers, then butterflies, then the animals, then the old things. Drag the scene to look around.</span></div>';
@@ -13352,13 +13354,29 @@ function advFollow(x,y,smooth){
 /* drag to look around */
 function advDrag(sc){
   let down=null;
-  sc.addEventListener("pointerdown",e=>{if(e.target.closest("[data-adv]"))return;down={x:e.clientX,y:e.clientY,l:sc.scrollLeft,t:sc.scrollTop};sc.classList.add("grab");});
+  /* a mouse drags; a finger pans natively (touch-action), because doing both
+     at once fought the browser and the view snapped back */
+  sc.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse"||e.target.closest("[data-adv]"))return;down={x:e.clientX,y:e.clientY,l:sc.scrollLeft,t:sc.scrollTop};sc.classList.add("grab");});
   const up=()=>{down=null;sc.classList.remove("grab");};
   sc.addEventListener("pointermove",e=>{if(!down)return;sc.scrollLeft=down.l-(e.clientX-down.x);sc.scrollTop=down.t-(e.clientY-down.y);});
-  sc.addEventListener("pointerup",up);sc.addEventListener("pointerleave",up);
+  sc.addEventListener("pointerup",up);sc.addEventListener("pointerleave",up);sc.addEventListener("pointercancel",up);
+  /* two fingers: pinch to zoom about the midpoint */
+  let pinch=null;
+  const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+  const mid=t=>{const r=sc.getBoundingClientRect();return {x:(t[0].clientX+t[1].clientX)/2-r.left,y:(t[0].clientY+t[1].clientY)/2-r.top};};
+  sc.addEventListener("touchstart",e=>{if(e.touches.length===2){pinch={d:dist(e.touches),z:ADV_ZOOM};e.preventDefault();}},{passive:false});
+  sc.addEventListener("touchmove",e=>{if(!pinch||e.touches.length!==2)return;e.preventDefault();const m=mid(e.touches);advZoomTo(pinch.z*dist(e.touches)/pinch.d,m.x,m.y);},{passive:false});
+  const endPinch=e=>{if(pinch&&e.touches.length<2)pinch=null;};
+  sc.addEventListener("touchend",endPinch);sc.addEventListener("touchcancel",endPinch);
+  /* ctrl or cmd and the wheel, on a desktop */
+  sc.addEventListener("wheel",e=>{if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();const r=sc.getBoundingClientRect();advZoomTo(ADV_ZOOM*(e.deltaY<0?1.1:1/1.1),e.clientX-r.left,e.clientY-r.top);},{passive:false});
 }
 function wireAdventure(){
   const sc=$(".advscene");if(sc){advFollow(ADV?ADV.x:0,ADV?ADV.y:0,false);advDrag(sc);}
+  const fb=$("#advFull");if(fb)fb.onclick=()=>advSetFull(true);
+  const xb=$("#advExit");if(xb)xb.onclick=()=>advSetFull(false);
+  document.querySelectorAll("[data-zoom]").forEach(b=>{b.onclick=()=>advZoomTo(ADV_ZOOM*(b.dataset.zoom==="in"?1.25:1/1.25));});
+  if(!wireAdventure.keyed){wireAdventure.keyed=true;document.addEventListener("keydown",e=>{if(e.key==="Escape"&&ADV_FULL)advSetFull(false);});}
   /* Only on the way in. Every step of a walk re-renders, and scrolling the page
      under someone mid-walk would be worse than the problem. */
   if(ADV_ENTER&&sc){
@@ -13400,7 +13418,22 @@ function wireAdventure(){
 var FCOURSE=null, FWING=null;
 /* Whether the wood is open. Not saved: arriving at the tab always offers the
    choice, and walking into Vaelith is something you do, not something you set. */
-let ADV_OPEN=false, ADV_ENTER=false;
+let ADV_OPEN=false, ADV_ENTER=false, ADV_FULL=false, ADV_ZOOM=1;
+const ADV_ZMIN=0.45, ADV_ZMAX=2.6;
+/* zoom the wood about a point of the view (client coords inside the scene) */
+function advZoomTo(z,cx,cy){
+  const sc=$(".advscene"), svg=sc&&sc.querySelector("svg.advsvg");if(!sc||!svg)return;
+  z=Math.max(ADV_ZMIN,Math.min(ADV_ZMAX,z));
+  if(cx==null){cx=sc.clientWidth/2;cy=sc.clientHeight/2;}
+  const kOld=ADV_ZOOM, sx=(sc.scrollLeft+cx)/kOld, sy=(sc.scrollTop+cy)/kOld;
+  ADV_ZOOM=z;svg.style.width=Math.round(ADV_W*z)+"px";svg.style.height=Math.round(ADV_H*z)+"px";
+  sc.scrollLeft=sx*z-cx;sc.scrollTop=sy*z-cy;
+}
+function advSetFull(on){
+  ADV_FULL=!!on;document.body.classList.toggle("advfull",ADV_FULL);
+  render();
+  if(ADV_FULL)advFollow(ADV?ADV.x:0,ADV?ADV.y:0,false);
+}
 function viewFight(){
   const li=levelInfo(S.profile.xp), p=S.profile, beaten=p.beaten||{};
   if(!FIGHT){
@@ -14912,7 +14945,7 @@ function hairFor(cut,H,D,SKIN){
   return {back:r.back, front:base+r.front};
 }
 function eyesFor(pres,eyeCol,H,makeup,shape,SKIN,SKIN_D,brow,browy){
-  const irisC=GRD[eyeCol]?'url(#cne'+GRAD_UID+')':(EYES[eyeCol]||EYES.brown);
+  const irisC=GRD[eyeCol]?'url(#cne'+GRAD_UID+')':(/^#[0-9a-f]{6}$/i.test(eyeCol||"")?eyeCol:(EYES[eyeCol]||EYES.brown));
   const sp=EYESHAPES[shape]||EYESHAPES.round;
   const CY=51.5, DK="#241A1B";
   const MK=String(makeup||"").split(",").filter(x=>x&&x!=="none");
@@ -17122,16 +17155,16 @@ function kindCard(){
   const solid=rows.filter(r=>!r.thin), thin=rows.filter(r=>r.thin);
   const bar=r=>{
     const K=QKIND_N[r.k]||{n:r.k,d:""};
-    return '<div class="tsrow" style="cursor:default">'+
+    return '<button type="button" class="tsrow" data-kindgo="'+esc(r.k)+'">'+
       '<span class="tst"><b>'+esc(K.n)+'</b><i>'+esc(K.d)+' \u00b7 '+
-        r.tries+' answer'+(r.tries===1?'':'s')+'</i></span>'+
+        r.tries+' answer'+(r.tries===1?'':'s')+' \u00b7 '+r.qs+' question'+(r.qs===1?'':'s')+'</i></span>'+
       '<span class="tsbar '+tsBand(r.pct)+'"><i style="width:'+r.pct+'%"></i></span>'+
-      '<span class="tsn '+tsBand(r.pct)+'">'+r.pct+'%</span></div>';
+      '<span class="tsn '+tsBand(r.pct)+'">'+r.pct+'%</span></button>';
   };
   return '<div class="card pad" style="margin-bottom:14px">'+
     '<span class="eyebrow" style="display:flex;align-items:center">'+stk("stand")+'Kinds of question</span>'+
     (solid.length?'<div class="note" style="margin:4px 0 10px">Weakest first. This is what the question '+
-      'asked you to do, not what it was about.</div>'+solid.map(bar).join(""):'')+
+      'asked you to do, not what it was about. Tap a kind to see the questions you have answered in it.</div>'+solid.map(bar).join(""):'')+
     (thin.length?'<div class="note" style="margin:'+(solid.length?'12px':'4px')+' 0 8px">'+
       'Too few answers to rank yet.</div>'+thin.map(bar).join(""):'')+
   '</div>';
@@ -17162,6 +17195,31 @@ function strengthCard(){
       'Barely touched \u2014 too few answers to rank yet.</div>'+thin.map(bar).join(""):'')+
   '</div>';
 }
+/* One kind of question, opened from the Progress card: every question of that
+   kind you have answered, with how it went, and the whole question under it
+   when you want to read it again. */
+let PROG_KIND=null;
+function kindReview(k){
+  const K=QKIND_N[k]||{n:k,d:""};
+  const qs=S.questions.filter(q=>!q.prime&&(q.seen||0)>0&&qKind(q)===k)
+    .sort((a,b)=>(isDone(a)-isDone(b))||((b.wrong||0)-(a.wrong||0))||String(b.lastSeen||"").localeCompare(String(a.lastSeen||"")));
+  const missesOf=q=>(MINE.misses||[]).filter(m=>m.qid===q.id).length;
+  const courseOf=q=>{const c=S.courses.find(x=>x.id===q.courseId);return c?(c.code||c.name):"";};
+  const item=q=>{
+    const done=isDone(q), n=missesOf(q), seen=q.seen||0;
+    const status=done?(n?'Right now, after '+n+' miss'+(n===1?'':'es'):'Right'):(n?'Still open \u2014 missed '+n+' time'+(n===1?'':'s'):'Open');
+    const keys=q.k==="sata"?(q.answers||[]):[q.answer];
+    return '<details class="kq'+(done?' done':' open')+'"><summary><span class="kqs '+(done?'good':'poor')+'">'+esc(status)+'</span>'+
+      '<span class="kqt">'+esc(q.stem)+'</span><i class="kqm">'+esc(courseOf(q))+' \u00b7 '+esc(q.unit||"")+' \u00b7 seen '+seen+'</i></summary>'+
+      '<div class="kqbody"><ol class="kqo">'+(q.options||[]).map((o,i)=>'<li class="'+(keys.indexOf(i)>=0?'key':'')+'">'+esc(o)+'</li>').join("")+'</ol>'+
+      (q.rationale?'<div class="kqwhy"><b>Why</b>'+esc(q.rationale)+'</div>':'')+
+      '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-kqrun="'+esc(q.id)+'">Answer it again</button></div></div></details>';};
+  return '<div class="card pad" style="margin-bottom:14px">'+
+    '<button type="button" class="crumb" id="kindBack">\u2039 Kinds of question</button>'+
+    '<span class="eyebrow" style="display:flex;align-items:center;margin-top:6px">'+stk("stand")+esc(K.n)+'</span>'+
+    '<div class="note" style="margin:4px 0 10px">'+esc(K.d)+'. '+qs.length+' question'+(qs.length===1?'':'s')+' answered \u2014 the ones still open first.</div>'+
+    (qs.length?qs.map(item).join(""):'<div class="note">Nothing answered in this kind yet.</div>')+'</div>';
+}
 function viewTrophies(){
   const p=S.profile,li=levelInfo(p.xp);
   const got=TROPHIES.filter(t=>p.trophies[t.id]);
@@ -17185,7 +17243,7 @@ function viewTrophies(){
      '<div class="stat"><div class="n">'+(p.fightWins||0)+'</div><div class="l">Diseases beaten</div></div>'].join("")+'</div>'+
   rankLadder()+
   strengthCard()+
-  kindCard()+
+  (PROG_KIND?kindReview(PROG_KIND):kindCard())+
   gateSection()+
   (next?'<div class="card pad nextup"><span class="eyebrow">Closest trophy</span>'+
      '<span class="nextcup">'+trophyCup(next.t,false)+'</span>'+
@@ -18105,7 +18163,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 1:30 PM":"This browser is not saving anything. Build Sep 11, 1:30 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 2:39 PM":"This browser is not saving anything. Build Sep 11, 2:39 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -18133,6 +18191,9 @@ function wire(){
   }
   const fx=$("#fqx"); if(fx)fx.onclick=()=>{FIND="";render();};
   wireFind();
+  $$("[data-kindgo]").forEach(b=>b.onclick=()=>{PROG_KIND=b.dataset.kindgo;render();const el=$("#kindBack");if(el)el.scrollIntoView({block:"start",behavior:"smooth"});});
+  {const kb=$("#kindBack");if(kb)kb.onclick=()=>{PROG_KIND=null;render();};}
+  $$("[data-kqrun]").forEach(b=>b.onclick=()=>{const q=S.questions.find(x=>x.id===b.dataset.kqrun);if(!q)return;tab="study";courseFilter=q.courseId;studyAt="class";startSession("review",q.unit||"General",[q.id]);});
   $$("[data-tsgo]").forEach(b=>b.onclick=()=>{
     const bits=b.dataset.tsgo.split("||");
     const qs=S.questions.filter(q=>!q.prime&&q.courseId===bits[0]&&(q.unit||"General")===bits[1]);
@@ -18202,8 +18263,9 @@ function wire(){
   const fn=$("#fNext"); if(fn)fn.onclick=()=>fightNext();
   const fr=$("#fRevBtn"); if(fr)fr.onclick=()=>{const r=$("#fRev");if(!r)return;r.hidden=!r.hidden;fr.textContent=r.hidden?"Review what you got wrong":"Hide the review";if(!r.hidden)r.scrollIntoView({behavior:"smooth",block:"start"});};
   const fa=$("#fAgain"); if(fa)fa.onclick=()=>{const b=FIGHT.b, adv=FIGHT.adv;if(b.ward){const x=b.id.slice(5).split("||");wardStart(x[0],x[1]);}else{fightStart(b.id);if(FIGHT&&adv)FIGHT.adv=true;}};
-  const ff=$("#fForest"); if(ff)ff.onclick=()=>{if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);FIGHT=null;ADV_OPEN=true;ADV_ENTER=true;render();};
-  const ag=$("#advGo"); if(ag)ag.onclick=()=>{ADV_OPEN=true;ADV_ENTER=true;ADV=null;render();};
+  /* stepping into the wood takes the whole screen; Back brings the app back */
+  const ff=$("#fForest"); if(ff)ff.onclick=()=>{if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);FIGHT=null;ADV_OPEN=true;ADV_ENTER=true;ADV_FULL=true;document.body.classList.add("advfull");render();};
+  const ag=$("#advGo"); if(ag)ag.onclick=()=>{ADV_OPEN=true;ADV_ENTER=true;ADV=null;ADV_FULL=true;document.body.classList.add("advfull");render();};
   wireAdventure();
   const leaveFight=()=>{if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);FIGHT=null;render();window.scrollTo(0,0);};
   const fb=$("#fBack"); if(fb)fb.onclick=leaveFight;
@@ -18600,7 +18662,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 1:30 PM":"This browser is not saving anything. Build Sep 11, 1:30 PM");
+    (LS_OK?"Saved in this browser. Build Sep 11, 2:39 PM":"This browser is not saving anything. Build Sep 11, 2:39 PM");
 })();
 </script>
 
