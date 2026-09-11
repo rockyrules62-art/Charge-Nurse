@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 10:09 AM-->
+<!--TROPHOS-BUILD:Sep 11, 1:30 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -855,9 +855,13 @@ div.qzcard{cursor:default}
 .advsvg #advNurse.walking svg.nurse{animation:advstep .36s ease-in-out infinite alternate;transform-origin:50% 100%}
 @keyframes advstep{from{transform:rotate(-2.5deg) translateY(0)}to{transform:rotate(2.5deg) translateY(-3px)}}
 .advsvg .advbob{animation:advbob 2.2s ease-in-out infinite alternate}
+.advsvg .advshoot{animation:advshoot 14s linear infinite;opacity:0}
+@keyframes advshoot{0%{transform:translate(0,0);opacity:0}3%{opacity:1}12%{transform:translate(-460px,190px);opacity:0}100%{transform:translate(-460px,190px);opacity:0}}
+.advsvg .advcrit{animation:advcrit 3.2s ease-in-out infinite alternate}
+@keyframes advcrit{from{transform:translateY(0)}to{transform:translateY(-2px)}}
 @keyframes advbob{from{transform:translateY(0)}to{transform:translateY(-10px)}}
 
-.advsvg.dawn .advstar{opacity:0!important}
+.advsvg.dawn .advstar,.advsvg.dawn .advshoot{opacity:0!important;animation:none}
 .advsvg.dawn > rect:first-of-type{fill:url(#advday)}
 .advchap{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .advchip{font:600 12px "IBM Plex Mono",monospace;padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
@@ -873,7 +877,7 @@ div.qzcard{cursor:default}
 .advroomcap{position:absolute;left:10px;bottom:8px;background:rgba(15,27,25,.62);color:#fff;padding:5px 10px;border-radius:99px;display:flex;gap:8px;align-items:baseline}
 .advroomcap b{font-size:13px}.advroomcap i{font:600 10px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#7FD9CC;font-style:normal}
 @media (max-width:760px){.advsheet.inside{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.advsvg .advglow,.advsvg .advstar,.advsvg .advff,.advsvg .advaurora,.advsvg .advrays,.advsvg .advwater,.advsvg .advbf,.advsvg .advbob,.advsvg #advNurse.walking svg.nurse{animation:none}}
+@media (prefers-reduced-motion:reduce){.advsvg .advglow,.advsvg .advstar,.advsvg .advff,.advsvg .advaurora,.advsvg .advrays,.advsvg .advwater,.advsvg .advbf,.advsvg .advbob,.advsvg .advshoot,.advsvg .advcrit,.advsvg #advNurse.walking svg.nurse{animation:none}}
 .advwhere{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;background:#0F1B19;color:#fff;border-top:1px solid rgba(255,255,255,.12)}
 .advwhere-t{display:flex;flex-direction:column;gap:2px;flex:1;min-width:160px}
 .advwhere-t b{font:700 13.5px/1.25 "IBM Plex Sans",sans-serif}
@@ -2843,10 +2847,10 @@ const QUIZZES=[
        answer:2,
        why:"Both metabolism and excretion decline with age and the size of that decline is unpredictable in any one person, so the safe route is a small starting dose adjusted against the response. How fast a drug reaches its steady level depends on its half-life, not on the size of the dose - a low dose plateaus at a lower level, not a sooner one. Absorption from the stomach does not increase with age; the notable changes are slower emptying and a higher pH. Whether a drug needs tapering has nothing to do with why the starting dose is small."}},
 
-  {k:"mc",stem:"An 82-year-old's estimated creatinine clearance has fallen since last year. Two of her medications are eliminated almost entirely by the kidneys, yet the provider lowers the dose of only one of them. A student asks how that decision was made. Which response by the nurse is accurate?",
-   options:["The one left alone is given once a day, so it clears out completely between doses however slow the kidney is.","The one left alone is handled by the tubules, and tubular function holds up while filtration falls.","The one that was lowered leaves little room between the largest dose tolerated and the smallest one that works.","The one that was lowered can be measured as a blood level, and any drug whose level can be measured is reduced first when clearance drops."],
+  {k:"mc",stem:"An 82-year-old client has a decreased creatinine clearance compared with the previous year. The client takes two medications that are primarily eliminated by the kidneys. The provider reduces the dose of one medication but leaves the other unchanged. Which characteristic of the medication most likely explains why its dose was reduced?",
+   options:["It is administered once daily, increasing the risk for accumulation when renal function declines.","It is primarily eliminated through renal tubular secretion rather than glomerular filtration.","It has a narrow therapeutic index, increasing the risk for toxicity when renal clearance decreases.","Its serum concentration can be measured to monitor for drug accumulation."],
    answer:2,
-   why:"When clearance falls, what decides how much trouble a renally eliminated drug causes is how much of its removal depends on the kidney and how narrow its therapeutic index is - the span between the maximum tolerated dose and the minimum effective dose. A drug with almost no room between those two points becomes toxic on a small amount of extra accumulation, so it is the one whose dose changes. Tubular function does not hold up while filtration declines; decreases in tubular function parallel those in glomerular function, so that option is the real relationship turned backwards. Once-daily dosing does not guarantee that a drug clears out between doses - there is no such rule, and a slower kidney is exactly the situation in which a once-daily drug stacks up. Nor is there a rule that a measurable drug level is reduced first: measuring a level is how therapy is individualized, not a reason to cut one dose ahead of another.",
+   why:"When creatinine clearance falls, how much trouble a kidney-eliminated drug causes depends on two things: how much of its removal depends on the kidney, and its therapeutic index - the span between the largest dose tolerated and the smallest dose that works. Both drugs here depend on the kidney, so the therapeutic index is what separates them. A drug with a narrow index has almost no room between a therapeutic level and a toxic one, so a small amount of extra accumulation becomes toxicity, and its dose is reduced or spaced out as clearance falls; the drug with a wide index tolerates the same accumulation. Once-daily dosing is not the reason on its own - the interval is chosen to fit a drug's half-life, and a slower kidney makes any schedule accumulate, so frequency does not pick out which drug gets cut. Tubular secretion is not a safer route, because decreases in tubular function parallel the decline in glomerular filtration; a drug cleared by the tubules slows down with the rest. A measurable serum level is how therapy is individualized and how accumulation is watched for - a reason to draw a level, not a reason to reduce one dose ahead of another. Serum creatinine alone would not have shown the change, because an older adult with less muscle can keep a normal creatinine while the filtration rate drops, which is why creatinine clearance is the value the dose is set by.",
    up:{stem:"Why does a drug with very little room between its effective dose and its toxic dose need extra attention when kidney clearance falls?",
        options:["The kidney clears this kind of drug more slowly than it clears other drugs","A small amount of extra drug left in the body is enough to reach the toxic range","These drugs are taken up more completely from the gut, so more of each dose arrives","A drug with a narrow range is safe as long as the client has no symptoms from it"],
        answer:1,
@@ -2880,9 +2884,9 @@ const QUIZZES=[
        why:"Blood flow, smoking, and drugs that induce or inhibit the cytochrome P-450 enzymes all influence hepatic metabolism, and heart failure is the classic reason that flow drops. An enzyme inducer moves clearance the other way, speeding metabolism rather than slowing it. Total body water falls with age rather than rising, and in any case water affects where a drug distributes, not how the liver handles it. Taking a dose with food can change how fast it is absorbed but it is not what determines the liver's rate of metabolism."}},
 
   {k:"mc",stem:"A 78-year-old tells the nurse, \"I quit the blood pressure pill about two months ago. I never felt any different when I took it, and I feel perfectly fine now.\" Her readings today are higher than the ones recorded at her last two visits. Which response by the nurse is best?",
-   options:["You take it until your vessels get back to normal on their own, and then you can stop.","If you felt nothing on it, the dose you were on was probably too low to help.","Let's list everything you were taking and let your provider decide about it next visit.","High blood pressure has no symptoms, so feeling fine does not mean it is gone."],
+   options:["You take it until your vessels get back to normal on their own, and then you can stop.","If you felt nothing on it, the dose you were on was probably too low to help.","Let's list everything you were taking and let your provider decide about it next visit.","High blood pressure doesn't always have symptoms, so feeling fine does not mean it is gone."],
    answer:3,
-   why:"The reason this client stopped is a belief, and the belief is what has to be corrected: a condition that produces no symptoms gives her nothing to judge the drug by, so feeling well on it and feeling well off it look identical to her while the numbers move. Naming that directly is what makes the rest of the conversation possible, and her higher readings are the evidence in the room. Saying that feeling nothing means the dose was too low reverses the logic - the absence of a sensation is the expected experience of treating an asymptomatic condition, not a signal about dose. Vessels do not get back to normal on their own in a way that lets the drug be stopped; there is no such process, and it is the kind of explanation that sends a client off treatment for good. Writing the list down and referring it forward is reasonable care and will need to happen, but leaving today without touching the misunderstanding means she has two more months of the same reasoning.",
+   why:"The reason this client stopped is a belief, and the belief is what has to be corrected: a condition that often produces no symptoms gives her nothing to judge the drug by, so feeling well on it and feeling well off it look identical to her while the numbers move. Naming that directly is what makes the rest of the conversation possible, and her higher readings are the evidence in the room. Saying that feeling nothing means the dose was too low reverses the logic - the absence of a sensation is the expected experience of treating an asymptomatic condition, not a signal about dose. Vessels do not get back to normal on their own in a way that lets the drug be stopped; there is no such process, and it is the kind of explanation that sends a client off treatment for good. Writing the list down and referring it forward is reasonable care and will need to happen, but leaving today without touching the misunderstanding means she has two more months of the same reasoning.",
    up:{stem:"Why does the nurse pay particular attention to medications prescribed for conditions the client cannot feel?",
        options:["Drugs for those conditions are cleared from the body faster than other drugs","Clients often stop them, since feeling well seems like proof they are not needed","Those conditions are the ones that respond to a smaller dose once a client is over 65","Medications for them have to be taken at the same hour every day to work at all"],
        answer:1,
@@ -4277,11 +4281,11 @@ const SEED_QUESTIONS=[
   options:["Keep the room lights low so he can rest", "Raise your pitch so the voice carries", "Turn the television off before the interview", "Speak toward the left ear, the better one", "Give the details to his daughter instead", "Ask how the client prefers to communicate"],
   answers:[2, 3, 5],
   rationale:"The first move is to ask the client how he prefers to communicate, because he has lived with this loss and already knows what works, and asking costs nothing while guessing wastes the whole conversation. Speaking toward the less impaired ear delivers the message to the side that can still receive it, and turning off the television removes the background noise that competes with speech and makes it much harder to separate words from sound. Keeping the lights low seems considerate, but it removes the face, the expression and the gestures that carry a large share of the meaning for someone with hearing loss, so the room needs to be lit and the nurse needs to be facing him with his attention before she starts. Raising the pitch of the voice is what happens automatically when a nurse shouts, and higher pitches are the hardest to hear, which is why the guideline is a low-toned normal voice spoken slowly and distinctly rather than a loud one. Handing the details to the daughter to relay removes the client from his own admission and treats a hearing problem as an inability to participate, when writing information down or arranging an interpreter would get the message to him directly if speech is not enough. The concept is that the nurse adjusts the environment, the voice and the direction of the speech before concluding that the client cannot take part."},
- {c:"NUR 308T",qid:"308-sata-06",level:4,k:"sata",gate:"308T-3e94175f66",errs:[null, null, null, null, "safety", "knowledge"],unit:"Content 2 — Hearing & balance",type:"priority",watch:"Care during the attack itself",
+ {c:"NUR 308T",qid:"308-sata-06",level:4,k:"sata",gate:"308T-3e94175f66",errs:[null, null, "safety", null, "safety", "knowledge"],unit:"Content 2 — Hearing & balance",type:"priority",watch:"Care during the attack itself",
   stem:"A client with Ménière disease is admitted during an attack, with severe vertigo and vomiting. Which nursing actions are appropriate at this time? Select all that apply.",
-  options:["Assist him each time he gets up to the bathroom", "Offer the ordered medicine for nausea and spinning", "Ask about ringing and fullness in that ear", "Keep the call bell where he can reach it easily", "Turn his head side to side to ease the spinning", "Encourage salty broth to replace what he vomited"],
-  answers:[0, 1, 2, 3],
-  rationale:"During an attack the vertigo is incapacitating, so the nursing priorities are preventing injury and relieving the symptoms. Assisting him each time he gets up is the safety measure this diagnosis calls for, and it keeps him moving with help rather than confining him. Keeping the call bell within reach is what makes that assistance available in the first place, because a client who cannot reach it will eventually get up alone. Offering the medication ordered for the nausea and the vertigo treats symptoms that are genuinely disabling, and giving it early also protects him from vomiting his way into dehydration. Asking about the ringing and the fullness in that ear is part of assessing this disorder, because the pressure, the tinnitus and the hearing on that side move together with the attacks and describe how severe this episode is. Salty broth works directly against his treatment, since a low-sodium diet is part of managing this disease, and it is a plausible error because replacing fluid after vomiting is usually good thinking; the fluid is fine, the salt is the problem. Turning his head from side to side borrows a manoeuvre that belongs to benign positional vertigo, where loose debris in a canal can be moved along; here the spinning comes from fluid pressure inside the inner ear, and deliberately moving the head at the height of an attack drives the vertigo and the vomiting harder rather than easing them. The concept is that the plan of care during an attack is built on safety first, then symptom relief, and that every intervention is still checked against the long-term plan the client will go home on."},
+  options:["Assist him each time he gets up to the bathroom", "Offer the ordered medicine for nausea and spinning", "Have him turn his head each way to rate the dizziness", "Keep the call bell where he can reach it easily", "Turn his head side to side to ease the spinning", "Encourage salty broth to replace what he vomited"],
+  answers:[0, 1, 3],
+  rationale:"During an attack the vertigo is incapacitating, so the nursing priorities are preventing injury and relieving the symptoms. Assisting him each time he gets up is the safety measure this diagnosis calls for, and it keeps him moving with help rather than confining him. Keeping the call bell within reach is what makes that assistance available in the first place, because a client who cannot reach it will eventually get up alone. Offering the medication ordered for the nausea and the vertigo treats symptoms that are genuinely disabling, and giving it early also protects him from vomiting his way into dehydration. Asking about the ringing and the fullness in that ear is part of assessing this disorder, because the pressure, the tinnitus and the hearing on that side move together with the attacks and describe how severe this episode is. Salty broth works directly against his treatment, since a low-sodium diet is part of managing this disease, and it is a plausible error because replacing fluid after vomiting is usually good thinking; the fluid is fine, the salt is the problem. Turning his head from side to side borrows a manoeuvre that belongs to benign positional vertigo, where loose debris in a canal can be moved along; here the spinning comes from fluid pressure inside the inner ear, and deliberately moving the head at the height of an attack drives the vertigo and the vomiting harder rather than easing them. The concept is that the plan of care during an attack is built on safety first, then symptom relief, and that every intervention is still checked against the long-term plan the client will go home on. Turning the head during an attack brings the spinning on harder; the head is kept still and the client stays where he is safe."},
  {c:"NUR 308T",qid:"308-sata-07",level:3,k:"sata",gate:"308T-3e94175f66",errs:[null, "safety", null, "safety", "safety", null],unit:"Content 3 — Vision",type:"teaching",watch:"Same-day discharge instructions",
   stem:"A client is going home the same day after cataract surgery. Which instructions should the nurse include? Select all that apply.",
   options:["Sneeze with the mouth open rather than holding it in", "Return to your usual routine on the second day", "Take care going up and down the stairs at home", "Bend at the waist rather than at the knees", "Sleep on the side of the operated eye tonight", "Keep activity light, such as walking and reading"],
@@ -4302,11 +4306,11 @@ const SEED_QUESTIONS=[
   options:["Improve the lighting in the rooms used most", "Have a relative do the cooking and dressing", "Clear walkways of rugs, cords and clutter", "Continue driving in daylight on quiet roads", "Arrange a referral to a low-vision service"],
   answers:[0, 2, 4],
   rationale:"Vision loss of this degree makes falls the main hazard, so the plan is built around light, referral and a safe layout. Better lighting in the rooms the client actually uses compensates for some of the lost contrast and detail. A referral to a low-vision service brings magnification devices, adaptive equipment and training that let the client keep doing tasks rather than giving them up, which is a nursing action rather than something the client is expected to arrange alone. Clearing loose rugs, trailing cords and clutter removes the obstacles the client can no longer see. Handing the cooking and dressing to a relative creates dependence in a client who can be taught to manage both with adaptations, and abilities that are not used are quickly lost. Driving is not safe with this degree of central vision loss regardless of the time of day or the road, and continuing to drive risks the client and everyone else; the conversation about transport alternatives belongs in this teaching. The concept is that safety and independence are pursued together, by changing the environment rather than by taking the task away."},
- {c:"NUR 314",qid:"314-sata-01",level:4,k:"sata",gate:"314-3997640035",errs:[null, null, "safety", null, "safety", null],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"Lowering adverse drug reaction risk",
+ {c:"NUR 314",qid:"314-sata-01",level:4,k:"sata",gate:"314-3997640035",errs:[null, null, "safety", null, null, null],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"Lowering adverse drug reaction risk",
   stem:"A nurse is planning care for several adults over 75 who each take multiple medications. Which nursing actions reduce this group's risk of adverse drug reactions? Select all that apply.",
-  options:["Check kidney and liver function before and during therapy", "Reconcile every medication the client takes at each visit", "Begin a new drug at the usual adult dose and adjust later", "Draw drug levels for the medications that require them", "Ask the client to bring a written list rather than the bottles", "Teach the family along with the client about each drug"],
-  answers:[0, 1, 3, 5],
-  rationale:"Reconciliation is the first defense, because it is the only step that produces a complete list in a client whose drugs come from several prescribers who do not communicate, and it is what catches a duplicate drug hiding under a second name or a drug-drug interaction. Checking kidney and liver function matters because those two organs drive distribution, metabolism and excretion, and both decline with age even in the absence of diagnosed disease, so their function determines whether a standard dose is a standard dose for this client. Drug levels individualize therapy for the drugs that are dosed by concentration, such as lithium, which is the whole point of therapeutic drug monitoring. Teaching the family alongside the client means someone else understands the regimen when the client cannot manage it. Beginning a new drug at the usual adult dose sounds unremarkable and is the direct opposite of start low and go slow; it front-loads the risk into an older adult whose clearance is already reduced. Asking for a written list rather than the bottles sounds efficient and gives up the one thing that makes reconciliation work, because the bottles carry the strength, the prescriber and the fill date, and they bring in the supplements and the over-the-counter drugs a client does not think of as medications."},
+  options:["Check kidney and liver function before and during therapy", "Reconcile every medication the client takes at each visit", "Begin a new drug at the usual adult dose and adjust later", "Draw drug levels for the medications that require them", "Ask about over-the-counter and herbal products by name", "Teach the family along with the client about each drug"],
+  answers:[0, 1, 3, 4, 5],
+  rationale:"Reconciliation is the first defense, because it is the only step that produces a complete list in a client whose drugs come from several prescribers who do not communicate, and it is what catches a duplicate drug hiding under a second name or a drug-drug interaction. Checking kidney and liver function matters because those two organs drive distribution, metabolism and excretion, and both decline with age even in the absence of diagnosed disease, so their function determines whether a standard dose is a standard dose for this client. Drug levels individualize therapy for the drugs that are dosed by concentration, such as lithium, which is the whole point of therapeutic drug monitoring. Teaching the family alongside the client means someone else understands the regimen when the client cannot manage it. Beginning a new drug at the usual adult dose sounds unremarkable and is the direct opposite of start low and go slow; it front-loads the risk into an older adult whose clearance is already reduced. Asking for a written list rather than the bottles sounds efficient and gives up the one thing that makes reconciliation work, because the bottles carry the strength, the prescriber and the fill date, and they bring in the supplements and the over-the-counter drugs a client does not think of as medications. The over-the-counter and herbal products are the ones nobody reports as medication, and a PM tablet is an anticholinergic, so the nurse asks for them by name rather than waiting for a list."},
  {c:"NUR 314",qid:"314-sata-02",level:4,k:"sata",gate:"314-3997640035",errs:["knowledge", null, "knowledge", null, null, "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"A creatinine clearance of 28",
   stem:"An 80-year-old man's creatinine clearance is 28 mL/min. Which of his current medications are likely to need a lower dose or a longer dosing interval because the kidneys are what clear them? Select all that apply.",
   options:["Diazepam 5 mg at bedtime for chronic anxiety", "Lithium 300 mg twice daily for bipolar disorder", "Trazodone 50 mg at bedtime for poor sleep", "Gentamicin 80 mg IV every 8 hours for sepsis", "Digoxin 0.25 mg daily for atrial fibrillation", "Warfarin 5 mg once daily for atrial fibrillation"],
@@ -4317,11 +4321,11 @@ const SEED_QUESTIONS=[
   options:["Squeeze the eyelids shut tightly after each drop", "Wait five to ten minutes between the two drops", "Press on the inner corner of the eye for one minute", "Give the second drop right after the first one goes in", "Rinse the eye with water after each drop goes in", "Report a resting pulse in the fifties to the provider"],
   answers:[1, 2, 5],
   rationale:"Occluding the punctum for one to two minutes closes the nasolacrimal duct, which is the single most effective way to reduce the systemic absorption that gives an eye drop cardiac and respiratory effects. Spacing different drops five to ten minutes apart lets each be absorbed, because the conjunctival sac holds far less than one drop and a second drop instilled immediately simply washes the first away, which is why giving them back to back is the error the interval exists to prevent. Timolol is a beta blocker even as a drop, so a resting pulse in the fifties is reported, along with wheezing, dizziness or new fatigue. Rinsing the eye with water afterward flushes the drop out of that same sac before any of it has been taken up, which throws away the dose that was just given. Squeezing the lids forces the drop back out over the lid; the eye is closed gently instead. The concept is that a correct prescription only works if the drop stays where it was put, so the spacing, the pressure on the inner corner and the gentle closing are the whole of the technique."},
- {c:"NUR 314",qid:"314-sata-04",level:3,k:"sata",gate:"314-3997640035",errs:[null, null, null, "knowledge", "knowledge", null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"adverse-effect",watch:"Which of these reach the cochlea",
+ {c:"NUR 314",qid:"314-sata-04",level:3,k:"sata",gate:"314-3997640035",errs:[null, null, "knowledge", "knowledge", "knowledge", null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"adverse-effect",watch:"Which of these reach the cochlea",
   stem:"A client on several medications reports new ringing in both ears. Which of the client's medications are known to affect hearing? Select all that apply.",
-  options:["Aspirin 6 to 8 grams daily for arthritis", "Furosemide taken daily for heart failure", "Cisplatin given weekly for a solid tumor", "Meclizine taken as needed for the vertigo", "Amoxicillin-clavulanate for an ear infection", "Gentamicin intravenously, now on day six"],
-  answers:[0, 1, 2, 5],
-  rationale:"Systemic aminoglycosides are ototoxic and gentamicin is the most cochleotoxic of them, ahead of tobramycin, amikacin and neomycin; because hair cells do not regenerate, that loss is generally permanent, so tinnitus on day six is reported before another dose is given. High-dose salicylates, in the 6 to 8 gram a day range, cause hearing loss that reverses when the drug is stopped. Loop diuretics cause temporary hearing loss and tinnitus, and pairing one with an aminoglycoside is the classic additive-toxicity combination. Chemotherapy causes some of the worst ototoxicity, with cisplatin, fluorouracil and bleomycin the leading offenders, and that damage is generally permanent. Amoxicillin-clavulanate is the first-line antibiotic for otitis media and is not ototoxic, though erythromycin and tetracycline are. Meclizine is a vestibular suppressant given for vertigo; its problems are sedation and anticholinergic effects, not cochlear damage."},
+  options:["Aspirin 6 to 8 grams daily for arthritis", "Furosemide taken daily for heart failure", "Acetaminophen taken twice a day for knee pain", "Meclizine taken as needed for the vertigo", "Amoxicillin-clavulanate for an ear infection", "Gentamicin intravenously, now on day six"],
+  answers:[0, 1, 5],
+  rationale:"Systemic aminoglycosides are ototoxic and gentamicin is the most cochleotoxic of them, ahead of tobramycin, amikacin and neomycin; because hair cells do not regenerate, that loss is generally permanent, so tinnitus on day six is reported before another dose is given. High-dose salicylates, in the 6 to 8 gram a day range, cause hearing loss that reverses when the drug is stopped. Loop diuretics cause temporary hearing loss and tinnitus, and pairing one with an aminoglycoside is the classic additive-toxicity combination. Acetaminophen is not on the ototoxic list; it is the liver, not the ear, that it threatens. Amoxicillin-clavulanate is the first-line antibiotic for otitis media and is not ototoxic, though erythromycin and tetracycline are. Meclizine is a vestibular suppressant given for vertigo; its problems are sedation and anticholinergic effects, not cochlear damage."},
  {c:"NUR 314",qid:"314-cs1-1",level:4,k:"mc",gate:"314-3997640035",errs:[null, "knowledge", "knowledge", "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"medication-safety",watch:"Screening a drug list against a client's eye history",struct:"case",
   cs:{"id": "cs1", "n": 1, "of": 4, "title": "Ray Alvarez, 71 — new orders on the medical unit", "chart": [["Client", "Ray Alvarez, 71, admitted two days ago with an exacerbation of chronic obstructive pulmonary disease"], ["History", "COPD, hypertension, benign prostatic hyperplasia, seasonal allergies"], ["Medications", "Nebulized ipratropium and albuterol every six hours; hydrochlorothiazide 25 mg each morning; tamsulosin 0.4 mg at bedtime"], ["Added today", "Diphenhydramine 25 mg at bedtime for itching"], ["Eyes", "Wears reading glasses; last eye examination three years ago"], ["Vital signs", "BP 142/86, HR 88, RR 22, oxygen saturation 92 percent on 2 litres"]]},
   stem:"Before the newly added bedtime dose is given, which part of this client's history should the nurse make certain of?",
@@ -4642,11 +4646,11 @@ const SEED_QUESTIONS=[
   options:["The drops have been contaminated by the dropper tip", "A superinfection with a fungus or a resistant organism", "The ulcer was viral and the antibiotic has never worked", "A hypersensitivity reaction to the quinolone"],
   answer:1,
   rationale:"Long-term topical use of an antibacterial can lead to superinfection: the antibiotic clears the bacteria it can reach and leaves the surface open to fungi or to organisms it cannot touch, and prolonged ciprofloxacin use has been reported to do exactly that. An eye that got better and then worsened three weeks in, with a new white infiltrate, fits that picture and needs the prescriber and a culture, not more of the same drop. A hypersensitivity reaction would have shown itself early and as itching, swelling and redness, not as a new corneal patch after weeks of improvement. A viral ulcer would not have improved on an antibacterial at all. Contamination of the dropper is possible and is why the tip never touches anything, but it does not explain the timing as well as the drug's own known complication does."},
- {c:"NUR 314",qid:"314-sata-07",level:3,k:"sata",gate:"314-3997640035",errs:[null, null, null, "knowledge", null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"medication-safety",watch:"Trifluridine for herpes simplex keratitis",
+ {c:"NUR 314",qid:"314-sata-07",level:3,k:"sata",gate:"314-3997640035",errs:[null, "safety", null, "knowledge", null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"medication-safety",watch:"Trifluridine for herpes simplex keratitis",
   stem:"A client is prescribed trifluridine ophthalmic solution for herpes simplex keratitis. Which instructions should the nurse include? Select all that apply.",
-  options:["Wait several minutes before instilling any other eye medication", "Expect the corneal ulcer to heal over one to two weeks", "Keep the bottle in the refrigerator between doses", "Continue the drops for a month after the eye heals to prevent a return", "Wear gloves to handle the drug and discard the waste as biohazard", "Let the bottle warm to room temperature before each dose"],
-  answers:[0, 1, 2, 4],
-  rationale:"Trifluridine is a hazardous drug, which is why gloves are worn to administer it and the waste goes out as biohazard rather than in the trash. It is stored refrigerated at 2 to 8 degrees Celsius, 36 to 48 Fahrenheit. When other eye drops are prescribed, several minutes are left between them. Complete healing of the corneal ulcer is expected in one to two weeks, and the nurse assesses for that along with the transient burning and stinging that are its most common adverse effects. Warming the bottle undoes the storage requirement; it is used cold. And the drug is not continued for a month after healing — treatment is limited by epithelial toxicity, so it stops once the cornea has healed, with the client taught instead that herpetic eye infections often recur and need to be treated again each time."},
+  options:["Wait several minutes before instilling any other eye medication", "Stop the drops as soon as the eye feels comfortable", "Keep the bottle in the refrigerator between doses", "Continue the drops for a month after the eye heals to prevent a return", "Wear gloves to handle the drug and discard the waste as biohazard", "Let the bottle warm to room temperature before each dose"],
+  answers:[0, 2, 4],
+  rationale:"Trifluridine is a hazardous drug, which is why gloves are worn to administer it and the waste goes out as biohazard rather than in the trash. It is stored refrigerated at 2 to 8 degrees Celsius, 36 to 48 Fahrenheit. When other eye drops are prescribed, several minutes are left between them. Complete healing of the corneal ulcer is expected in one to two weeks, and the nurse assesses for that along with the transient burning and stinging that are its most common adverse effects. Warming the bottle undoes the storage requirement; it is used cold. And the drug is not continued for a month after healing — treatment is limited by epithelial toxicity, so it stops once the cornea has healed, with the client taught instead that herpetic eye infections often recur and need to be treated again each time. The drops run their course; a comfortable eye is not a healed cornea, and stopping early invites the reactivation the full course is meant to prevent."},
  {c:"NUR 314",qid:"314-m2-80",level:1,gate:"314-3997640035",errs:["knowledge", "knowledge", "knowledge", null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"recall",watch:"Built into the viral DNA",
   stem:"Which action explains how trifluridine treats herpes simplex keratitis?",
   options:["It stimulates the eye to produce antibodies against the virus", "It stops the virus from entering the cells of the cornea", "It dries the surface of the lesion so the virus cannot spread", "It is built into the virus's DNA in place of a building block"],
@@ -4732,11 +4736,11 @@ const SEED_QUESTIONS=[
   options:["An antibiotic, an antifungal and an antiviral cover whatever is growing", "The three are the same antibiotic at three strengths so it keeps working", "One antibiotic kills the bacteria, one dries out the canal and one numbs the pain", "Two antibiotics attack the bacteria differently and a steroid calms the swelling"],
   answer:3,
   rationale:"Each part of the neomycin–polymyxin B–hydrocortisone suspension has its own job. Neomycin, an aminoglycoside, binds the bacterial ribosome and stops protein synthesis; polymyxin B binds the lipid phosphates of the bacterial membrane and changes its permeability until the cell dies; hydrocortisone stabilizes the leukocyte lysosome membrane and damps the inflammation, redness and swelling. The common otic combinations may also carry an antiseptic and an acidifying agent — alcohol and acetic acid — that loosen debris and keep bacteria from growing. Nothing in the bottle numbs the ear; pain is handled with an adjuvant such as acetaminophen or ibuprofen. It is not one drug at three strengths, and there is no antifungal or antiviral in it — the suspension is not for viral, fungal or mycobacterial infections at all."},
- {c:"NUR 314",qid:"314-sata-09",level:2,k:"sata",gate:"314-3997640035",extra:true,cat:"Neomycin ear drops (Cortisporin) and ofloxacin otic",errs:[null, "knowledge", null, null, null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"Otic suspension for external otitis",
+ {c:"NUR 314",qid:"314-sata-09",level:2,k:"sata",gate:"314-3997640035",extra:true,cat:"Neomycin ear drops (Cortisporin) and ofloxacin otic",errs:[null, "knowledge", "safety", null, null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"Otic suspension for external otitis",
   stem:"The nurse is teaching a client to instill an otic suspension for external otitis. Which instructions belong in the teaching? Select all that apply.",
-  options:["Tilt the head to the opposite shoulder and pull the top of the outer ear upward", "Keep using the drops until the bottle is finished", "Place a cotton ball in the ear canal to keep the drops in", "Lie on the side opposite the treated ear for twenty minutes afterward", "Shake the bottle well before each dose", "Rinse the canal with warm water after each dose to wash away the loosened debris"],
-  answers:[0, 2, 3, 4],
-  rationale:"A suspension is shaken before every dose or the drug settles in the bottom of the bottle. The head tilts toward the opposite shoulder and the top of the auricle is pulled upward to straighten an adult canal, the drops go in, and the client lies on the opposite side for 20 minutes with a cotton ball in the canal so the medication is absorbed rather than draining out. Water is the enemy of this ear: nothing is put in the canal, no water is allowed to enter during treatment, and a swimmer uses earplugs, shakes the ear dry and uses a blow dryer on low from 12 inches. The drops stop at 10 days, whatever is left in the bottle, to prevent resistance, and the ear is looked at again in one to two weeks."},
+  options:["Tilt the head to the opposite shoulder and pull the top of the outer ear upward", "Keep using the drops until the bottle is finished", "Warm the bottle in the microwave for a few seconds so the drops are not cold", "Lie on the side opposite the treated ear for twenty minutes afterward", "Shake the bottle well before each dose", "Rinse the canal with warm water after each dose to wash away the loosened debris"],
+  answers:[0, 3, 4],
+  rationale:"A suspension is shaken before every dose or the drug settles in the bottom of the bottle. The head tilts toward the opposite shoulder and the top of the auricle is pulled upward to straighten an adult canal, the drops go in, and the client lies on the opposite side for 20 minutes with a cotton ball in the canal so the medication is absorbed rather than draining out. Water is the enemy of this ear: nothing is put in the canal, no water is allowed to enter during treatment, and a swimmer uses earplugs, shakes the ear dry and uses a blow dryer on low from 12 inches. The drops stop at 10 days, whatever is left in the bottle, to prevent resistance, and the ear is looked at again in one to two weeks. A microwave can overheat the suspension unevenly and burn the canal; the bottle is warmed, if at all, in the hand."},
  {c:"NUR 314",qid:"314-m2-102",level:2,gate:"314-3997640035",extra:true,cat:"Neomycin ear drops (Cortisporin) and ofloxacin otic",errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"Ten days, then stop",
   stem:"A client using neomycin–polymyxin B–hydrocortisone drops asks how long to continue them. Which response by the nurse is accurate?",
   options:["Stop as soon as the pain and drainage are gone", "Use them until the bottle is empty so nothing is wasted", "Stop after ten days, even if drops are left in the bottle", "Continue for a full month so that the infection cannot return"],
@@ -4787,11 +4791,11 @@ const SEED_QUESTIONS=[
   options:["Ask about dizziness, unsteadiness and any spinning sensation", "Check the most recent serum creatinine and drug level", "Assess hearing and compare it with what was charted before the drug", "Reassure the client that the ringing will clear once the antibiotic is finished", "Report the change to the prescriber before the next dose", "Give the next dose on time so the infection is not undertreated"],
   answers:[0, 1, 2, 4],
   rationale:"Ototoxicity is damage to the hearing or balance organs of the inner ear by a drug, and the aminoglycosides are the class that causes it most reliably: all of them are ototoxic, and gentamicin is the most cochleotoxic, with some in the class more vestibulotoxic than cochleotoxic. Muffled hearing and tinnitus on day five are the drug announcing itself, and hearing loss from an aminoglycoside is not the reversible kind — so the change is reported before another dose goes in, not after. Asking about dizziness and unsteadiness covers the vestibular side. The drug level and the creatinine are checked because ototoxicity runs with the level and the level runs with the kidneys; impaired kidney function makes the ototoxic antibiotics worse. Comparing against the baseline is how the change is measured. Reassurance that it will clear is what is said about high-dose aspirin, quinine and chloroquine, and about loop diuretics, whose effects are usually reversible; it is not true of this drug. And giving the dose on time treats the schedule as more important than the ear."},
- {c:"NUR 314",qid:"314-sata-11",level:3,k:"sata",gate:"314-3997640035",errs:[null, null, null, "knowledge", "knowledge", null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"assessment",watch:"Ringing, and a long medication list",
+ {c:"NUR 314",qid:"314-sata-11",level:3,k:"sata",gate:"314-3997640035",errs:[null, null, null, "knowledge", null, null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"assessment",watch:"Ringing, and a long medication list",
   stem:"A 70-year-old reports ringing in both ears that began a few weeks ago. Which drugs on the home medication list can cause or worsen tinnitus? Select all that apply.",
-  options:["Omeprazole taken for reflux", "Lisinopril taken for blood pressure", "Amlodipine taken for blood pressure", "Levothyroxine taken for hypothyroidism", "Metformin taken for type 2 diabetes with meals", "Sertraline taken for depression"],
-  answers:[0, 1, 2, 5],
-  rationale:"The drugs known for taking the hearing — aminoglycosides, cisplatin, loop diuretics, high-dose salicylates — are only part of the tinnitus list. It also carries whole classes that nobody thinks of as ear drugs: the ACE inhibitors, which is lisinopril; the calcium channel blockers, which is amlodipine; the proton pump inhibitors, which is omeprazole; and sertraline by name, along with the tricyclic antidepressants, the benzodiazepines, the fluoroquinolones, clarithromycin, the NSAIDs and COX-2 inhibitors, carbamazepine and valproic acid. Four of this client's six drugs are on it, which is why new ringing in an older adult is a reason to read the whole list rather than to look for the one antibiotic. Metformin and levothyroxine are not on the list; they are there as the two drugs a nurse can leave out of the conversation."},
+  options:["Omeprazole taken for reflux", "Lisinopril taken for blood pressure", "Amlodipine taken for blood pressure", "Levothyroxine taken for hypothyroidism", "Ibuprofen taken for knee pain most days", "Sertraline taken for depression"],
+  answers:[0, 1, 2, 4, 5],
+  rationale:"The drugs known for taking the hearing — aminoglycosides, cisplatin, loop diuretics, high-dose salicylates — are only part of the tinnitus list. It also carries whole classes that nobody thinks of as ear drugs: the ACE inhibitors, which is lisinopril; the calcium channel blockers, which is amlodipine; the proton pump inhibitors, which is omeprazole; and sertraline by name, along with the tricyclic antidepressants, the benzodiazepines, the fluoroquinolones, clarithromycin, the NSAIDs and COX-2 inhibitors, carbamazepine and valproic acid. Four of this client's six drugs are on it, which is why new ringing in an older adult is a reason to read the whole list rather than to look for the one antibiotic. Metformin and levothyroxine are not on the list; they are there as the two drugs a nurse can leave out of the conversation. Salicylates and NSAIDs are on the same list, so ibuprofen taken most days counts too; levothyroxine is not on it."},
  {c:"NUR 314",qid:"314-m2-115",level:3,gate:"314-3997640035",errs:[null, "knowledge", "knowledge", "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"medication-safety",watch:"An inhaler and a narrow angle",
   stem:"A client known to have narrow anterior chamber angles is admitted with an exacerbation of chronic obstructive pulmonary disease. Which new order should the nurse discuss with the provider before giving it?",
   options:["Ipratropium by nebulizer every four hours", "Guaifenesin 600 mg by mouth twice daily", "Azithromycin 500 mg by mouth once daily", "Prednisone 40 mg by mouth every morning for five days"],
@@ -4852,11 +4856,11 @@ const SEED_QUESTIONS=[
   options:["Nausea after the morning dose", "Wheezing and a rash spreading across the chest", "A sore mouth and a sore throat since the drug began", "Loose stools twice today, with some cramping"],
   answer:1,
   rationale:"Hypersensitivity is the adverse effect of amoxicillin that threatens life, and it ranges from a rash to anaphylaxis; diarrhea is the more frequent one, and the clavulanate makes it more so. Wheezing with a spreading rash is that reaction under way — the drug stops and the client is seen, because the next step is difficulty breathing. The other three are on the drug's own adverse-effect list too, which is what makes them hard to set aside: glossitis, stomatitis, a sore throat, nausea, vomiting, abdominal pain and diarrhea are the gastrointestinal effects, and they are assessed, reported at the follow-up and watched for superinfection, but none of them is the one that closes an airway. The teaching is taken within an hour of a meal, around the clock, for the full course, and it is only the hypersensitivity that ends the course early."},
- {c:"NUR 314",qid:"314-sata-12",level:3,k:"sata",gate:"314-3997640035",errs:[null, null, null, "knowledge", "knowledge", null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"What can go wrong with a needle in the eye",
+ {c:"NUR 314",qid:"314-sata-12",level:3,k:"sata",gate:"314-3997640035",errs:[null, null, null, "knowledge", null, null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"What can go wrong with a needle in the eye",
   stem:"A client is about to start intravitreal injections for wet age-related macular degeneration. Which risks should the nurse include in the teaching? Select all that apply.",
-  options:["A local reaction at the injection site", "Stroke", "Detachment of the retina", "Darkening of the iris and lengthening of the lashes over months", "Ringing in the ears", "Sudden vision loss, flashes or a curtain, reported the same day"],
-  answers:[0, 1, 2, 5],
-  rationale:"Bevacizumab, ranibizumab, aflibercept and faricimab are given by intravitreal injection, and the risks that go with putting a drug through the wall of the eye are retinal detachment, stroke and local injection reactions. So the teaching names those three and then tells the client what a detachment looks like — a sudden drop in vision, flashes, a shadow or curtain — and that it is reported the same day, not at the next monthly visit. Darkening of the iris is the prostaglandin analog's adverse effect, a glaucoma drop that has nothing to do with this injection. Ringing in the ears belongs to the ototoxic list and to no eye drug."},
+  options:["A local reaction at the injection site", "Stroke", "Detachment of the retina", "Darkening of the iris and lengthening of the lashes over months", "An infection inside the eye after the injection", "Sudden vision loss, flashes or a curtain, reported the same day"],
+  answers:[0, 1, 2, 4, 5],
+  rationale:"Bevacizumab, ranibizumab, aflibercept and faricimab are given by intravitreal injection, and the risks that go with putting a drug through the wall of the eye are retinal detachment, stroke and local injection reactions. So the teaching names those three and then tells the client what a detachment looks like — a sudden drop in vision, flashes, a shadow or curtain — and that it is reported the same day, not at the next monthly visit. Darkening of the iris is the prostaglandin analog's adverse effect, a glaucoma drop that has nothing to do with this injection. Ringing in the ears belongs to the ototoxic list and to no eye drug. Endophthalmitis, an infection inside the eye, is the reason the injection is done under aseptic conditions after an antimicrobial drop and the reason eye pain, redness, light sensitivity and new floaters are reported at once."},
  {c:"NUR 314",qid:"314-m2-128",level:2,gate:"314-3997640035",errs:["knowledge", null, "knowledge", "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"recall",watch:"How atropine opens the pupil",
   stem:"Atropine drops are ordered to dilate a client's pupil. By which action does the drug produce that effect?",
   options:["It contracts the dilator muscle of the pupil directly", "It blocks acetylcholine, so the pupil relaxes open and focus is lost", "It blocks beta receptors in the muscle of the iris", "It stimulates the cholinergic receptors of the iris so the pupil widens"],
@@ -4872,11 +4876,11 @@ const SEED_QUESTIONS=[
   options:["It reduces how much aqueous humor the ciliary body makes", "It increases the outflow of aqueous humor through the trabecular drainage angle", "It constricts the pupil and pulls the iris away from the angle", "An osmotic gradient between the blood and the eye draws fluid out of the eye"],
   answer:3,
   rationale:"Mannitol is an osmotic diuretic given by intravenous infusion. It raises the osmolarity of the plasma, and fluid follows the gradient out of the eye and into the blood, which is why the pressure falls within 15 to 30 minutes and why the drug is used for an acute attack and before surgery rather than for daily control. Reducing aqueous production is how the beta blockers, alpha2 agonists and carbonic anhydrase inhibitors work. Increasing outflow through the angle is the prostaglandin analogs, cholinergics and rho kinase inhibitor. Constricting the pupil to open the angle is pilocarpine alone."},
- {c:"NUR 314",qid:"314-sata-13",level:3,k:"sata",gate:"314-3997640035",errs:[null, "knowledge", "knowledge", null, null, null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"adverse-effect",watch:"Everything mannitol takes with the water",
+ {c:"NUR 314",qid:"314-sata-13",level:3,k:"sata",gate:"314-3997640035",errs:[null, "knowledge", "knowledge", null, null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"adverse-effect",watch:"Everything mannitol takes with the water",
   stem:"A client is receiving intravenous mannitol. Which findings should the nurse recognize as adverse effects of the drug? Select all that apply.",
-  options:["New confusion", "Wheezing with a slow pulse", "Brown discoloration of the iris", "Fainting on standing", "A rapid, irregular pulse", "A dry mouth with intense thirst"],
-  answers:[0, 3, 4, 5],
-  rationale:"The adverse effects of mannitol all follow from the fluid it removes — confusion, headache, syncope, cardiac dysrhythmias, nausea, vomiting and severe dehydration, with hyperosmolar nonketotic coma the most serious of them. So the nurse follows fluid and electrolytes, blood pressure, pulse and respirations, breath sounds, blood glucose and the pupil reflexes, and starts an older adult at the low end of the range. Brown discoloration of the iris is the prostaglandin analog's adverse effect. Wheezing with a slow pulse is the beta blocker reaching the lungs and the heart. Neither belongs to an osmotic diuretic."},
+  options:["New confusion", "Wheezing with a slow pulse", "Brown discoloration of the iris", "Fainting on standing", "A rapid, irregular pulse", "Swelling of both ankles by the evening"],
+  answers:[0, 3, 4],
+  rationale:"The adverse effects of mannitol all follow from the fluid it removes — confusion, headache, syncope, cardiac dysrhythmias, nausea, vomiting and severe dehydration, with hyperosmolar nonketotic coma the most serious of them. So the nurse follows fluid and electrolytes, blood pressure, pulse and respirations, breath sounds, blood glucose and the pupil reflexes, and starts an older adult at the low end of the range. Brown discoloration of the iris is the prostaglandin analog's adverse effect. Wheezing with a slow pulse is the beta blocker reaching the lungs and the heart. Neither belongs to an osmotic diuretic. Ankle swelling is the opposite of what mannitol does; it pulls fluid into the blood and out in the urine, so dehydration, not edema, is the adverse effect."},
  {c:"NUR 314",qid:"314-m2-131",level:2,gate:"314-3997640035",errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"recall",watch:"How the tablet lowers the pressure",
   stem:"A client asks why the acetazolamide tablet helps glaucoma when all the other treatments are drops. Which explanation by the nurse is accurate?",
   options:["It relaxes the pupil so the fluid can move forward", "It pulls fluid out of the eye and into the bloodstream", "It blocks an enzyme in the eye so less fluid is made", "It opens the drainage angle so the fluid leaves faster"],
@@ -5276,7 +5280,157 @@ const SEED_QUESTIONS=[
   stem:"An 84-year-old is prescribed an anticholinergic for urge incontinence. She already takes diphenhydramine at night for sleep. Which teaching should the nurse give the family?",
   options:["Expect a runny nose and loose stools for the first week as the drug takes hold", "Give the two drugs together at bedtime so the side effects overlap and pass in sleep", "Watch for new confusion, constipation and a dry mouth, and report them rather than wait", "Increase her fluids and fiber only if she says she is thirsty or constipated"],
   answer:2,
-  rationale:"An anticholinergic can quiet an overactive bladder, but in an older adult its other effects, a dry mouth, a slowed gut and confusion, often make it a poor choice, and this client is already taking diphenhydramine, itself a strong anticholinergic, so the burden is doubled. The family is taught to watch for exactly those three things and to report them, because the confusion in particular is mistaken for dementia and the constipation for age, and the prescriber may decide the incontinence is the smaller problem. Anticholinergics dry secretions and slow the bowel; a runny nose and loose stools are the opposite of what they do, and a family waiting for those signs misses the real ones. Giving both at bedtime stacks the two drugs at the hour she will get up in the dark to use the bathroom, which is when the confusion and the fall happen. Fluids and fiber are started with the drug, not held until she complains, since a client with a slowed gut and a dry mouth may not. The concept is that every anticholinergic on an older adult's list is counted, the sleep aid included, and the family is told what the total looks like."}
+  rationale:"An anticholinergic can quiet an overactive bladder, but in an older adult its other effects, a dry mouth, a slowed gut and confusion, often make it a poor choice, and this client is already taking diphenhydramine, itself a strong anticholinergic, so the burden is doubled. The family is taught to watch for exactly those three things and to report them, because the confusion in particular is mistaken for dementia and the constipation for age, and the prescriber may decide the incontinence is the smaller problem. Anticholinergics dry secretions and slow the bowel; a runny nose and loose stools are the opposite of what they do, and a family waiting for those signs misses the real ones. Giving both at bedtime stacks the two drugs at the hour she will get up in the dark to use the bathroom, which is when the confusion and the fall happen. Fluids and fiber are started with the drug, not held until she complains, since a client with a slowed gut and a dry mouth may not. The concept is that every anticholinergic on an older adult's list is counted, the sleep aid included, and the family is told what the total looks like."},
+ {c:"NUR 314",qid:"314-sata-17",level:3,k:"sata",gate:"314-3997640035",errs:["knowledge", "knowledge", null, null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"assessment",watch:"Predictable versus not",
+  stem:"The nurse reviews the history of a 78-year-old about to start a new oral medication. Which findings mean the drug's movement through the body can be predicted to differ from the usual adult's? Select all that apply.",
+  options:["Doses that are taken at bedtime rather than in the morning", "Living alone since the death of a spouse", "Three days of vomiting with dry lips and low urine output", "A body weight well above the ideal for height", "A serum creatinine that sits within the normal range", "A diet rich in green leafy vegetables"],
+  answers:[2, 3],
+  rationale:"Renal failure, obesity, hepatic failure and dehydration are the individual factors that can be reasonably predicted to change a drug's pharmacokinetics. Three days of vomiting is dehydration, and a weight well above ideal means more fat to hold a fat-soluble drug, so both change how long the drug stays and how strong it is. A normal creatinine predicts nothing in an older adult, because less muscle makes less creatinine even as the filtration rate falls. Green leafy vegetables matter to warfarin alone, the time of day is a scheduling question, and living alone bears on adherence, not on absorption, distribution, metabolism or excretion."},
+ {c:"NUR 314",qid:"314-sata-18",level:2,k:"sata",gate:"314-3997640035",errs:["knowledge", "knowledge", "assessment-vs-action", null, null, "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"application",watch:"When to go back in",
+  stem:"A nurse gives medications on a unit of older adults. Which reassessment times match how long each route takes to work? Select all that apply.",
+  options:["Back within 5 minutes after an oral tablet, before the client forgets the pain score", "Back the next morning after an oral dose so a full day can be judged", "Back only if the client uses the call bell to say it did not help", "Back within 15 minutes after a dose given by intravenous push", "Back within 30 to 60 minutes after an oral tablet", "Back at 4 hours after an intravenous dose, when it has had time to clear"],
+  answers:[3, 4],
+  rationale:"Evaluation is the last step of the nursing process and the time frame is set by the route: within 15 minutes for an intravenous drug and within 30 to 60 minutes for an oral one, which is when each has had a fair chance to act. Four hours is how long a dose may keep working, not when it is judged; five minutes is too soon for a tablet to have dissolved, let alone been absorbed in a slowed gut; the next morning and a call bell leave a failed dose unnoticed, and in an older adult the failed dose is the one that gets repeated."},
+ {c:"NUR 314",qid:"314-sata-19",level:2,k:"sata",gate:"314-3997640035",errs:[null, null, null, null, null, "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"teaching",watch:"Why the pills stop",
+  stem:"A nurse assesses why an 81-year-old with several chronic conditions has not been taking medications as prescribed. Which findings are recognized reasons for nonadherence in an older adult? Select all that apply.",
+  options:["Nine prescriptions from four different specialists who do not share records", "A copay the client cannot meet on a fixed income", "Feeling well for a month and deciding the drug had done its job", "Not realizing that the tablet from the clinic and the one from the drugstore are the same drug", "Side effects from a new drug started at the usual adult dose", "Choosing the generic form when the pharmacy offered it"],
+  answers:[0, 1, 2, 3, 4],
+  rationale:"Polypharmacy, cost, feeling better and stopping, and confusion over two names for one drug are the reasons on the adherence slide, and providers who do not communicate are the root of the first. Starting a drug at a full adult dose rather than low and slow brings the side effects that make older adults quit, which is why the dose is started low and adjusted as the client responds. Choosing the generic is the opposite of a problem: generic, inexpensive drugs with the fewest doses are what keep an older adult on the regimen."},
+ {c:"NUR 314",qid:"314-sata-20",level:2,k:"sata",gate:"314-3997640035",errs:["knowledge", "knowledge", null, null, "knowledge", "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"recall",watch:"Less made or more drained",
+  stem:"A client asks how the glaucoma drops work. Which of the client's medications lower the eye pressure by making less aqueous humor rather than by draining more? Select all that apply.",
+  options:["Netarsudil", "Mannitol", "Timolol", "Acetazolamide", "Bimatoprost", "Pilocarpine"],
+  answers:[2, 3],
+  rationale:"The classes that suppress aqueous inflow are the beta blockers, the alpha-2 agonists and the carbonic anhydrase inhibitors, so timolol and acetazolamide are the two here that cut production. Bimatoprost increases uveoscleral outflow, pilocarpine pulls the iris out of the drainage angle, and netarsudil opens outflow through the trabecular meshwork; each drains more rather than making less. Mannitol is neither: it pulls water out of the eye by osmosis for an acute attack or before surgery and is not a maintenance drug."},
+ {c:"NUR 314",qid:"314-sata-21",level:3,k:"sata",gate:"314-3997640035",errs:["knowledge", "knowledge", "knowledge", null, null, null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"medication-safety",watch:"The chicken or the egg",
+  stem:"A client with narrow drainage angles who has not had laser treatment reviews a home medication list with the nurse. Which drugs can bring on an acute angle-closure attack? Select all that apply.",
+  options:["Acetaminophen for headache", "Metformin with meals for diabetes", "Lisinopril each morning for blood pressure", "Diphenhydramine taken at bedtime for sleep", "Albuterol by inhaler for asthma", "Topiramate for migraine prevention"],
+  answers:[3, 4, 5],
+  rationale:"Antihistamines such as diphenhydramine, inhaled beta-2 agonists such as albuterol, and topiramate are all on the list of drugs that can close a narrow angle in someone already prone to it, along with decongestants, anticholinergics, tricyclics, SSRIs, SNRIs, thiazide diuretics and amphetamines. Acetaminophen, metformin and lisinopril are not. The point of reading the list is to ask which came first, the glaucoma or the drug, and once a laser iridotomy has been done these drugs are no longer off limits."},
+ {c:"NUR 314",qid:"314-sata-22",level:3,k:"sata",gate:"314-3997640035",errs:["knowledge", "knowledge", "knowledge", null, null, null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"medication-safety",watch:"A drop is still a beta blocker",
+  stem:"A client is to start timolol eye drops for open-angle glaucoma. Which parts of the health history mean the nurse holds the first dose and calls the prescriber? Select all that apply.",
+  options:["Type 2 diabetes controlled with diet", "Acid reflux treated with an antacid", "A kidney stone passed last year", "Asthma treated with a rescue inhaler", "Heart failure managed with a diuretic", "A resting pulse in the low fifties"],
+  answers:[3, 4, 5],
+  rationale:"A drop of timolol drains through the tear duct into the bloodstream and does what any beta blocker does, so asthma or obstructive airway disease, heart failure, bradycardia and heart block are contraindications, and the nurse asks about the lungs and the pulse before the first dose. Diabetes, reflux and a kidney stone do not bear on a beta blocker; the kidney stone belongs to acetazolamide, not timolol."},
+ {c:"NUR 314",qid:"314-sata-23",level:2,k:"sata",gate:"314-3997640035",errs:["safety", "knowledge", null, null, "knowledge", "safety"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"Handling the drop",
+  stem:"A client will use two different glaucoma drops at home. Which client statements show the technique was understood? Select all that apply.",
+  options:["\"My husband can use my bottle when his eyes are red.\"", "\"A redness drop from the shelf every morning will keep the eye clear.\"", "\"I wait five to ten minutes between the two drops.\"", "\"After the drop I press the inner corner of my eye for a few minutes.\"", "\"I rub the eye afterward to spread the drop around.\"", "\"I rinse the dropper tip under the tap when I am done.\""],
+  answers:[2, 3],
+  rationale:"The eye holds one drop and drains quickly into the tear duct, so a second drop needs five to ten minutes, and pressing the inner corner keeps the drug in the eye instead of in the bloodstream. Rubbing does not spread a drop and can injure the eye; rinsing the tip contaminates it; a bottle is dispensed for one person; and shelf redness drops are not for regular use beyond a couple of days."},
+ {c:"NUR 314",qid:"314-sata-24",level:3,k:"sata",gate:"314-3997640035",errs:["knowledge", "knowledge", "knowledge", null, null, null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"adverse-effect",watch:"What comes back and what does not",
+  stem:"The nurse reviews ototoxic drugs with a new graduate. Which drugs cause a hearing loss that is usually reversible once the drug is stopped? Select all that apply.",
+  options:["Gentamicin", "Cisplatin", "Neomycin", "Aspirin at 6 to 8 grams a day", "Chloroquine for malaria", "Furosemide"],
+  answers:[3, 4, 5],
+  rationale:"High-dose salicylates and the antimalarials quinine and chloroquine cause a sensorineural loss and tinnitus that usually reverse when the drug is stopped, and loop diuretics cause a temporary loss. The aminoglycosides, gentamicin most of all and neomycin among them, and the chemotherapy drugs cisplatin, fluorouracil and bleomycin damage the hair cells for good, which is why a change in hearing on those drugs is reported before the next dose rather than watched."},
+ {c:"NUR 314",qid:"314-sata-25",level:2,k:"sata",gate:"314-3997640035",errs:["knowledge", "knowledge", "knowledge", null, null, null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"What dry AMD is managed with",
+  stem:"A client with dry age-related macular degeneration asks what will slow it down. Which factors did the nurse learn are tied to its progression? Select all that apply.",
+  options:["Being farsighted", "Wearing contact lenses", "A low-sodium diet", "Uncontrolled diabetes", "Smoking", "Heavy alcohol use"],
+  answers:[3, 4, 5],
+  rationale:"There are few drugs for dry macular degeneration, so it is managed by living: glycemic control because diabetes damages the small vessels, stopping smoking because smoke competes with oxygen and the small vessels of the eye lose, and limiting alcohol. Farsightedness is a risk for angle-closure glaucoma, not macular degeneration; contact lenses and sodium have nothing to do with it."},
+ {c:"NUR 314",qid:"314-sata-26",level:3,k:"sata",gate:"314-3997640035",errs:[null, null, null, null, null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"The first week after the needle",
+  stem:"A client received an intravitreal injection of ranibizumab an hour ago. Which symptoms should the client be told to report at once during the coming week? Select all that apply.",
+  options:["Eye pain that is getting worse", "Redness of the eye that is spreading", "Vision that is becoming blurred", "New sensitivity to light", "More floaters than before the injection", "The iris slowly turning brown"],
+  answers:[0, 1, 2, 3, 4],
+  rationale:"Eye pain, worsening redness, blurred or falling vision, light sensitivity and new floaters are the signs of endophthalmitis, an infection inside the eye, and the first week after an intravitreal injection is when the client is watched for it. A browning iris is the cosmetic change of the prostaglandin drops, not a complication of an injection."},
+ {c:"NUR 314",qid:"314-sata-27",level:2,k:"sata",gate:"314-3997640035",errs:["safety", "safety", null, null, "safety", "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"The course and the gut",
+  stem:"An adult is discharged with amoxicillin-clavulanate 875/125 mg twice a day for acute otitis media. Which client statements show the teaching was understood? Select all that apply.",
+  options:["\"If I miss a dose I take two the next time.\"", "\"I can crush the extended-release tablet if it is hard to swallow.\"", "\"I take it with food, morning and evening.\"", "\"Watery diarrhea, even weeks after the last pill, is something I report.\"", "\"Once the ear stops hurting I can stop the pills.\"", "\"I take it on an empty stomach so it absorbs faster.\""],
+  answers:[2, 3],
+  rationale:"The drug is taken with food, around the clock, for the full course, five to seven days or ten if severe, even when the ear feels better. Diarrhea is its most frequent effect and Clostridioides difficile can begin on the first day or up to three months after the course, so watery or bloody stools are reported whenever they appear. A missed dose is not doubled, and an extended-release tablet is never crushed."},
+ {c:"NUR 308T",qid:"308-sata-18",level:2,k:"sata",gate:"308T-3e94175f66",errs:["knowledge", "knowledge", "knowledge", "knowledge", null, null],unit:"Content 2 — Hearing & balance",type:"assessment",watch:"Sound that cannot get through",
+  stem:"The nurse reviews causes of hearing loss with a client. Which findings cause a conductive loss, where sound cannot pass through the outer or middle ear? Select all that apply.",
+  options:["Presbycusis in an 80-year-old", "Six days of intravenous gentamicin", "Years of loud machinery without ear protection", "A tumor on the eighth cranial nerve", "Impacted cerumen filling the canal", "Fluid behind the eardrum after a middle ear infection"],
+  answers:[4, 5],
+  rationale:"Conductive loss is a problem of the outer or middle ear: wax that blocks the canal and fluid that fills the middle ear keep sound from reaching the inner ear, and both can be cleared. Presbycusis, an ototoxic drug, noise and an acoustic neuroma injure the cochlea or the nerve itself, which is sensorineural loss."},
+ {c:"NUR 308T",qid:"308-sata-19",level:1,k:"sata",gate:"308T-3e94175f66",errs:[null, null, null, "knowledge", "knowledge", "knowledge"],unit:"Content 4 — Neurologic & cognitive function",type:"assessment",watch:"The three that name the disease",
+  stem:"The nurse assesses a client newly diagnosed with Parkinson disease. Which findings are the motor features of the disease? Select all that apply.",
+  options:["A tremor of the hand at rest", "Movements that are slow to start and small", "Rigidity that catches like a cogwheel on passive movement", "Weakness that climbs from the feet upward over days", "Hearing loss that fluctuates from day to day", "Involuntary dance-like movements of the limbs"],
+  answers:[0, 1, 2],
+  rationale:"Resting tremor, bradykinesia and muscle rigidity, with the cogwheel catch on passive movement, are the motor features of Parkinson disease. Ascending weakness belongs to a different neurologic picture, fluctuating hearing loss to Ménière disease, and chorea, the dance-like movement, to Huntington disease."},
+ {c:"NUR 314",qid:"314-m1-55",level:2,k:"mc",gate:"314-3997640035",errs:["assessment-vs-action", "assessment-vs-action", "assessment-vs-action", null],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"Assess before you act",
+  stem:"A student nurse is preparing the 0800 medications for an older adult with diabetes and hypertension. Which action by the student needs to be corrected by the preceptor?",
+  options:["Taking the blood pressure before the antihypertensive tablet", "Asking the client to rate the knee pain before offering acetaminophen", "Checking the finger-stick glucose before drawing up the insulin dose", "Giving the insulin now because it is due, and checking the glucose after breakfast"],
+  answer:3,
+  rationale:"Every drug has an assessment in front of it, and the nursing process starts there: if the assessment was not done, the intervention cannot be. Insulin given before the finger stick can land on a low sugar and make it lower; the glucose is checked first, every time. Blood pressure before an antihypertensive and a pain score before acetaminophen are the same rule done right."},
+ {c:"NUR 314",qid:"314-m1-56",level:3,k:"mc",gate:"314-3997640035",errs:["knowledge", null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"lab-or-vital",watch:"The creatinine that lies",
+  stem:"A new graduate reviews the labs of an 84-year-old about to start a drug eliminated by the kidneys. Which statement by the new graduate shows a need for more teaching?",
+  options:["\"His filtration rate has probably been falling since his forties.\"", "\"His creatinine is normal, so his kidneys clear drugs the way a younger man's would.\"", "\"I would rather see a creatinine clearance before this dose is set.\"", "\"He has less muscle than he did, so he makes less creatinine.\""],
+  answer:1,
+  rationale:"Serum creatinine often stays within normal limits in an older adult even as the glomerular filtration rate falls, because less muscle mass and less activity produce less creatinine. A normal value can mislead a clinician into assuming normal kidney function; creatinine clearance, estimated by the Cockcroft-Gault method, is what guides dosing for drugs the kidneys eliminate. After age 40 the filtration rate declines about 8 mL/min per decade."},
+ {c:"NUR 314",qid:"314-m1-57",level:2,k:"mc",gate:"314-3997640035",errs:["knowledge", "knowledge", "knowledge", null],unit:"Module 1 — Principles of pharmacology & the older adult",type:"medication-safety",watch:"Hold the dose, not the drug",
+  stem:"A student nurse finds a blood pressure of 88/52 on an older adult whose 0900 antihypertensive is due. Which statement by the student needs correcting?",
+  options:["\"Pressures often run low first thing and climb through the day.\"", "\"Holding it now does not mean the drug is stopped for good.\"", "\"I will hold the tablet this morning and recheck the pressure later.\"", "\"It is scheduled, so I will give it and check the pressure again at noon.\""],
+  answer:3,
+  rationale:"An antihypertensive is not given when the pressure is too low; the dose is held in the moment and the pressure is rechecked, because many people wake with a low pressure that rises as the day goes on. Holding one dose is not discontinuing the drug. Giving it because it is scheduled and checking afterward is the assessment done in the wrong order."},
+ {c:"NUR 314",qid:"314-m1-58",level:3,k:"mc",gate:"314-3997640035",errs:[null, "knowledge", "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"teaching",watch:"Fine on day one",
+  stem:"A 79-year-old was started on scheduled diazepam a week ago. Which statement by the client shows a need for further teaching?",
+  options:["\"I have not felt drowsy at all, so this dose must be right for me.\"", "\"A drug like this can build up in me more than it would in my daughter.\"", "\"If I start feeling foggy or unsteady I will call before the next dose.\"", "\"I use the handrail on the stairs while I am on this.\""],
+  answer:0,
+  rationale:"Body fat rises with age, so a fat-soluble drug like diazepam spreads into a larger volume and its half-life can stretch to 96 hours; the level keeps climbing for five to six half-lives before it levels off, so toxicity can appear days or weeks in. Feeling fine in the first week is not evidence the dose is right. Fogginess, unsteadiness and falls are the signs to report, and the stair rail is the right precaution."},
+ {c:"NUR 314",qid:"314-m1-59",level:2,k:"mc",gate:"314-3997640035",errs:["knowledge", null, "knowledge", "knowledge"],unit:"Module 1 — Principles of pharmacology & the older adult",type:"application",watch:"The coating and the pH",
+  stem:"A student nurse tells an 80-year-old on a proton pump inhibitor that enteric-coated aspirin is the best choice because the coating protects the stomach. What should the preceptor explain?",
+  options:["Enteric-coated tablets are not used in adults over 65 in any form", "A less acidic stomach can open the coating early, so the stomach gets more upset, not less", "Aspirin is not absorbed at all once the stomach is less acidic", "The coating slows absorption so much that the aspirin will not work at all"],
+  answer:1,
+  rationale:"An enteric coating is designed to hold until the tablet is past the stomach. With a higher gastric pH, whether from age or from a proton pump inhibitor, the coating releases early, which raises the gastrointestinal adverse effects and takes away the benefit the coating was meant to give. The drug is still absorbed; the problem is where and how fast the tablet opens, not whether it works."},
+ {c:"NUR 314",qid:"314-m2-149",level:3,k:"mc",gate:"314-3997640035",errs:["knowledge", "knowledge", "knowledge", null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"Only in the eye",
+  stem:"A client with asthma is starting timolol eye drops. Which statement by the client indicates a need for further teaching?",
+  options:["\"Wheezing after a drop is something I report the same day.\"", "\"I will tell the eye clinic what inhalers I use.\"", "\"I press the corner by my nose after the drop so less of it gets into my system.\"", "\"Because it goes in my eye it cannot bother my asthma.\""],
+  answer:3,
+  rationale:"A drop of timolol drains down the tear duct into the bloodstream and blocks beta receptors in the lungs as well as the eye; bronchospasm, bradycardia and hypotension all happen from the drop, and asthma is a contraindication. Occluding the tear duct reduces the systemic dose, wheezing is reported, and the eye clinic needs the inhaler list."},
+ {c:"NUR 314",qid:"314-m2-150",level:2,k:"mc",gate:"314-3997640035",errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"medication-safety",watch:"After the drop goes in",
+  stem:"A student nurse instills atropine drops before an eye examination. Which instruction by the student needs to be corrected?",
+  options:["\"Keep your eyes closed for a minute or two after the drop.\"", "\"Press here, at the inner corner, while I count.\"", "\"Blink hard several times so the drop spreads over the eye.\"", "\"Bring sunglasses; the light will bother you for a while.\""],
+  answer:2,
+  rationale:"After an eye drop the client closes the eye and presses the inner corner for one to two minutes so the drug stays in the eye instead of draining into the nose and the bloodstream, where atropine raises the pulse and dries secretions. Blinking hard pumps the drop straight down the tear duct. Photophobia and blurred near vision follow atropine for days, so sunglasses and no driving are part of the teaching."},
+ {c:"NUR 314",qid:"314-m2-151",level:3,k:"mc",gate:"314-3997640035",errs:[null, "knowledge", "knowledge", "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"The same day, not the next visit",
+  stem:"A client received an intravitreal injection for wet macular degeneration yesterday. Which statement by the client shows a need for further teaching?",
+  options:["\"The eye is sore, redder, and full of new floaters, but I will mention it at my visit in three weeks.\"", "\"A little bleeding on the white of the eye where the needle went in is expected.\"", "\"A shot every month for the first three to six months is what the plan says.\"", "\"The pressure in my eye was checked before I left the clinic today.\""],
+  answer:0,
+  rationale:"Worsening pain, spreading redness, blurred vision, light sensitivity and new floaters in the first week after an intravitreal injection are the signs of endophthalmitis, an infection inside the eye that costs vision within days; they are reported at once, not saved for the next visit. A small conjunctival bleed at the needle site is common, the drug is given monthly for three to six months and then as needed, and the pressure is checked after the injection because it rises within the hour."},
+ {c:"NUR 314",qid:"314-m2-152",level:2,k:"mc",gate:"314-3997640035",errs:["knowledge", "knowledge", "knowledge", null],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"Not a rescue drop",
+  stem:"A student nurse teaches a client about cyclosporine ophthalmic emulsion for chronic dry eye. Which statement by the student needs to be corrected?",
+  options:["\"Take your contacts out first and wait fifteen minutes before putting them back.\"", "\"If you miss a dose, just take the next one at its usual time.\"", "\"Turn the bottle over a few times before each dose so the emulsion is mixed.\"", "\"Use it on the days your eyes feel dry, and skip it when they feel fine.\""],
+  answer:3,
+  rationale:"Cyclosporine drops increase tear production by treating the inflammation behind the dryness, so they are used on schedule, one drop in each eye twice a day about twelve hours apart, whether or not the eye feels dry that day. Inverting the bottle mixes the emulsion, contacts go back in after fifteen minutes, and a missed dose is skipped rather than doubled."},
+ {c:"NUR 314",qid:"314-m2-153",level:3,k:"mc",gate:"314-3997640035",errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"medication-safety",watch:"Look before the drop",
+  stem:"A new graduate is about to instill neomycin-polymyxin B-hydrocortisone drops for external otitis. Which action by the new graduate should the preceptor stop?",
+  options:["Placing a cotton ball loosely in the canal afterward", "Shaking the suspension before drawing it up", "Instilling the drops without first looking at the eardrum through the otoscope", "Pulling the top of the outer ear upward while instilling"],
+  answer:2,
+  rationale:"Neomycin is an aminoglycoside, and through a torn eardrum a drop of it reaches the inner ear directly and causes hearing loss; the eardrum is checked with an otoscope before the drop goes in, and a perforation means a drop without neomycin, such as ofloxacin, instead. Shaking the suspension, pulling the auricle up, and the cotton ball are the correct technique."},
+ {c:"NUR 314",qid:"314-m2-154",level:2,k:"mc",gate:"314-3997640035",errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"Sleepy like a Benadryl",
+  stem:"A client with Ménière disease is discharged with meclizine for the vertigo. Which statement by the client indicates a need for further teaching?",
+  options:["\"When an attack starts I stay put and ask for help to walk.\"", "\"I should feel cloudy and sleepy on this, the way I do on an allergy pill.\"", "\"I can drive to work in the morning once I have taken it.\"", "\"I will keep my sodium to about 2,000 milligrams a day.\""],
+  answer:2,
+  rationale:"Meclizine is an antihistamine and makes the client sleepy and cloudy, so driving and machinery wait; safety during an attack means staying still and asking for help to walk. Sodium is held to 2,000 mg a day to limit the inner-ear fluid."},
+ {c:"NUR 314",qid:"314-m2-155",level:2,k:"mc",gate:"314-3997640035",errs:["knowledge", "knowledge", null, "knowledge"],unit:"Module 2 — Drugs for the eye, ear & balance",type:"teaching",watch:"Where the stone came from",
+  stem:"A client is going home on oral acetazolamide for glaucoma. Which statement by the client shows a need for further teaching?",
+  options:["\"I take it with a meal so my stomach is not upset.\"", "\"A rash with blisters is a reason to stop and call, not to wait.\"", "\"Because it is for my eye it cannot change my blood tests.\"", "\"I can expect to make more urine while I am on it.\""],
+  answer:2,
+  rationale:"Acetazolamide is taken by mouth and works through the whole body: it can cause metabolic acidosis, anemia and a falling white count, so the blood count and electrolytes are followed, and older adults with diabetes or kidney disease are most at risk. It is taken with food, a blistering rash is Stevens-Johnson syndrome and a reason to stop, and more urine is expected from a diuretic."},
+ {c:"NUR 308T",qid:"308-w1-142",level:1,k:"mc",gate:"308T-3e94175f66",errs:["knowledge", "knowledge", "knowledge", null],unit:"Content 1 — Gerontology & chronic illness",type:"teaching",watch:"Good days and bad",
+  stem:"A student nurse tells a client newly diagnosed with a chronic disease that the symptoms will now be the same every day. Which correction should the preceptor make?",
+  options:["A chronic disease never produces symptoms once medication is started", "Chronic disease means the client will need hospital care every week", "Chronic disease is cured once the client feels well for a month", "Chronic disease is permanent, but it has good stretches and acute exacerbations"],
+  answer:3,
+  rationale:"A chronic disease is permanent and managed rather than cured, but it does not feel the same every day: there are stretches when the medicine is working and the client feels well, and there are acute exacerbations when it flares. Teaching the client to expect both, and what to do in a flare, is part of managing it."},
+ {c:"NUR 308T",qid:"308-w1-143",level:2,k:"mc",gate:"308T-3e94175f66",errs:["knowledge", null, "knowledge", "knowledge"],unit:"Content 2 — Hearing & balance",type:"teaching",watch:"The magic number",
+  stem:"A client with Ménière disease is started on furosemide. Which statement by the client indicates a need for further teaching?",
+  options:["\"About 2,000 milligrams of sodium a day is my limit.\"", "\"Since the water pill takes sodium out, I can salt my food the way I like.\"", "\"Potassium is something my blood work will follow on this drug.\"", "\"New ringing or a change in my hearing is something I report.\""],
+  answer:1,
+  rationale:"The sodium limit of about 2,000 mg a day is part of the treatment and the diuretic does not replace it; both are there to keep the inner-ear fluid down. Furosemide is a loop diuretic that wastes potassium, so potassium and vital signs are followed, and a loop diuretic can itself cause temporary hearing loss and tinnitus, which is why a change in hearing is reported."},
+ {c:"NUR 308T",qid:"308-n-44",level:2,k:"mc",gate:"308T-3e94175f66",errs:[null, "knowledge", "knowledge", "knowledge"],unit:"Content 4 — Neurologic & cognitive function",type:"medication-safety",watch:"Strength for the meal",
+  stem:"A student nurse plans to give pyridostigmine to a client with myasthenia gravis right after breakfast, so the tablet will not upset the stomach. Which correction should the preceptor make?",
+  options:["The drug is given 30 to 60 minutes before meals so the client has the strength to chew and swallow", "The drug is held on any morning the client feels strong", "The drug is given only at bedtime so the client sleeps through the side effects", "The drug is crushed into the food so it is taken with the meal"],
+  answer:0,
+  rationale:"Pyridostigmine increases the acetylcholine available at the neuromuscular junction and is the first-line therapy; timed 30 to 60 minutes before meals, it puts the client's peak strength at the moment chewing and swallowing need it, which is what keeps a myasthenic client from aspirating. Care is clustered and rest is scheduled before meals for the same reason. Doses are not skipped on strong mornings and not shifted to bedtime."},
+ {c:"NUR 308T",qid:"308-n-45",level:2,k:"mc",gate:"308T-3e94175f66",errs:["knowledge", "knowledge", null, "knowledge"],unit:"Content 4 — Neurologic & cognitive function",type:"medication-safety",watch:"Thin liquids and a weak swallow",
+  stem:"A client with amyotrophic lateral sclerosis has difficulty swallowing. Which action by the student nurse needs to be corrected?",
+  options:["Screening the swallow before the first meal of the shift", "Sitting the client fully upright before anything goes in the mouth", "Offering a glass of water with a straw between bites", "Using the thickened liquids the speech therapist recommended"],
+  answer:2,
+  rationale:"Dysphagia in ALS raises the risk of choking and aspiration, and thin liquids are the hardest to control; the plan is aspiration precautions, upright positioning, thickened liquids and a swallow screen. A glass of water with a straw is the thin liquid the precautions are written to avoid."},
+ {c:"NUR 308T",qid:"308-w1-144",level:2,k:"mc",gate:"308T-3e94175f66",errs:[null, "knowledge", "knowledge", "knowledge"],unit:"Content 3 — Vision",type:"teaching",watch:"Straight lines that bend",
+  stem:"A client with dry macular degeneration is taught what to watch for. Which statement by the client indicates a need for further teaching?",
+  options:["\"If straight lines start to look wavy I will wait and mention it at my yearly exam.\"", "\"The center of what I see is what this disease takes, not the edges.\"", "\"Stopping smoking and keeping my sugar controlled are part of slowing it.\"", "\"The wet kind can come on quickly and has injections for it.\""],
+  answer:0,
+  rationale:"Straight lines that look wavy or bent are the sign that dry macular degeneration has turned wet, and wet disease is treated with intravitreal injections that are started as soon as it is found, because a delay costs vision. Central vision is what the disease takes; smoking and diabetes drive it; and the change is reported at once, not at the next scheduled visit."}
 ];
 const SEED_EVENTS=[
  /* NUR 308 - from the Fall 26 weekly content sheet. Everything marked red in
@@ -5599,7 +5753,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 10:09 AM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 11, 1:30 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -12419,21 +12573,21 @@ function advNpc(b){if(ADV_WHO[b.id])return ADV_WHO[b.id];const i=BOSSES.indexOf(
 function advFirst(b){return advNpc(b).split(",")[0];}
 function advAllHealed(){const A=advState();const st=advStops();return st.length>0&&st.every(s=>A.healed[s.id]);}
 function advState(){const p=S.profile;if(!p.adv)p.adv={visited:{},healed:{},at:"home"};if(!p.adv.visited)p.adv.visited={};if(!p.adv.healed)p.adv.healed={};return p.adv;}
-/* Where everything stands. The world is 2400 wide and 1100 tall; the path
+/* Where everything stands. The world is 4800 wide and 1100 tall; the path
    winds through it and the doors are scattered off the path at different
    depths - far ones small, near ones big - so it reads as a place, not a row.
    Positions are the FEET of each door. */
-const ADV_W=4400, ADV_H=1100, ADV_HOME={x:150,y:1040};
-const ADV_PATH="M60 1030C200 1010 300 970 420 975S640 1030 760 990S980 900 1100 920S1400 990 1570 960S1780 900 1960 940S2200 1040 2370 990S2520 880 2600 860S2760 1000 2900 970S3120 880 3250 930S3360 990 3480 1000S3660 900 3800 940S3980 1030 4120 1000S4280 900 4340 960";
+const ADV_W=4800, ADV_H=1100, ADV_HOME={x:150,y:1040};
+const ADV_PATH="M60 1030C200 1010 300 970 420 975S640 1030 760 990S980 900 1100 920S1400 990 1570 960S1780 900 1960 940S2200 1040 2370 990S2520 880 2600 860S2760 1000 2900 970S3120 880 3250 930S3360 990 3480 1000S3660 900 3800 940S3980 1030 4120 1000S4280 900 4340 960S4480 1020 4600 990S4700 940 4760 980";
 const ADV_PLACES={
   "Content 1":[[260,850],[400,1050],[520,880]],
   "Content 3":[[780,1045],[660,780],[1160,1050],[860,790],[1060,780],[1260,790],[1460,800]],
-  "Module 1":{hut:[1990,1000],label:"MEDICINE HUT"},
-  "Content 2":[[2300,835],[2410,850],[2520,835],[2630,850]],
-  "Module 2":{hut:[2990,1010],label:"APOTHECARY",floors:["ear","eye"]},
-  "Content 4":[[3540,860],[3660,775],[3760,1045],[3960,775],[3840,860],[4060,1045],[4160,860],[4280,780]]};
+  "Module 1":{hut:[2140,1000],label:"MEDICINE HUT"},
+  "Content 2":[[2560,835],[2670,850],[2780,835],[2890,850]],
+  "Module 2":{hut:[3420,1010],label:"APOTHECARY",floors:["ear","eye"]},
+  "Content 4":[[3940,860],[4060,775],[4160,1045],[4360,775],[4240,860],[4460,1045],[4560,860],[4680,780]]};
 /* a hut's doors, from its left wall; two rows of name plates under them */
-const ADV_HUT_GAP=48, ADV_STORY_H=110, ADV_ROW_MAX=10;
+const ADV_HUT_GAP=48, ADV_STORY_H=110, ADV_ROW_MAX=10, ADV_HUT_K=1.3;   /* the huts are drawn a third larger than the trees' scale */
 /* A hut is one story per row of doors. Doors are grouped by wing (the eye
    floor, the ear floor) in the order ADV_PLACES gives, ground floor first;
    a wing with more doors than fit one row takes two stories, split evenly. */
@@ -12451,7 +12605,7 @@ function advHutLayout(key){
   });
   return {at:at,stories:stories,floors:floor,maxRow:Math.max(1,...stories.map(x=>x.n))};
 }
-const ADV_SIGNS=[[212,992,"Content 1"],[640,955,"Content 3"],[1615,1078,"Module 1"],[2250,960,"Content 2"],[2540,1085,"Module 2"],[3470,1080,"Content 4"]];
+const ADV_SIGNS=[[212,992,"Content 1"],[640,955,"Content 3"],[1615,1078,"Module 1"],[2500,960,"Content 2"],[2960,1085,"Module 2"],[3860,1080,"Content 4"]];
 function advDepth(y){return 0.62+Math.max(0,Math.min(1,(y-700)/380))*0.5;}   // far .62, near 1.12
 function advStops(){
   const out=[];const n={};
@@ -12459,8 +12613,10 @@ function advStops(){
     const key=Object.keys(ADV_PLACES).find(k=>(b.unit||"").indexOf(k)===0)||"Content 1";
     n[key]=(n[key]||0);const i=n[key]++;
     const P=ADV_PLACES[key];
-    if(P.hut){const [hx,hy]=P.hut;const L=advHutLayout(key);const at=L.at[b.id];
-      out.push({id:b.id,b:b,x:hx-((at.n-1)*ADV_HUT_GAP)/2+at.col*ADV_HUT_GAP,y:hy-at.floor*ADV_STORY_H,gy:hy,floor:at.floor,wing:at.wing,kind:"hut",grove:key,i:i,s:advDepth(hy)});}
+    if(P.hut){const [hx,hy]=P.hut;const L=advHutLayout(key);const at=L.at[b.id];const k=advDepth(hy)*ADV_HUT_K;
+      /* lx,ly are where the door sits inside the hut's own drawing; x,y are the same door in the scene once the hut is scaled about its doorstep */
+      const lx=hx-((at.n-1)*ADV_HUT_GAP)/2+at.col*ADV_HUT_GAP, ly=hy-at.floor*ADV_STORY_H;
+      out.push({id:b.id,b:b,x:hx+(lx-hx)*k,y:hy+(ly-hy)*k,lx:lx,ly:ly,gy:hy,floor:at.floor,wing:at.wing,kind:"hut",grove:key,i:i,s:k});}
     else{const pos=P[i%P.length];const jy=Math.floor(i/P.length)*60;out.push({id:b.id,b:b,x:pos[0],y:pos[1]+jy,kind:"tree",grove:key,i:i,s:advDepth(pos[1]+jy)});}
   });
   return out;
@@ -12548,7 +12704,7 @@ function advHut(stops,grove){
   const hs=stops.filter(s=>s.kind==="hut"&&s.grove===grove);if(!hs.length)return "";
   const label=(ADV_PLACES[grove]&&ADV_PLACES[grove].label)||"MEDICINE HUT";
   const L=advHutLayout(grove), H=ADV_STORY_H, N=L.floors;
-  const cx=ADV_PLACES[grove].hut[0], y=hs[0].gy||hs[0].y, w=(L.maxRow-1)*ADV_HUT_GAP+112, x=cx-w/2, top=y-N*H, sc=hs[0].s;
+  const cx=ADV_PLACES[grove].hut[0], y=hs[0].gy||hs[0].y, w=(L.maxRow-1)*ADV_HUT_GAP+112, x=cx-w/2, top=y-N*H, sc=hs[0].s;   /* s already carries ADV_HUT_K */
   const A=advState();
   const lanterns=[0,1,2,3,4,5,6].map(i=>'<g><circle cx="'+(x+20+i*(w-40)/6)+'" cy="'+(top+26)+'" r="7" fill="'+(["#F15BB5","#00BBF9","#FEE440","#9B5DE5","#9EE493","#F4A261","#FF6B6B"][i])+'" stroke="#6B4A2E"/><circle cx="'+(x+20+i*(w-40)/6)+'" cy="'+(top+26)+'" r="13" fill="'+(["#F15BB5","#00BBF9","#FEE440","#9B5DE5","#9EE493","#F4A261","#FF6B6B"][i])+'" opacity=".25" class="advglow"/></g>').join("");
   /* one emblem per wing, on the wall behind that wing's doors */
@@ -12570,7 +12726,7 @@ function advHut(stops,grove){
     '<text x="'+cx+'" y="'+(top-16)+'" text-anchor="middle" font-size="11" font-family="IBM Plex Mono,monospace" font-weight="700" fill="#3B2A1A">'+esc(label)+'</text>'+
     lanterns+
     hs.map(s=>{const v=A.visited[s.id],h=A.healed[s.id];
-      return '<g class="advdoor" data-adv="'+s.id+'" transform="translate('+s.x+' '+s.y+')">'+
+      return '<g class="advdoor" data-adv="'+s.id+'" transform="translate('+s.lx+' '+s.ly+')">'+
         '<circle cx="0" cy="-18" r="22" fill="#FEE440" opacity=".18" class="advglow"/>'+
         '<path d="M-12 0V-34A12 12 0 0 1 12 -34V0Z" fill="'+(h?"#C9812E":"#3A2A1E")+'" stroke="#2A1B10" stroke-width="1.4"/>'+
         (h?'<path d="M-12 0V-34A12 12 0 0 1 12 -34V0Z" fill="#FFE39A" opacity=".5"/>':'')+
@@ -12646,7 +12802,7 @@ function advCrystals(x,y){
 }
 function advWisps(){
   const R=artRnd(101);let w="";
-  for(let i=0;i<9;i++){const x=(200+R()*2000).toFixed(0),y=(760+R()*220).toFixed(0),c=["#DDEBD5","#F3E7A6","#E8C4D0","#C9D8F0"][i%4];
+  for(let i=0;i<14;i++){const x=(200+R()*(ADV_W-400)).toFixed(0),y=(760+R()*220).toFixed(0),c=["#DDEBD5","#F3E7A6","#E8C4D0","#C9D8F0"][i%4];
     w+='<g><circle r="7" fill="'+c+'" opacity=".55"/><circle r="16" fill="'+c+'" opacity=".16" class="advglow"/><animateMotion dur="'+(14+i*2)+'s" repeatCount="indefinite" path="M'+x+' '+y+'q60 -70 130 -20t120 40t-90 60t-160 -80z"/></g>';}
   return '<g class="advwisps">'+w+'</g>';
 }
@@ -12674,14 +12830,14 @@ function advLanterns(){
     '<rect x="6" y="-62" width="12" height="15" rx="2" fill="#F3E7A6" stroke="#3F4450" stroke-width="1.2"/><circle cx="12" cy="-54" r="18" fill="#EDD79A" opacity=".22" class="advglow"/></g>';
   return lamp(560,1000)+lamp(1000,1050)+lamp(1440,985)+lamp(2100,1010)+lamp(2980,1010);
 }
-function advFerns(){
-  const R=artRnd(55);let g="";
+function advFerns(extra){
+  const R=artRnd(55);let g="";extra=extra||0;
   const fern=(x,y,sc,col)=>'<g transform="translate('+x+' '+y+') scale('+sc+')">'+[-30,-15,0,15,30].map(a=>'<path d="M0 0Q'+(a*0.6)+' -22 '+a+' -46" fill="none" stroke="'+col+'" stroke-width="3" stroke-linecap="round"/>'+[0.3,0.5,0.7,0.85].map(t=>'<ellipse cx="'+(a*t).toFixed(0)+'" cy="'+(-46*t).toFixed(0)+'" rx="7" ry="2.6" fill="'+col+'" transform="rotate('+(a*1.2)+' '+(a*t).toFixed(0)+' '+(-46*t).toFixed(0)+')"/>').join("")).join("")+'</g>';
   const tuft=(x,y,col)=>'<path d="M'+x+' '+y+'q-4 -14 -10 -20M'+x+' '+y+'q0 -16 2 -24M'+x+' '+y+'q6 -12 12 -18" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round"/>';
   const stone=(x,y,w)=>'<ellipse cx="'+x+'" cy="'+y+'" rx="'+w+'" ry="'+(w*0.55)+'" fill="#7E8DA0"/><ellipse cx="'+(x-w*0.25)+'" cy="'+(y-w*0.2)+'" rx="'+(w*0.5)+'" ry="'+(w*0.25)+'" fill="#A9B5C4" opacity=".7"/>';
-  for(let i=0;i<14;i++)g+=fern((120+R()*2400).toFixed(0),(820+R()*260).toFixed(0),(0.6+R()*0.6).toFixed(2),["#3B6B4E","#4E8459","#7FA98C"][i%3]);
-  for(let i=0;i<40;i++)g+=tuft((60+R()*2500).toFixed(0),(800+R()*290).toFixed(0),["#6FCF7A","#3E9A57","#9EE493"][i%3]);
-  for(let i=0;i<12;i++)g+=stone((100+R()*2400).toFixed(0),(860+R()*230).toFixed(0),(8+R()*14).toFixed(0));
+  for(let i=0;i<22+extra*5;i++)g+=fern((120+R()*(ADV_W-240)).toFixed(0),(820+R()*260).toFixed(0),(0.6+R()*0.6).toFixed(2),["#3B6B4E","#4E8459","#7FA98C"][i%3]);
+  for(let i=0;i<64+extra*14;i++)g+=tuft((60+R()*(ADV_W-120)).toFixed(0),(800+R()*290).toFixed(0),["#6FCF7A","#3E9A57","#9EE493"][i%3]);
+  for(let i=0;i<18;i++)g+=stone((100+R()*(ADV_W-200)).toFixed(0),(860+R()*230).toFixed(0),(8+R()*14).toFixed(0));
   return '<g class="advferns">'+g+'</g>';
 }
 /* Ilvane. The wings stay - she is still the angel - but they have gone the
@@ -12712,21 +12868,56 @@ function advAngel(){
     [0,1,2,3].map(i=>'<circle class="advff" style="animation-delay:'+(i*0.7)+'s" cx="'+(-22+i*15)+'" cy="'+(-26+(i%2)*40)+'" r="1.8" fill="#F3E7A6"/>').join("")+
   '</g></g>';
 }
+/* Where the nurse stands after a visit: outside, to the LEFT of the doors,
+   so the name plates and the doors stay readable. At a hut that is past the
+   left wall; at a tree it is beside the trunk. Ilvane stands a step behind,
+   further left. */
+function advRest(s){
+  if(!s)return {x:ADV_HOME.x,y:ADV_HOME.y};
+  const gy=(s.gy||s.y)+6;
+  if(s.kind==="hut"){const L=advHutLayout(s.grove), w=(L.maxRow-1)*ADV_HUT_GAP+112, cx=ADV_PLACES[s.grove].hut[0];
+    return {x:Math.round(cx-(w/2)*s.s-74*s.s),y:gy};}
+  return {x:Math.round(s.x-36-40*s.s),y:gy};
+}
+const ADV_ANGEL_DX=-66, ADV_ANGEL_DY=-108, ADV_ANGEL_K=1.3;
+/* Life comes back to the wood one door at a time. Every healed door seeds
+   its own patch - flowers, a butterfly, a firefly - and every few doors an
+   animal, and every few more something older than an animal. The sky fills
+   the same way: more stars, more shooting stars, more birds. */
+const ADV_FAUNA=["rabbit","hedgehog","fox","deer","owl"], ADV_MYTH=["sprite","stag","spiritfox","dragonet"];
+function advCritter(kind,x,y,sc,flip){
+  const g=(inner)=>'<g transform="translate('+x+' '+y+') scale('+((flip?-1:1)*sc).toFixed(3)+' '+sc.toFixed(3)+')"><ellipse cx="0" cy="3" rx="18" ry="5" fill="#000" opacity=".14"/><g class="advcrit">'+inner+'</g></g>';
+  if(kind==="rabbit")return g('<ellipse cx="0" cy="-8" rx="14" ry="9" fill="#D9CFC0"/><circle cx="13" cy="-15" r="7" fill="#E4DBCD"/><ellipse cx="11" cy="-27" rx="2.6" ry="8" fill="#E4DBCD" transform="rotate(-14 11 -27)"/><ellipse cx="16" cy="-26" rx="2.6" ry="8" fill="#E4DBCD" transform="rotate(12 16 -26)"/><ellipse cx="11" cy="-27" rx="1.2" ry="5.5" fill="#F2C4C4" transform="rotate(-14 11 -27)"/><circle cx="16" cy="-16" r="1.3" fill="#2B2B3B"/><circle cx="-13" cy="-6" r="4" fill="#FFFFFF"/>');
+  if(kind==="hedgehog")return g('<path d="M-16 0Q-18 -22 0 -24Q18 -22 20 0Z" fill="#6B4A2E"/><path d="M-14 -4l-4 -8M-8 -12l-3 -9M0 -16l0 -10M8 -12l3 -9M14 -4l4 -8" stroke="#3E2715" stroke-width="2.2" stroke-linecap="round"/><path d="M16 -2Q28 -6 30 0Q24 4 16 0Z" fill="#D9B48C"/><circle cx="29" cy="-1" r="1.6" fill="#2B2B3B"/><circle cx="24" cy="-4" r="1.2" fill="#2B2B3B"/>');
+  if(kind==="fox")return g('<path d="M-20 -6Q-34 -20 -26 -30Q-12 -18 -8 -10Z" fill="#E07A3A"/><path d="M-26 -30Q-20 -22 -14 -14" fill="none" stroke="#FFF6D6" stroke-width="5" stroke-linecap="round"/><ellipse cx="0" cy="-10" rx="16" ry="8" fill="#E07A3A"/><circle cx="15" cy="-16" r="7" fill="#E07A3A"/><path d="M11 -20l-3 -9 8 4zM19 -21l3 -9-8 4z" fill="#E07A3A"/><path d="M15 -12q6 1 10 -1q-4 6 -10 4z" fill="#FFF6D6"/><circle cx="18" cy="-17" r="1.3" fill="#2B2B3B"/><circle cx="24" cy="-13" r="1.4" fill="#2B2B3B"/><path d="M-8 -3v4M6 -3v4" stroke="#B85E24" stroke-width="2.6" stroke-linecap="round"/>');
+  if(kind==="deer"||kind==="stag"){const c=kind==="stag"?"#E8E1D2":"#B9834E", c2=kind==="stag"?"#F7F1DF":"#D9A06A";
+    return g('<path d="M-12 -2v-14M-4 -2v-14M6 -2v-14M13 -2v-14" stroke="'+c+'" stroke-width="3" stroke-linecap="round"/><ellipse cx="0" cy="-22" rx="17" ry="9" fill="'+c+'"/><path d="M12 -26Q18 -36 20 -46" fill="none" stroke="'+c+'" stroke-width="7" stroke-linecap="round"/><ellipse cx="22" cy="-48" rx="7" ry="5" fill="'+c+'"/><circle cx="26" cy="-49" r="1.3" fill="#2B2B3B"/><ellipse cx="-6" cy="-24" rx="2" ry="1.4" fill="'+c2+'"/><ellipse cx="2" cy="-20" rx="2" ry="1.4" fill="'+c2+'"/>'+
+      (kind==="stag"?'<path d="M18 -52q-4 -10 -10 -14M18 -52q0 -12 4 -18M18 -52q6 -8 14 -10M12 -60q-6 -2 -8 -6M22 -66q2 -6 8 -8" fill="none" stroke="#FEE440" stroke-width="2.4" stroke-linecap="round"/><circle cx="18" cy="-56" r="22" fill="#FEE440" opacity=".18" class="advglow"/>':'<path d="M19 -52q-3 -6 -6 -8M19 -52q1 -7 4 -10" fill="none" stroke="#6B4A2E" stroke-width="2" stroke-linecap="round"/>'));}
+  if(kind==="owl")return g('<rect x="-6" y="-14" width="12" height="14" rx="3" fill="#5A3B22"/><ellipse cx="0" cy="-26" rx="11" ry="13" fill="#8C6B45"/><circle cx="-4" cy="-30" r="4.2" fill="#FFF6D6"/><circle cx="4" cy="-30" r="4.2" fill="#FFF6D6"/><circle cx="-4" cy="-30" r="2" fill="#2B2B3B"/><circle cx="4" cy="-30" r="2" fill="#2B2B3B"/><path d="M-1.5 -25l1.5 3 1.5-3z" fill="#E9A23B"/><path d="M-9 -36l3 5M9 -36l-3 5" stroke="#8C6B45" stroke-width="3" stroke-linecap="round"/>');
+  if(kind==="sprite")return '<g transform="translate('+x+' '+(y-40)+') scale('+sc.toFixed(3)+')"><g class="advbob"><circle r="16" fill="#F3E7A6" opacity=".22" class="advglow"/><ellipse cx="-6" cy="-2" rx="6" ry="3.5" fill="#E4EFE6" opacity=".9" transform="rotate(-30 -6 -2)"/><ellipse cx="6" cy="-2" rx="6" ry="3.5" fill="#E4EFE6" opacity=".9" transform="rotate(30 6 -2)"/><path d="M-2 -4l2 -3 2 3-1.5 9h-1z" fill="#CFE3D6"/><circle cy="-8" r="2.6" fill="#F1C9A5"/>'+[0,1,2].map(i=>'<circle class="advff" style="animation-delay:'+(i*0.5)+'s" cx="'+(-12+i*12)+'" cy="'+(10+(i%2)*6)+'" r="1.4" fill="#F3E7A6"/>').join("")+'</g></g>';
+  if(kind==="spiritfox")return '<g opacity=".85">'+g('<circle cx="0" cy="-12" r="26" fill="#C9D8F0" opacity=".16" class="advglow"/><path d="M-20 -6Q-34 -20 -26 -30Q-12 -18 -8 -10Z" fill="#C9D8F0"/><ellipse cx="0" cy="-10" rx="16" ry="8" fill="#C9D8F0"/><circle cx="15" cy="-16" r="7" fill="#C9D8F0"/><path d="M11 -20l-3 -9 8 4zM19 -21l3 -9-8 4z" fill="#C9D8F0"/><circle cx="18" cy="-17" r="1.3" fill="#7FD9CC"/><path d="M-8 -3v4M6 -3v4" stroke="#A9B8D9" stroke-width="2.6" stroke-linecap="round"/>')+'</g>';
+  /* dragonet: a green thing the size of a cat, sitting on a stone, wings half open */
+  return g('<ellipse cx="0" cy="0" rx="20" ry="7" fill="#7E8DA0"/><path d="M-6 -6Q-26 -14 -30 -2" fill="none" stroke="#3E9A57" stroke-width="5" stroke-linecap="round"/><ellipse cx="2" cy="-12" rx="13" ry="8" fill="#3E9A57"/><path d="M-2 -16q-10 -18 -2 -24q4 12 10 14zM8 -16q2 -20 12 -22q-2 12 -4 16z" fill="#6FCF7A" opacity=".85"/><circle cx="14" cy="-18" r="6" fill="#3E9A57"/><path d="M18 -20l6 -1-5 3z" fill="#2C6B4A"/><circle cx="16" cy="-20" r="1.4" fill="#FEE440"/><circle cx="16" cy="-20" r="4" fill="#FEE440" opacity=".3" class="advglow"/>');
+}
 function advScene(){
   const stops=advStops(), A=advState(), li=levelInfo(S.profile.xp);
+  const healedStops=stops.filter(s=>A.healed[s.id]), alive=stops.length?healedStops.length/stops.length:0;
+  const tier=Math.min(5,Math.floor(alive*5+1e-6))+(healedStops.length?1:0);   /* 0 at the gate, up to 6 at dawn */
   const R=artRnd(77);
   const pines=(x0,y,n,h,col)=>{let d="";for(let i=0;i<n;i++){const x=x0+i*22,hh=h*(0.7+((i*7)%5)*0.12);d+='M'+x+' '+y+'L'+(x+11)+' '+(y-hh)+'L'+(x+22)+' '+y+'Z';}return '<path d="'+d+'" fill="'+col+'"/>';};
   const flowers=(x,y,n,seed,big)=>{const r=artRnd(seed);let s="";const C=["#E8C4D0","#D6B25A","#B9A6E0","#E9D48A","#FFFFFF","#F7F4E8","#9DBBE0","#D6E8C2"];
     for(let i=0;i<n;i++){const cx=(x+(r()*2-1)*70).toFixed(0),cy=(y+(r()*2-1)*16).toFixed(0),c=C[Math.floor(r()*C.length)],rr=(big?3:2.2)+r()*3;
       s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rr.toFixed(1)+'" fill="'+c+'"/>'+(r()>0.7?'<circle cx="'+cx+'" cy="'+cy+'" r="'+(rr*2.4).toFixed(1)+'" fill="'+c+'" opacity=".22" class="advglow"/>':'');}
     return '<g><ellipse cx="'+x+'" cy="'+(y+5)+'" rx="78" ry="18" fill="#3B6B4E"/>'+s+'</g>';};
-  const butterfly=(x,y,c,d)=>'<g class="advbf" style="animation-delay:'+d+'s" transform="translate('+x+' '+y+')"><ellipse cx="-5" cy="0" rx="5" ry="3.2" fill="'+c+'"/><ellipse cx="5" cy="0" rx="5" ry="3.2" fill="'+c+'"/><ellipse cx="-4" cy="3" rx="3" ry="2" fill="#fff" opacity=".6"/><ellipse cx="4" cy="3" rx="3" ry="2" fill="#fff" opacity=".6"/><line x1="0" y1="-4" x2="0" y2="4" stroke="#222" stroke-width="1.2"/></g>';
-  const bird=(d,dur,y)=>'<path d="M-8 0q4-5 8 0q4-5 8 0" fill="none" stroke="#2B2B3B" stroke-width="1.8" stroke-linecap="round"><animateMotion dur="'+dur+'s" repeatCount="indefinite" path="M-40 '+y+'C700 '+(y-60)+' 1800 '+(y+40)+' 2500 '+(y-30)+'" begin="'+d+'s"/></path>';
+  const butterfly=(x,y,c,d)=>'<g transform="translate('+x+' '+y+')"><g class="advbf" style="animation-delay:'+d+'s"><ellipse cx="-5" cy="0" rx="5" ry="3.2" fill="'+c+'"/><ellipse cx="5" cy="0" rx="5" ry="3.2" fill="'+c+'"/><ellipse cx="-4" cy="3" rx="3" ry="2" fill="#fff" opacity=".6"/><ellipse cx="4" cy="3" rx="3" ry="2" fill="#fff" opacity=".6"/><line x1="0" y1="-4" x2="0" y2="4" stroke="#222" stroke-width="1.2"/></g></g>';
+  const bird=(d,dur,y)=>'<path d="M-8 0q4-5 8 0q4-5 8 0" fill="none" stroke="#2B2B3B" stroke-width="1.8" stroke-linecap="round"><animateMotion dur="'+dur+'s" repeatCount="indefinite" path="M-40 '+y+'C1200 '+(y-60)+' 3200 '+(y+40)+' '+(ADV_W+60)+' '+(y-30)+'" begin="'+d+'s"/></path>';
   const firefly=(x,y,c,d)=>'<circle r="2.4" fill="'+c+'" class="advff" style="animation-delay:'+d+'s"><animateMotion dur="'+(9+d)+'s" repeatCount="indefinite" path="M'+x+' '+y+'q30 -40 70 -10t60 30t-40 40t-90 -20z"/></circle>';
-  let stars="";for(let i=0;i<90;i++){stars+='<circle class="advstar" style="animation-delay:'+(R()*5).toFixed(1)+'s" cx="'+(R()*ADV_W).toFixed(0)+'" cy="'+(R()*300).toFixed(0)+'" r="'+(0.8+R()*1.6).toFixed(1)+'" fill="#fff"/>';}
-  let ffs="";const FC=["#F3E7A6","#DDEBD5","#C9D8F0","#FFF6D6"];for(let i=0;i<22;i++){ffs+=firefly((300+R()*2000).toFixed(0),(720+R()*330).toFixed(0),FC[i%4],(R()*6).toFixed(1));}
+  let stars="";for(let i=0;i<90+tier*36;i++){stars+='<circle class="advstar" style="animation-delay:'+(R()*5).toFixed(1)+'s" cx="'+(R()*ADV_W).toFixed(0)+'" cy="'+(R()*300).toFixed(0)+'" r="'+(0.8+R()*1.6).toFixed(1)+'" fill="#fff"/>';}
+  let ffs="";const FC=["#F3E7A6","#DDEBD5","#C9D8F0","#FFF6D6"];for(let i=0;i<22+tier*6;i++){ffs+=firefly((300+R()*(ADV_W-500)).toFixed(0),(720+R()*330).toFixed(0),FC[i%4],(R()*6).toFixed(1));}
 
-  AV_ELF=true;const nurse=nurseAvatar(li.tier,84,null,true).replace('<svg ','<svg x="-42" y="-166" ');AV_ELF=false;
+  let shoot="";for(let i=0;i<1+tier;i++){const sx=(600+R()*(ADV_W-800)).toFixed(0), sy=(40+R()*220).toFixed(0);
+    shoot+='<g class="advshoot" style="animation-delay:'+(R()*14).toFixed(1)+'s;animation-duration:'+(11+R()*9).toFixed(1)+'s" transform="translate('+sx+' '+sy+')"><line x1="0" y1="0" x2="150" y2="-62" stroke="url(#advstreak)" stroke-width="3" stroke-linecap="round"/><circle r="2.6" fill="#fff"/></g>';}
+  AV_ELF=true;const nurse=nurseAvatar(li.tier,112,null,true).replace('<svg ','<svg x="-56" y="-222" ');AV_ELF=false;
   const ns=advDepth(ADV.y);
   const items=stops.filter(s=>s.kind==="tree").map(s=>({y:s.y,html:'<g class="advdoor" data-adv="'+s.id+'" data-y="'+s.y+'">'+advTree(s,A.healed[s.id],A.visited[s.id],artHash(s.id))+'</g>'}));
   [...new Set(stops.filter(s=>s.kind==="hut").map(s=>s.grove))].forEach(g=>{
@@ -12735,9 +12926,27 @@ function advScene(){
   ADV_SIGNS.forEach(g=>items.push({y:g[1],html:'<g data-y="'+g[1]+'">'+advSignpost(g[0],g[1],ADV_STORY.chapters[g[2]].sign,g[2])+'</g>'}));
   items.push({y:980,html:'<g data-y="980">'+advMushroomHouse(980,1075)+'</g>'});
   const walkers='<g id="advWalkers" data-y="'+Math.round(ADV.y)+'">'+
-   '<g id="advAngel" style="transform:translate('+(ADV.x+(ADV.at==="home"?-56:54))+'px,'+(ADV.y-84)+'px) scale('+ns.toFixed(3)+')">'+advAngel()+'</g>'+
-   '<g id="advNurse" class="'+(ADV.walking?'walking':'')+'" style="transform:translate('+ADV.x+'px,'+ADV.y+'px) scale('+ns.toFixed(3)+')"><ellipse cx="0" cy="3" rx="26" ry="7" fill="#000" opacity=".2"/>'+nurse+'</g></g>';
+   '<g id="advAngel" style="transform:translate('+(ADV.x+ADV_ANGEL_DX)+'px,'+(ADV.y+ADV_ANGEL_DY)+'px) scale('+(ns*ADV_ANGEL_K).toFixed(3)+')">'+advAngel()+'</g>'+
+   '<g id="advNurse" class="'+(ADV.walking?'walking':'')+'" style="transform:translate('+ADV.x+'px,'+ADV.y+'px) scale('+ns.toFixed(3)+')"><ellipse cx="0" cy="3" rx="34" ry="8" fill="#000" opacity=".2"/>'+nurse+'</g></g>';
   items.push({y:ADV.y,html:walkers,walk:true});
+  /* what the healed doors have brought back */
+  const bloom=(x,y,n,seed)=>{const r=artRnd(seed);let t="";const C=["#E8C4D0","#D6B25A","#B9A6E0","#E9D48A","#FFFFFF","#F7A8C4","#9DBBE0","#D6E8C2"];
+    for(let i=0;i<n;i++){const cx=(x+(r()*2-1)*38).toFixed(0),cy=(y+(r()*2-1)*9).toFixed(0),c=C[Math.floor(r()*C.length)],rr=2.2+r()*2.6;
+      t+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rr.toFixed(1)+'" fill="'+c+'"/>'+(r()>0.75?'<circle cx="'+cx+'" cy="'+cy+'" r="'+(rr*2.4).toFixed(1)+'" fill="'+c+'" opacity=".22" class="advglow"/>':'');}
+    return '<g><ellipse cx="'+x+'" cy="'+(y+4)+'" rx="44" ry="11" fill="#3B6B4E"/><path d="M'+(x-30)+' '+y+'q-3 -10 -8 -14M'+(x+26)+' '+(y+2)+'q4 -10 9 -13M'+(x-6)+' '+(y+6)+'q0 -12 3 -16" fill="none" stroke="#6FCF7A" stroke-width="2.2" stroke-linecap="round"/>'+t+'</g>';};
+  let lifeBf="";
+  healedStops.forEach((s,n)=>{
+    const r=artRnd(artHash(s.id)+9), gy=(s.gy||s.y), spread=s.kind==="hut"?300:130;
+    const fy=Math.min(ADV_H-24,gy+16+r()*44), fx=Math.max(60,Math.min(ADV_W-60,s.x+(r()*2-1)*spread));
+    items.push({y:fy,html:'<g data-y="'+fy.toFixed(0)+'">'+bloom(Math.round(fx),Math.round(fy),9+Math.floor(r()*8),artHash(s.id)+3)+'</g>'});
+    lifeBf+=butterfly((fx+(r()*2-1)*60).toFixed(0),(fy-40-r()*50).toFixed(0),["#D6B25A","#7FA7C9","#C39BC4","#E9D48A","#F7A8C4"][n%5],(r()*4).toFixed(1));
+    if(r()>0.5)lifeBf+=butterfly((s.x+(r()*2-1)*spread).toFixed(0),(gy-30-r()*60).toFixed(0),["#9FD1C4","#E8C4D0","#A5B8D9"][n%3],(r()*4).toFixed(1));
+    lifeBf+=firefly((s.x+(r()*2-1)*spread).toFixed(0),(gy-20-r()*60).toFixed(0),FC[n%4],(r()*6).toFixed(1));
+    if(n%3===2){const ax=Math.max(60,Math.min(ADV_W-60,s.x+(r()*2-1)*(spread+60))), ay=Math.min(ADV_H-14,gy+10+r()*50), kind=ADV_FAUNA[Math.floor(n/3)%ADV_FAUNA.length];
+      items.push({y:ay,html:'<g data-y="'+ay.toFixed(0)+'">'+advCritter(kind,Math.round(ax),Math.round(ay),advDepth(ay)*0.95,r()>0.5)+'</g>'});}
+    if(n%5===4){const ax=Math.max(80,Math.min(ADV_W-80,s.x+(r()*2-1)*(spread+120))), ay=Math.min(ADV_H-14,gy+6+r()*40), kind=ADV_MYTH[Math.floor(n/5)%ADV_MYTH.length];
+      items.push({y:ay,html:'<g data-y="'+ay.toFixed(0)+'">'+advCritter(kind,Math.round(ax),Math.round(ay),advDepth(ay),r()>0.5)+'</g>'});}
+  });
   items.sort((a,b)=>a.y-b.y||(a.walk?1:-1));
   const stage='<g id="advStage">'+items.map(i=>i.html).join("")+'</g>'+
     '<g id="advPlates">'+stops.map(s=>advPlate(s,A.healed[s.id])).join("")+'</g>';
@@ -12753,26 +12962,27 @@ function advScene(){
     '<linearGradient id="advaur1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#DDEBD5" stop-opacity="0"/><stop offset=".3" stop-color="#DDEBD5" stop-opacity=".38"/><stop offset=".6" stop-color="#B9C4E0" stop-opacity=".34"/><stop offset="1" stop-color="#E8E1C8" stop-opacity="0"/></linearGradient>'+
     '<linearGradient id="advaur2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E8E1C8" stop-opacity="0"/><stop offset=".4" stop-color="#EDD79A" stop-opacity=".3"/><stop offset=".7" stop-color="#C5D2E6" stop-opacity=".36"/><stop offset="1" stop-color="#DDEBD5" stop-opacity="0"/></linearGradient>'+
     '<filter id="advsoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>'+
+    '<linearGradient id="advstreak" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".35" stop-color="#F3E7A6" stop-opacity=".7"/><stop offset="1" stop-color="#F3E7A6" stop-opacity="0"/></linearGradient>'+
     '<path id="advPathEl" d="'+ADV_PATH+'"/>'+
    '</defs>'+
    /* sky: stars, aurora, sun and its rays */
-   '<rect width="'+ADV_W+'" height="'+ADV_H+'" fill="url(#advsky)"/>'+stars+
+   '<rect width="'+ADV_W+'" height="'+ADV_H+'" fill="url(#advsky)"/>'+stars+shoot+
    '<g class="advaurora" filter="url(#advsoft)"><path d="M-100 250C400 140 800 330 1300 210S2100 120 2500 260" fill="none" stroke="url(#advaur1)" stroke-width="70"/><path d="M-100 170C500 260 900 90 1500 200S2200 260 2500 140" fill="none" stroke="url(#advaur2)" stroke-width="50"/></g>'+
    '<g class="advrays" style="transform-origin:520px 520px">'+[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>'<path d="M520 520L'+(520+Math.cos(i*Math.PI/6)*900).toFixed(0)+' '+(520+Math.sin(i*Math.PI/6)*900).toFixed(0)+'L'+(520+Math.cos(i*Math.PI/6+0.09)*900).toFixed(0)+' '+(520+Math.sin(i*Math.PI/6+0.09)*900).toFixed(0)+'Z" fill="#EDD79A" opacity=".06"/>').join("")+'</g>'+
    '<circle cx="520" cy="520" r="260" fill="url(#advsun)"/><circle cx="520" cy="520" r="40" fill="#FFF8E1"/>'+
    /* mountains and the far forest */
-   '<path d="M0 620L160 480L300 560L470 420L640 540L820 440L1000 560L1180 400L1360 520L1530 430L1700 560L1880 440L2060 540L2230 450L2400 560L2500 470L2660 570L2820 450L2980 560L3140 470L3320 560L3500 440L3680 550L3860 460L4040 560L4200 480L4400 560V760H0Z" fill="#4A5478" opacity=".92"/>'+
+   '<path d="M0 620L160 480L300 560L470 420L640 540L820 440L1000 560L1180 400L1360 520L1530 430L1700 560L1880 440L2060 540L2230 450L2400 560L2500 470L2660 570L2820 450L2980 560L3140 470L3320 560L3500 440L3680 550L3860 460L4040 560L4200 480L4400 560L4560 470L4720 560L4800 520V760H0Z" fill="#4A5478" opacity=".92"/>'+
    '<path d="M410 480L470 420L530 478ZM1120 458L1180 400L1240 456ZM1470 488L1530 430L1590 486ZM1820 498L1880 440L1940 496ZM2180 500L2230 450L2280 500ZM2450 520L2500 470L2550 520ZM3440 495L3500 440L3560 493ZM3810 512L3860 460L3910 512" fill="#EEF1F6"/>'+
-   '<path d="M0 700L220 600L400 680L600 590L820 690L1000 610L1220 700L1420 620L1620 700L1820 610L2040 700L2240 620L2420 700L2620 630L2820 700L3040 620L3240 700L3440 630L3640 700L3840 620L4040 700L4240 630L4400 700V820H0Z" fill="#2E3457" opacity=".95"/>'+
-   pines(0,730,120,90,"#1B3A33")+pines(11,752,120,66,"#23483C")+pines(2640,730,82,90,"#1B3A33")+pines(2651,752,82,66,"#23483C")+
+   '<path d="M0 700L220 600L400 680L600 590L820 690L1000 610L1220 700L1420 620L1620 700L1820 610L2040 700L2240 620L2420 700L2620 630L2820 700L3040 620L3240 700L3440 630L3640 700L3840 620L4040 700L4240 630L4400 700L4560 620L4720 700L4800 660V820H0Z" fill="#2E3457" opacity=".95"/>'+
+   pines(0,730,120,90,"#1B3A33")+pines(11,752,120,66,"#23483C")+pines(2640,730,100,90,"#1B3A33")+pines(2651,752,100,66,"#23483C")+
    /* the meadow, in three rolls, then the lake */
-   '<path d="M0 780Q600 730 1200 770T2400 750T2900 765T3400 755T3800 760T4200 750T4400 758V'+ADV_H+'H0Z" fill="url(#advgrass)"/>'+
+   '<path d="M0 780Q600 730 1200 770T2400 750T2900 765T3400 755T3800 760T4200 750T4400 758T4600 752T4800 760V'+ADV_H+'H0Z" fill="url(#advgrass)"/>'+
    '<ellipse cx="1100" cy="800" rx="760" ry="90" fill="#5E9A66"/><ellipse cx="300" cy="860" rx="520" ry="80" fill="#4E8459"/><ellipse cx="2150" cy="820" rx="700" ry="100" fill="#5E9A66"/>'+
    '<g class="advwater"><ellipse cx="1000" cy="748" rx="470" ry="34" fill="url(#advlake)"/><ellipse cx="1000" cy="748" rx="470" ry="34" fill="none" stroke="#3B6B4E" stroke-width="8" opacity=".55"/>'+
      '<path d="M640 742q60 6 120 0M820 752q70 8 140 0M1040 740q60 6 120 0M1240 750q50 5 100 0" fill="none" stroke="#FFF6D6" stroke-width="2.4" opacity=".75"/>'+
      '<ellipse cx="900" cy="746" rx="60" ry="8" fill="#EDD79A" opacity=".5" filter="url(#advsoft)"/></g>'+
    /* mist on the water and over the meadow - the thing that makes a wood old */
-   '<g class="advaurora" opacity=".85">'+[[700,770,420,26],[1250,790,380,22],[300,830,300,20],[1900,800,420,24],[2600,790,360,22],[3100,800,300,20],[3700,795,380,22],[4150,805,300,20]].map(m=>'<ellipse cx="'+m[0]+'" cy="'+m[1]+'" rx="'+m[2]+'" ry="'+m[3]+'" fill="#E6EDE8" opacity=".32" filter="url(#advsoft)"/>').join("")+'</g>'+
+   '<g class="advaurora" opacity=".85">'+[[700,770,420,26],[1250,790,380,22],[300,830,300,20],[1900,800,420,24],[2600,790,360,22],[3100,800,300,20],[3700,795,380,22],[4150,805,300,20],[4550,800,320,22]].map(m=>'<ellipse cx="'+m[0]+'" cy="'+m[1]+'" rx="'+m[2]+'" ry="'+m[3]+'" fill="#E6EDE8" opacity=".32" filter="url(#advsoft)"/>').join("")+'</g>'+
    /* the cottage on the far hill */
    '<g transform="translate(2280 560) scale(.9)"><ellipse cx="100" cy="98" rx="150" ry="14" fill="#000" opacity=".14"/>'+
      '<rect x="0" y="22" width="200" height="74" rx="4" fill="#9C7449" stroke="#4E3520" stroke-width="2.5"/>'+
@@ -12780,7 +12990,7 @@ function advScene(){
      [14,58,102,146].map(x=>'<rect x="'+x+'" y="40" width="28" height="34" rx="2" fill="#FFE39A" stroke="#4E3520"/><rect x="'+(x+3)+'" y="43" width="22" height="28" fill="#FFF6D6" opacity=".7"/><circle cx="'+(x+14)+'" cy="57" r="24" fill="#FEE440" opacity=".18" class="advglow"/>').join("")+
      '<path d="M-8 96h216" stroke="#4E3520" stroke-width="3"/><path d="M20 66q-34-34 0-68M180 66q34-34 0-68" fill="none" stroke="#9CC9A8" stroke-width="3.5"/></g>'+
    /* willow by the stream, the stream, the bridge, a rainbow over it */
-   advWillow(1700,770)+advGate(150,1030)+advMoon()+advCrystals(1600,1015)+advWisps()+advFerns()+
+   advWillow(1700,770)+advGate(150,1030)+advMoon()+advCrystals(1600,1015)+advWisps()+advFerns(tier)+
    '<g class="advwater"><path d="M1560 700Q1630 820 1580 958T1620 '+ADV_H+'" fill="none" stroke="#5E88A6" stroke-width="40" stroke-linecap="round" opacity=".9"/>'+
      '<path d="M1560 700Q1630 820 1580 958T1620 '+ADV_H+'" fill="none" stroke="#D5E6EE" stroke-width="6" stroke-linecap="round" opacity=".6"/></g>'+
    advStones()+advLanterns()+
@@ -12802,15 +13012,15 @@ function advScene(){
    /* the groves and the hut */
    stage+
    /* life in the air */
-   '<g class="advbirds">'+bird(0,30,180)+bird(7,36,120)+bird(13,32,230)+bird(4,40,80)+bird(19,34,300)+'</g>'+
-   ffs+
+   '<g class="advbirds">'+bird(0,30,180)+bird(7,36,120)+bird(13,32,230)+bird(4,40,80)+bird(19,34,300)+[0,1,2,3,4,5].slice(0,tier).map(i=>bird(9+i*5,28+i*3,140+i*45)).join("")+'</g>'+
+   ffs+lifeBf+
    butterfly(420,960,"#D6B25A",0)+butterfly(760,1030,"#7FA7C9",1.2)+butterfly(1200,960,"#C39BC4",0.6)+butterfly(960,900,"#E9D48A",2)+butterfly(1700,990,"#A5B8D9",1.6)+butterfly(2150,970,"#D6B25A",0.9)+butterfly(300,860,"#9FD1C4",2.4)+
   '</svg>';
 }
 /* ---- the view ---- */
 function viewAdventure(){
   const A=advState();
-  if(!ADV){const s=advStops().find(x=>x.id===A.at);ADV={at:A.at||"home",x:s?s.x+(s.kind==="hut"?30:44):ADV_HOME.x,y:s?(s.gy||s.y)+6:ADV_HOME.y,visit:null,beat:0,walking:false};}
+  if(!ADV){const s=advStops().find(x=>x.id===A.at), rp=advRest(s);ADV={at:s?s.id:"home",x:rp.x,y:rp.y,visit:null,beat:0,walking:false};}
   const stops=advStops();
   const done=Object.keys(A.healed).filter(k=>A.healed[k]).length;
   const toldWhere=ADV.visit||ADV.story?"":advWhereBar();
@@ -12818,7 +13028,7 @@ function viewAdventure(){
   if(A.cheer&&!ADV.story&&!ADV.visit){
     const s=advStops().find(x=>x.id===A.cheer);
     ADV.story={kind:"cheer",id:A.cheer};
-    if(s){ADV.at=s.id;ADV.x=s.x+(s.kind==="hut"?30:44);ADV.y=s.y+6;A.at=s.id;}
+    if(s){const rp=advRest(s);ADV.at=s.id;ADV.x=rp.x;ADV.y=rp.y;A.at=s.id;}
     A.cheer=null;saveCore();
   }
   if(advAllHealed()&&!A.dawnDone&&!ADV.story&&!ADV.visit)ADV.story={kind:"dawn"};
@@ -12828,7 +13038,7 @@ function viewAdventure(){
     '<div class="advwrap"><div class="advscene">'+advScene()+'</div>'+
       (ADV.visit?advVisitPanel():ADV.story?advStoryPanel():toldWhere)+
     '</div>'+
-    '<div class="advfoot"><span>'+done+' of '+stops.length+' healed</span><span>'+Object.keys(A.visited).length+' taught</span><span>The trees blossom when the patient is well. Drag the scene to look around.</span></div>';
+    '<div class="advfoot"><span>'+done+' of '+stops.length+' healed</span><span>'+Object.keys(A.visited).length+' taught</span><span>Every healed door brings the wood back to life — flowers, then butterflies, then the animals, then the old things. Drag the scene to look around.</span></div>';
 }
 /* Where you are, and what to do next. Sits over the scene whenever nothing
    else is open, because a wood with sixty doors and no pointer left people
@@ -13090,12 +13300,12 @@ function advPlace(N,G,x,y){
   if(W&&St){let next=null;for(const c of St.children){if(c===W)continue;if(+c.dataset.y>y){next=c;break;}}
     if(next?W.nextSibling!==next:W!==St.lastElementChild){St.insertBefore(W,next);}}
   if(N)N.style.transform="translate("+x+"px,"+y+"px) scale("+sc.toFixed(3)+")";
-  if(G)G.style.transform="translate("+(x+54)+"px,"+(y-84)+"px) scale("+sc.toFixed(3)+")";
+  if(G)G.style.transform="translate("+(x+ADV_ANGEL_DX)+"px,"+(y+ADV_ANGEL_DY)+"px) scale("+(sc*ADV_ANGEL_K).toFixed(3)+")";
 }
 function advWalkTo(id){
   const s=advStops().find(x=>x.id===id);if(!s||ADV.walking)return;
   if(ADV.story&&ADV.story.kind==="intro")return;
-  const to={x:s.x+(s.kind==="hut"?30:44),y:(s.gy||s.y)+6};
+  const to=advRest(s);
   const way=advRoute({x:ADV.x,y:ADV.y},to);
   let total=0;for(let i=1;i<way.length;i++)total+=Math.hypot(way[i].x-way[i-1].x,way[i].y-way[i-1].y);
   const still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -17895,7 +18105,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 10:09 AM":"This browser is not saving anything. Build Sep 11, 10:09 AM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 1:30 PM":"This browser is not saving anything. Build Sep 11, 1:30 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -18390,7 +18600,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 10:09 AM":"This browser is not saving anything. Build Sep 11, 10:09 AM");
+    (LS_OK?"Saved in this browser. Build Sep 11, 1:30 PM":"This browser is not saving anything. Build Sep 11, 1:30 PM");
 })();
 </script>
 
