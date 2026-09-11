@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 6:35 PM-->
+<!--TROPHOS-BUILD:Sep 11, 6:45 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -1944,7 +1944,7 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 .swatch[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
 .cwheelwrap{display:flex;gap:14px;align-items:center;margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 .cwheel{position:relative;width:150px;height:150px;border-radius:50%;flex:0 0 auto;cursor:crosshair;touch-action:none;
-  background:radial-gradient(circle,#fff 0,rgba(255,255,255,0) 72%),conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
+  background:radial-gradient(circle,#fff 0,rgba(255,255,255,0) 72%),conic-gradient(from 90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
 .cwdot{position:absolute;width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.4);transform:translate(-50%,-50%);pointer-events:none}
 .cwside{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
 .cwprev{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);display:block}
@@ -5803,7 +5803,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 6:35 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 11, 6:45 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -8978,7 +8978,10 @@ function avatarSetup(seed){
   $$("#avC .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.color=b.dataset.c;sync();});
   $$("#avE .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);
     if(b.dataset.e==="custom"){const w=$("#avEPick");w.hidden=!w.hidden;return;}pick.eyes=b.dataset.e;sync();});
-  /* the wheel: hue round the ring, saturation out from the middle, lightness on the slider */
+  /* the wheel: hue round the ring, saturation out from the middle, lightness
+     on the slider. The ring is painted from 3 o'clock (conic-gradient from
+     90deg) because that is where atan2 puts hue 0 - painted from the top, the
+     marker sat on green while the color came out red. */
   (function(){
     const pad=$("#avEWheelPad"), dot=pad&&pad.querySelector(".cwdot"), prev=$("#avEPrev"), light=$("#avELight"), use=$("#avEUse");if(!pad)return;
     let h=25,sat=70;
@@ -18412,7 +18415,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 6:35 PM":"This browser is not saving anything. Build Sep 11, 6:35 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 6:45 PM":"This browser is not saving anything. Build Sep 11, 6:45 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -18913,7 +18916,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 6:35 PM":"This browser is not saving anything. Build Sep 11, 6:35 PM");
+    (LS_OK?"Saved in this browser. Build Sep 11, 6:45 PM":"This browser is not saving anything. Build Sep 11, 6:45 PM");
 })();
 </script>
 
