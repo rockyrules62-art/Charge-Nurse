@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 8:06 PM-->
+<!--TROPHOS-BUILD:Sep 11, 10:58 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -868,7 +868,15 @@ div.qzcard{cursor:default}
   letter-spacing:-.01em;color:var(--ink)}
 .froomhead i{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:3px;max-width:60ch}
 .advwrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:#1B1145}
-.advscene{position:relative;width:100%;height:min(calc(100vh - 90px),900px);overflow:auto;scrollbar-width:thin;cursor:grab;touch-action:pan-x pan-y;overscroll-behavior:contain}
+.advscene{position:relative;width:100%;height:min(calc(100vh - 90px),900px);overflow:auto;scrollbar-width:thin;cursor:grab;touch-action:pan-x pan-y;overscroll-behavior:contain;
+  /* what shows where a phone has not painted the wood yet: a flick on iOS
+     used to reveal the dark wrap behind it as a wall. The sky-to-ground run
+     stands in until the drawing catches up. */
+  background:linear-gradient(180deg,#2A2D66,#5A5C95 30%,#8A93B4 52%,#CBB985 80%,#EBE1C2)}
+/* while the view is moving the wood holds still - the butterflies, stars
+   and sway cost a repaint every frame, and on a phone that is what tore the
+   picture during a flick or a walk */
+.advscene.moving .advsvg *{animation-play-state:paused!important}
 .advscene.grab{cursor:grabbing;user-select:none}
 /* the wood full screen: the wrap covers the window, the chrome goes under it,
    a Back button top left, zoom top right; pinch zooms on a touch screen */
@@ -5850,7 +5858,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 8:06 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 11, 10:58 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -9149,6 +9157,12 @@ function avatarSetup(seed){
   $$("#avSC .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.shoecol=b.dataset.sc;sync();});
   const toLocker=id=>lockerModal(id,()=>avatarSetup(Object.assign({},pick)));
   {const sh=$("#modalHost .sheet");if(sh)sh.classList.add("nursesheet");}
+  /* Every group is a <label> around its buttons, and a label forwards a click
+     on its blank parts to the first button inside it. A finger on the color
+     wheel, or beside a row of chips, was therefore also a tap on the first
+     chip - which is how the eyes kept snapping back to brown while the wheel
+     was being used. Clicks that did not land on a control go no further. */
+  {const o=$("#modalHost .avopts");if(o)o.addEventListener("click",e=>{if(!e.target.closest("button,input,select,textarea,a"))e.preventDefault();});}
   avPhoneDock();
   $("#avLocker").onclick=()=>toLocker();
   // reopening the builder with a new seed is the only honest way to redraw it:
@@ -12856,6 +12870,7 @@ function advState(){const p=S.profile;if(!p.adv)p.adv={visited:{},healed:{},at:"
    depths - far ones small, near ones big - so it reads as a place, not a row.
    Positions are the FEET of each door. */
 const ADV_W=4800, ADV_H=1100, ADV_HOME={x:150,y:1040};
+const ADV_NURSE_W=94;                         // the nurse's width in the wood (was 112)
 const ADV_PATH="M60 1030C200 1010 300 970 420 975S640 1030 760 990S980 900 1100 920S1400 990 1570 960S1780 900 1960 940S2200 1040 2370 990S2520 880 2600 860S2760 1000 2900 970S3120 880 3250 930S3360 990 3480 1000S3660 900 3800 940S3980 1030 4120 1000S4280 900 4340 960S4480 1020 4600 990S4700 940 4760 980";
 const ADV_PLACES={
   "Content 1":[[260,850],[400,1050],[520,880]],
@@ -13195,7 +13210,9 @@ function advScene(){
 
   let shoot="";for(let i=0;i<1+tier;i++){const sx=(600+R()*(ADV_W-800)).toFixed(0), sy=(40+R()*220).toFixed(0);
     shoot+='<g class="advshoot" style="animation-delay:'+(R()*14).toFixed(1)+'s;animation-duration:'+(11+R()*9).toFixed(1)+'s" transform="translate('+sx+' '+sy+')"><line x1="0" y1="0" x2="150" y2="-62" stroke="url(#advstreak)" stroke-width="3" stroke-linecap="round"/><circle r="2.6" fill="#fff"/></g>';}
-  AV_ELF=true;const nurse=nurseAvatar(li.tier,112,null,true).replace('<svg ','<svg x="-56" y="-222" ');AV_ELF=false;
+  /* a touch smaller than the huts and trees around them (11 Sep: at 112 they
+     stood as tall as a door and hid behind every trunk) */
+  AV_ELF=true;const nurse=nurseAvatar(li.tier,ADV_NURSE_W,null,true).replace('<svg ','<svg x="'+(-ADV_NURSE_W/2)+'" y="'+(-ADV_NURSE_W*2)+'" ');AV_ELF=false;
   const ns=advDepth(ADV.y);
   const items=stops.filter(s=>s.kind==="tree").map(s=>({y:s.y,html:'<g class="advdoor" data-adv="'+s.id+'" data-y="'+s.y+'">'+advTree(s,A.healed[s.id],A.visited[s.id],artHash(s.id))+'</g>'}));
   [...new Set(stops.filter(s=>s.kind==="hut").map(s=>s.grove))].forEach(g=>{
@@ -13601,12 +13618,24 @@ function advWalkTo(id){
    with no door involved; the ground runs from the far edge of the path to the
    near edge of the picture. */
 const ADV_GROUND={top:740,bottom:1075,left:40};
+/* A tap on a tree or a hut - its trunk, its canopy, its wall - means "over
+   there", not "inside the tree": the spot moves to the ground just in front
+   of it, where the nurse is drawn in front of it rather than lost behind. */
+function advFront(x,y){
+  let best=null;
+  advStops().forEach(s=>{
+    const by=(s.gy||s.y), d=advDepth(by), half=(s.kind==="hut"?150:95)*d;
+    if(Math.abs(x-s.x)<half&&y<by+8&&y>by-340*d){if(!best||by>best.by)best={by:by,s:s};}
+  });
+  return best?{x:x,y:best.by+12}:{x:x,y:y};
+}
 function advWalkSpot(x,y){
   if(!ADV||ADV.walking)return false;
   if(ADV.story&&ADV.story.kind==="intro")return false;
-  if(y<520)return false;                              // sky and canopy: not a place to stand
-  const to={x:Math.round(Math.max(ADV_GROUND.left,Math.min(ADV_W-ADV_GROUND.left,x))),
-            y:Math.round(Math.max(ADV_GROUND.top,Math.min(ADV_GROUND.bottom,y)))};
+  if(y<520)return false;                              // sky: not a place to stand
+  const f=advFront(x,y);
+  const to={x:Math.round(Math.max(ADV_GROUND.left,Math.min(ADV_W-ADV_GROUND.left,f.x))),
+            y:Math.round(Math.max(ADV_GROUND.top,Math.min(ADV_GROUND.bottom,f.y)))};
   advWalk(to,()=>{
     ADV.at="spot";ADV.visit=null;ADV.story=null;
     const A=advState();A.at="spot";A.spot={x:to.x,y:to.y};saveCore();
@@ -13651,10 +13680,24 @@ function advWalk(to,onArrive){
 function advFollow(x,y,smooth){
   const sc=$(".advscene");if(!sc)return;
   const k=sc.scrollWidth/ADV_W;
-  const wx=Math.max(0,Math.min(sc.scrollWidth-sc.clientWidth,x*k-sc.clientWidth*0.45));
-  const wy=Math.max(0,Math.min(sc.scrollHeight-sc.clientHeight,y*k-sc.clientHeight*0.62));
-  if(smooth&&sc.scrollTo){try{sc.scrollTo({left:wx,top:wy,behavior:"smooth"});return;}catch(e){}}
-  sc.scrollLeft=wx;sc.scrollTop=wy;
+  const maxX=sc.scrollWidth-sc.clientWidth, maxY=sc.scrollHeight-sc.clientHeight;
+  if(smooth){
+    const wx=Math.round(Math.max(0,Math.min(maxX,x*k-sc.clientWidth*0.45)));
+    const wy=Math.round(Math.max(0,Math.min(maxY,y*k-sc.clientHeight*0.62)));
+    if(sc.scrollTo){try{sc.scrollTo({left:wx,top:wy,behavior:"smooth"});return;}catch(e){}}
+    sc.scrollLeft=wx;sc.scrollTop=wy;return;
+  }
+  /* mid-walk: the view only moves once the nurse reaches the edge of a wide
+     band in the middle of it, and then only by whole pixels. Re-centring on
+     every frame made the picture shake on a phone. */
+  const vx=x*k-sc.scrollLeft, vy=y*k-sc.scrollTop;
+  const lo=sc.clientWidth*0.3, hi=sc.clientWidth*0.7, tlo=sc.clientHeight*0.3, thi=sc.clientHeight*0.8;
+  let nx=sc.scrollLeft, ny=sc.scrollTop;
+  if(vx<lo)nx=sc.scrollLeft-(lo-vx);else if(vx>hi)nx=sc.scrollLeft+(vx-hi);
+  if(vy<tlo)ny=sc.scrollTop-(tlo-vy);else if(vy>thi)ny=sc.scrollTop+(vy-thi);
+  nx=Math.round(Math.max(0,Math.min(maxX,nx)));ny=Math.round(Math.max(0,Math.min(maxY,ny)));
+  if(nx!==sc.scrollLeft)sc.scrollLeft=nx;
+  if(ny!==sc.scrollTop)sc.scrollTop=ny;
 }
 /* drag to look around */
 function advDrag(sc){
@@ -13665,6 +13708,10 @@ function advDrag(sc){
   const up=()=>{down=null;sc.classList.remove("grab");};
   sc.addEventListener("pointermove",e=>{if(!down)return;sc.scrollLeft=down.l-(e.clientX-down.x);sc.scrollTop=down.t-(e.clientY-down.y);});
   sc.addEventListener("pointerup",up);sc.addEventListener("pointerleave",up);sc.addEventListener("pointercancel",up);
+  /* hold the animations while the view moves (see .advscene.moving) */
+  let moveT=null;
+  const moving=()=>{sc.classList.add("moving");if(moveT)clearTimeout(moveT);moveT=setTimeout(()=>{moveT=null;sc.classList.remove("moving");},180);};
+  sc.addEventListener("scroll",moving,{passive:true});
   /* a tap on the ground (not a drag, not a door) walks the nurse there */
   let tap=null, lastPinch=0;
   sc.addEventListener("pointerdown",e=>{if(e.target.closest("[data-adv],[data-chapter],[data-gochap],button,a,.advsheet,.advwhere,.advtools,.advback"))return;tap={x:e.clientX,y:e.clientY,t:Date.now(),id:e.pointerId};});
@@ -18522,7 +18569,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 8:06 PM":"This browser is not saving anything. Build Sep 11, 8:06 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 10:58 PM":"This browser is not saving anything. Build Sep 11, 10:58 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -19023,7 +19070,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 8:06 PM":"This browser is not saving anything. Build Sep 11, 8:06 PM");
+    (LS_OK?"Saved in this browser. Build Sep 11, 10:58 PM":"This browser is not saving anything. Build Sep 11, 10:58 PM");
 })();
 </script>
 
