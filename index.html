@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 6:45 PM-->
+<!--TROPHOS-BUILD:Sep 11, 8:06 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -2648,6 +2648,53 @@ label.f.acf{margin-bottom:11px}
 .sheet header h3{font-size:17px;font-weight:700}
 .sheet .bd{padding:18px;display:flex;flex-direction:column;gap:13px}
 .sheet footer{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:9px}
+/* THE NURSE BUILDER ON A PHONE
+   The whole screen. The nurse fills everything between the header and the
+   controls, as big as the space allows, and the controls are a dock at the
+   bottom: a row of sections (Body, Face, Hair, Scrubs, Feet, Extras), a row of
+   the groups in that section, and the choices for the one group you are on.
+   One group at a time keeps the dock short, which is what keeps the nurse
+   tall - and every tap redraws them in place, in view the whole time. */
+@media (max-width:760px){
+  .veil:has(.nursesheet){padding:0}
+  .sheet.nursesheet{width:100%;height:100vh;height:100dvh;max-height:none;border-radius:0;border:0;overflow:hidden;display:flex;flex-direction:column}
+  .sheet.nursesheet header{flex:none;padding:10px 16px;min-height:52px;padding-top:calc(10px + env(safe-area-inset-top))}
+  .sheet.nursesheet .bd{flex:1;min-height:0;padding:0;gap:0;display:flex;flex-direction:column}
+  .sheet.nursesheet footer{flex:none;padding:9px 14px calc(9px + env(safe-area-inset-bottom))}
+  .sheet.nursesheet .avwrap{flex:1;min-height:0;display:flex;flex-direction:column;align-items:stretch;gap:0}
+  .sheet.nursesheet .avopts{width:100%}
+  /* the stage */
+  .sheet.nursesheet .avside{position:relative;flex:1;min-height:120px;width:100%;display:block;padding:0;border:0;box-shadow:none;top:auto;
+    background:radial-gradient(80% 60% at 50% 100%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 70%),var(--surface-2)}
+  .sheet.nursesheet #avPrev{position:absolute;inset:6px 0 4px;display:grid;place-items:center;padding:0;background:transparent;border-radius:0}
+  .sheet.nursesheet #avPrev .nurse{height:100%;width:auto;max-width:100%}
+  .sheet.nursesheet .avsideinfo{position:absolute;inset:0;pointer-events:none;display:block;width:auto}
+  .sheet.nursesheet .avsideinfo > *{pointer-events:auto}
+  .sheet.nursesheet .avtools{position:absolute;left:8px;top:8px;margin:0;flex-direction:column;gap:6px;width:auto}
+  .sheet.nursesheet .avtools .btn{padding:6px 10px;font-size:12px;background:color-mix(in srgb,var(--surface) 88%,transparent)}
+  .sheet.nursesheet #avLocker{position:absolute;right:8px;top:8px;padding:6px 10px;font-size:12px;background:color-mix(in srgb,var(--surface) 88%,transparent)}
+  .sheet.nursesheet .taphint{display:none}
+  .sheet.nursesheet .avxp{position:absolute;left:8px;right:8px;bottom:4px;padding:4px 8px;flex-direction:row;align-items:center;gap:8px;
+    background:color-mix(in srgb,var(--surface) 82%,transparent);border-radius:8px}
+  .sheet.nursesheet .avxp .avxpn{white-space:nowrap}
+  .sheet.nursesheet .avxp .avxpb{flex:1;min-width:30px}
+  .sheet.nursesheet .avxp .avxpt{white-space:nowrap;font-size:10px}
+  /* the dock */
+  .sheet.nursesheet .avopts{flex:none;max-height:40vh;max-height:40dvh;min-width:0;display:flex;flex-direction:column;gap:0;overflow:auto;
+    border-top:1px solid var(--line);background:var(--surface)}
+  .avdock{position:sticky;top:0;z-index:2;background:var(--surface);flex:none}
+  .avsecs,.avgrps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 12px 0;-webkit-overflow-scrolling:touch}
+  .avsecs::-webkit-scrollbar,.avgrps::-webkit-scrollbar{display:none}
+  .avsecs{padding-top:9px}
+  .avgrps{padding-bottom:8px;border-bottom:1px solid var(--line-soft)}
+  .avsec,.avgrp{flex:none;appearance:none;border:0;font:inherit;cursor:pointer;border-radius:999px;white-space:nowrap}
+  .avsec{padding:6px 12px;font-size:13px;font-weight:800;color:var(--muted);background:var(--surface-2)}
+  .avsec[aria-selected="true"]{color:#fff;background:linear-gradient(120deg,#0E7C70,#12907F)}
+  .avgrp{padding:4px 10px;font-size:12.5px;font-weight:700;color:var(--muted);background:transparent;border:1px solid var(--line)}
+  .avgrp[aria-selected="true"]{color:var(--accent);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+  .sheet.nursesheet .avopts > label.f{padding:10px 12px 12px;margin:0}
+  .sheet.nursesheet .avopts > label.f.secoff{display:none!important}
+}
 /* Today's count, in the corner of Study for a moment after each answer; any
    tap sends it off, and it stops once the day's target is met. */
 .daychip{position:fixed;right:18px;bottom:14px;z-index:45;pointer-events:none;display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:999px;
@@ -5803,7 +5850,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 6:45 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 11, 8:06 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -8807,6 +8854,58 @@ function lockerModal(focus,after){
   $("#veil").addEventListener("mousedown",e=>{if(e.target.id==="veil")done();});
   wireShop(again,()=>lockerModal(focus,after));
 }
+/* The phone dock: sections, then the groups in a section, then one group's
+   choices - see the CSS under THE NURSE BUILDER ON A PHONE. The groups stay
+   exactly where the desktop has them; the dock only decides which one shows.
+   A group a choice hides (sock color with no socks) drops out of its row. */
+const AV_SECTIONS=[
+  ["Body",["Body","Build","Skin tone","Neck width","Neck length","Hands"]],
+  ["Face",["Face shape","Eye shape","Eye color","Brow shape","Brow height","Nose","Mouth","Lip color","Eye makeup","Cheeks","Ears","Bindi","Bindi color","Facial hair"]],
+  ["Hair",["Hair","Hair color","Head cover","Hijab color","Hair accessory","Accessory color"]],
+  ["Scrubs",["Neckline","Under-layer","Jacket","Gown","Scrub pants"]],
+  ["Feet",["Shoes","Shoe color","Compression socks","Sock color"]],
+  ["Extras",["Earrings","Earring metal","Glasses","Face mask","Face shield","Stethoscope","Watch","Pocket","ID badge"]]];
+let AV_SEC="Body", AV_GRP=null;
+function avPhoneDock(){
+  const sh=$("#modalHost .sheet.nursesheet");if(!sh)return;
+  if(!(window.matchMedia&&window.matchMedia("(max-width:760px)").matches))return;
+  const opts=sh.querySelector(".avopts");if(!opts||opts.querySelector(".avdock"))return;
+  const labels=[...opts.querySelectorAll(":scope > label.f")];
+  const titleOf=l=>{const t=l.firstChild;return ((t&&t.nodeType===3)?t.textContent:l.textContent).trim();};
+  const secOf=t=>{const x=AV_SECTIONS.find(s=>s[1].indexOf(t)>=0);return x?x[0]:"Extras";};
+  labels.forEach(l=>{l.dataset.avt=titleOf(l);l.dataset.avsec=secOf(l.dataset.avt);
+    /* the group's own title is now the lit chip in the dock */
+    const t=l.firstChild;if(t&&t.nodeType===3)t.textContent="";});
+  const dock=document.createElement("div");dock.className="avdock";
+  dock.innerHTML='<div class="avsecs" role="tablist" aria-label="Sections"></div><div class="avgrps" role="tablist" aria-label="Groups"></div>';
+  opts.insertBefore(dock,opts.firstChild);
+  const secs=dock.querySelector(".avsecs"), grps=dock.querySelector(".avgrps");
+  const vis=l=>l.style.display!=="none";
+  let lastGrp=null;
+  const paint=()=>{
+    let inSec=labels.filter(l=>l.dataset.avsec===AV_SEC&&vis(l));
+    if(!inSec.length){AV_SEC=AV_SECTIONS[0][0];inSec=labels.filter(l=>l.dataset.avsec===AV_SEC&&vis(l));}
+    if(!inSec.some(l=>l.dataset.avt===AV_GRP))AV_GRP=inSec.length?inSec[0].dataset.avt:null;
+    secs.innerHTML=AV_SECTIONS.map(x=>'<button type="button" class="avsec" role="tab" data-avsec="'+x[0]+'" aria-selected="'+(x[0]===AV_SEC)+'">'+x[0]+'</button>').join("");
+    grps.innerHTML=inSec.map(l=>'<button type="button" class="avgrp" role="tab" data-avgrp="'+esc(l.dataset.avt)+'" aria-selected="'+(l.dataset.avt===AV_GRP)+'">'+esc(l.dataset.avt)+'</button>').join("");
+    labels.forEach(l=>l.classList.toggle("secoff",l.dataset.avt!==AV_GRP));
+    secs.querySelectorAll("[data-avsec]").forEach(b=>b.onclick=()=>{AV_SEC=b.dataset.avsec;AV_GRP=null;paint();});
+    grps.querySelectorAll("[data-avgrp]").forEach(b=>b.onclick=()=>{AV_GRP=b.dataset.avgrp;paint();});
+    if(AV_GRP!==lastGrp){lastGrp=AV_GRP;opts.scrollTop=0;}
+    /* centre the lit chips in their strips (rebuilding the strip put it back
+       to the start) - by hand, since scrollIntoView would drag the whole
+       sheet along with it */
+    const on=grps.querySelector('[aria-selected="true"]');
+    if(on)grps.scrollLeft=Math.max(0,on.offsetLeft-(grps.clientWidth-on.offsetWidth)/2);
+    const os=secs.querySelector('[aria-selected="true"]');
+    if(os)secs.scrollLeft=Math.max(0,os.offsetLeft-(secs.clientWidth-os.offsetWidth)/2);
+  };
+  paint();
+  /* a choice can hide or show a group (socks -> sock color); keep the row honest */
+  let raf=0;
+  new MutationObserver(()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;paint();});})
+    .observe(opts,{attributes:true,subtree:true,attributeFilter:["style"]});
+}
 function avatarSetup(seed){
   /* `seed` carries an in-progress design back after a trip to the locker.
 
@@ -8977,7 +9076,13 @@ function avatarSetup(seed){
   bindHair();
   $$("#avC .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.color=b.dataset.c;sync();});
   $$("#avE .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);
-    if(b.dataset.e==="custom"){const w=$("#avEPick");w.hidden=!w.hidden;return;}pick.eyes=b.dataset.e;sync();});
+    if(b.dataset.e==="custom"){const w=$("#avEPick");w.hidden=!w.hidden;
+      /* in the phone dock the wheel opens below the fold: bring it up inside
+         the dock itself (never scrollIntoView, which would move the sheet) */
+      if(!w.hidden){const o=w.closest(".avopts"), d=o&&o.querySelector(".avdock");
+        if(d){const top=w.getBoundingClientRect().top-o.getBoundingClientRect().top+o.scrollTop-d.offsetHeight-6;
+          try{o.scrollTo({top:Math.max(0,top),behavior:"smooth"});}catch(e){o.scrollTop=Math.max(0,top);}}}
+      return;}pick.eyes=b.dataset.e;sync();});
   /* the wheel: hue round the ring, saturation out from the middle, lightness
      on the slider. The ring is painted from 3 o'clock (conic-gradient from
      90deg) because that is where atan2 puts hue 0 - painted from the top, the
@@ -9043,6 +9148,8 @@ function avatarSetup(seed){
   $$("#avAC .swatch").forEach(b=>b.onclick=()=>{pick.acccol=b.dataset.ac;sync();});
   $$("#avSC .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.shoecol=b.dataset.sc;sync();});
   const toLocker=id=>lockerModal(id,()=>avatarSetup(Object.assign({},pick)));
+  {const sh=$("#modalHost .sheet");if(sh)sh.classList.add("nursesheet");}
+  avPhoneDock();
   $("#avLocker").onclick=()=>toLocker();
   // reopening the builder with a new seed is the only honest way to redraw it:
   // the hair list depends on `pres`, and every chip carries its own pressed state
@@ -18415,7 +18522,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 6:45 PM":"This browser is not saving anything. Build Sep 11, 6:45 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 8:06 PM":"This browser is not saving anything. Build Sep 11, 8:06 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -18916,7 +19023,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 6:45 PM":"This browser is not saving anything. Build Sep 11, 6:45 PM");
+    (LS_OK?"Saved in this browser. Build Sep 11, 8:06 PM":"This browser is not saving anything. Build Sep 11, 8:06 PM");
 })();
 </script>
 
