@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 12, 12:21 AM-->
+<!--TROPHOS-BUILD:Sep 12, 8:56 AM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -891,7 +891,9 @@ body.advfull .advwrap{position:fixed;inset:0;z-index:1000;border-radius:0;border
    translucent, so the wood shows through */
 body.advfull .advwrap{overflow:hidden;display:block;padding:0}
 body.advfull .advscene{position:absolute;inset:0;height:auto}
-body.advfull .advscene svg.advsvg{margin-bottom:150px}   /* room to scroll the ground floor out from under the bar */
+/* room to scroll the ground floor out from under the bar - painted as more
+   ground, not left as a bare strip of the backdrop */
+body.advfull .advscene .advworld{padding-bottom:150px;background:#25503F}
 body.advfull .advwrap > :not(.advscene):not(.advtool):not(.advtools){position:absolute;left:0;right:0;bottom:0;max-height:60vh;max-height:60dvh;overflow:auto;padding-bottom:calc(12px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 body.advfull .advwhere{background:linear-gradient(180deg,rgba(15,27,25,0) 0%,rgba(15,27,25,.55) 22%,rgba(15,27,25,.82) 100%);border-top:0;padding-top:26px;-webkit-backdrop-filter:none;backdrop-filter:none}
 /* inside a door the room takes the whole screen, and the page scrolls as one
@@ -933,16 +935,42 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 .advsvg .advrays{animation:advrays 60s linear infinite}
 @keyframes advrays{to{transform:rotate(360deg)}}
 .advsvg .advwater{animation:advwater 12s ease-in-out infinite alternate}
-@keyframes advwater{from{filter:hue-rotate(0deg) saturate(1.1)}to{filter:hue-rotate(50deg) saturate(1.4)}}
+@keyframes advwater{from{opacity:.85}to{opacity:1}}
+/* a phone repaints the whole sky for every frame of these; it keeps the small
+   glows, butterflies and stars and lets the big sky hold still */
+@media (hover:none){.advsvg .advrays,.advsvg .advaurora,.advsvg .advwater{animation:none}}
 .advsvg .advbf{animation:advbf 5s ease-in-out infinite alternate}
 @keyframes advbf{0%{transform:translate(var(--x,0),0)}50%{transform:translate(calc(var(--x,0) + 22px),-18px)}100%{transform:translate(calc(var(--x,0) + 8px),-34px)}}
 .advworld{position:relative;width:max-content}
-.advwalklayer{position:absolute;left:0;top:0;width:4800px;height:1100px;transform-origin:0 0;pointer-events:none;z-index:2}
+.advscene.walkcam .advworld{will-change:transform}
+.advdoor.open .advglow{opacity:.6}
+/* inside a door the nurse is inside: the figure on the street steps aside, and the room sits above everything */
+.advwrap:has(.advsheet.inside) .advwalklayer{visibility:hidden}
+.advsheet{position:relative;z-index:4}
+.advscene.advarrive .advworld{animation:advarrive .45s ease-out}
+@keyframes advarrive{from{opacity:0}to{opacity:1}}
+.advgatego:hover .advsign,.advgatego:hover path{filter:none}
+.advwalklayer{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none;z-index:2}
 .advwalker{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 .advwalker svg{display:block}
 .advwalker .advshadow{position:absolute;left:-34px;top:-5px;width:68px;height:16px;border-radius:50%;background:rgba(0,0,0,.2)}
-#advNurse.walking svg.nurse{animation:advstep .36s ease-in-out infinite alternate;transform-origin:50% 100%}
-@keyframes advstep{from{transform:rotate(-2.5deg) translateY(0)}to{transform:rotate(2.5deg) translateY(-3px)}}
+/* the walk: the figure bobs and leans with each step and faces the way it is
+   going; standing, it breathes. The angel drifts beside. */
+#advNurse .advfig{transform-origin:50% 100%;display:block;animation:advbreathe 3.2s ease-in-out infinite}
+#advNurse.walking .advfig{animation:advstep .34s ease-in-out infinite alternate}
+#advNurse.faceleft .advfig{transform:scaleX(-1)}
+#advNurse.walking.faceleft .advfig{animation:advstepl .34s ease-in-out infinite alternate}
+#advNurse .advshadow{transition:transform .34s ease}
+#advNurse.walking .advshadow{animation:advshadow .34s ease-in-out infinite alternate}
+@keyframes advbreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.012) translateY(-1px)}}
+@keyframes advshadow{from{transform:scaleX(1)}to{transform:scaleX(.9)}}
+@keyframes advstepl{from{transform:scaleX(-1) rotate(2.5deg) translateY(0)}to{transform:scaleX(-1) rotate(-2.5deg) translateY(-4px)}}
+/* stepping through a door: the figure shrinks into the doorway and fades */
+#advNurse.entering{transition:transform .55s cubic-bezier(.4,0,.6,1),opacity .55s ease;opacity:0}
+#advNurse.arriving{animation:advarrivefig .5s ease-out}
+@keyframes advarrivefig{from{opacity:0;transform:translateY(-6px)}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){#advNurse .advfig,#advNurse.walking .advfig,#advNurse.walking .advshadow{animation:none}}
+@keyframes advstep{from{transform:rotate(-2.5deg) translateY(0)}to{transform:rotate(2.5deg) translateY(-4px)}}
 .advsvg .advbob{animation:advbob 2.2s ease-in-out infinite alternate}
 .advsvg .advshoot{animation:advshoot 14s linear infinite;opacity:0}
 @keyframes advshoot{0%{transform:translate(0,0);opacity:0}3%{opacity:1}12%{transform:translate(-460px,190px);opacity:0}100%{transform:translate(-460px,190px);opacity:0}}
@@ -997,6 +1025,42 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 .advreveal .advwho{color:#DFF7F2}.advreveal b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.01em;line-height:1.1;margin:2px 0 2px}
 .advreveal i{display:block;font:500 12.5px "IBM Plex Mono",monospace;opacity:.9;margin-bottom:6px}.advreveal p{margin:0;font-size:14.5px;line-height:1.5;color:#fff}
 .advbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+/* THE ROOM AS A SCENE: the picture on top, the talk in a dark box under it,
+   typed out; a bar of small controls below that */
+.advsheet.inside.vn{display:flex;flex-direction:column;gap:10px;padding:12px 14px}
+.advsheet.inside.vn .advroomwrap{width:100%;max-height:46vh;max-height:46dvh;cursor:pointer}
+.advsheet.inside.vn .advroomwrap svg.advroom{max-height:46vh;max-height:46dvh;margin:0 auto}
+.advvn{position:relative;border-radius:14px;padding:12px 14px 14px;background:#132522;color:#F2F7F5;border:1px solid rgba(255,255,255,.08);cursor:pointer;min-height:72px}
+.advvn .advwho{font:700 10.5px "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:#7FD9CC;display:block;margin-bottom:4px}
+.advvn.angel .advwho{color:#C9B8E8}.advvn.ask .advwho{color:#F3D08A}
+.advvn p{margin:0;font-size:15.5px;line-height:1.5;color:#F2F7F5}
+.advvn.angel p,.advvn.reveal p{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-size:18px;line-height:1.45}
+.advvn .advlines{display:grid;gap:4px;margin-top:8px}
+.advvn .advlines span{font:400 14px/1.45 "IBM Plex Sans",ui-sans-serif,sans-serif;color:#F2F7F5;padding-left:10px;border-left:2px solid #7FD9CC}
+.advvn .advmore{position:absolute;right:12px;bottom:6px;font:600 10.5px "IBM Plex Mono",monospace;letter-spacing:.08em;color:#9FB8B2;font-style:normal;animation:advmore 1.2s ease-in-out infinite}
+.advvn.typing .advmore{visibility:hidden}
+@keyframes advmore{0%,100%{opacity:.35}50%{opacity:1}}
+.advvn.reveal{background:linear-gradient(135deg,var(--accent),var(--deep,#0B4F6C))}
+.advvn.reveal .advwho{color:#DFF7F2}.advvn .advname{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:24px;font-weight:800;letter-spacing:-.01em;line-height:1.1;margin:2px 0}
+.advvn .advtag{display:block;font:500 12px "IBM Plex Mono",monospace;opacity:.9;margin-bottom:6px;font-style:normal}
+.advq{display:block;width:100%;text-align:left;margin-top:8px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#fff;font:600 14.5px/1.35 "IBM Plex Sans",sans-serif;cursor:pointer}
+.advq:hover{background:rgba(255,255,255,.12)}
+.advqa{margin-top:8px;padding:8px 10px 10px;border-radius:10px;background:rgba(255,255,255,.06)}
+.advqa b{display:block;font:600 12.5px "IBM Plex Sans",sans-serif;color:#F3D08A;margin-bottom:3px}
+.advqa .advwho{margin:2px 0 2px}.advqa.angel .advwho{color:#C9B8E8}.advqa.angel p{font-family:"Cormorant Garamond",Georgia,serif;font-size:17px}
+.advvnbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.advporch{animation:advporch 5s ease-in-out infinite}
+@keyframes advporch{0%,88%,100%{transform:translateY(0)}92%{transform:translateY(-3px)}96%{transform:translateY(0)}}
+.advwhere.gossip{background:#1E2A3A}
+.advchartch{margin-top:10px}.advchartch .eyebrow{display:block;margin-bottom:6px}
+.advchartrow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:start;padding:10px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);margin-bottom:8px}
+.advchartrow b{font-size:14px}.advchartrow i{grid-column:1;font:600 11px "IBM Plex Mono",monospace;color:var(--muted);font-style:normal}
+.advchartrow .advlines{grid-column:1;margin-top:6px}.advchartrow .btn{grid-column:2;grid-row:1 / span 3;align-self:center}
+.advchartrow.healed{border-color:#CBB985;background:color-mix(in srgb,#E9D48A 18%,var(--surface-2))}
+.advmap{width:100%;height:auto;display:block;margin:8px 0}
+.advvnbar .advsteps{margin:0 auto 0 0}
+.advvnbar .advmeta{font:600 12px "IBM Plex Mono",monospace;color:var(--muted);margin-right:auto}
+@media (max-width:760px){.advsheet.inside.vn{padding:8px 10px calc(10px + env(safe-area-inset-bottom))}.advvn p{font-size:15px}.advvn.angel p,.advvn.reveal p{font-size:17px}}
 .advfoot{display:flex;flex-wrap:wrap;gap:16px;margin:10px 2px 0;font:500 12px "IBM Plex Mono",monospace;color:var(--muted)}
 @media (max-width:640px){.advgo{grid-template-columns:90px 1fr auto;gap:10px}.advgo .advgoart,.advgo .advgoart svg{width:90px;height:64px}.advgo .advgotxt b{font-size:16px}.advgo .advgotxt i{font-size:12px}
   .advsheet{grid-template-columns:1fr}.advnpc{flex-direction:row;justify-content:flex-start;gap:10px}.advnpc svg{width:44px;height:52px}}
@@ -1304,6 +1368,34 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 @keyframes confFall{
   0%{transform:translateY(0) rotate(0deg);opacity:1}
   100%{transform:translateY(105vh) rotate(720deg);opacity:.8}}
+/* ---- level up -------------------------------------------------------------
+   A new level is a party, not a line in a strip: balloons up the screen, the
+   number big in the middle, and the money it pays counted out where you can
+   see it. A tap anywhere sends it off; it goes on its own after a while. */
+#levelup{position:fixed;inset:0;z-index:210;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:rgba(8,14,22,.58);cursor:pointer;animation:lvin .3s ease-out;transition:opacity .35s}
+#levelup[hidden]{display:none}
+#levelup.bye{opacity:0;pointer-events:none}
+@keyframes lvin{from{opacity:0}to{opacity:1}}
+.lvbals{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.lvbal{position:absolute;bottom:-120px;width:48px;height:60px;border-radius:50%/46% 46% 54% 54%;
+  box-shadow:inset -9px -9px 0 rgba(0,0,0,.14),inset 6px 8px 0 rgba(255,255,255,.28);animation:lvrise linear forwards}
+.lvbal::before{content:"";position:absolute;left:50%;top:98%;width:9px;height:9px;background:inherit;transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.lvbal::after{content:"";position:absolute;left:50%;top:104%;width:2px;height:64px;background:rgba(255,255,255,.55);transform:translateX(-50%)}
+@keyframes lvrise{0%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-60vh) rotate(6deg)}100%{transform:translateY(-130vh) rotate(-4deg)}}
+.lvcoin{position:absolute;bottom:-30px;font:800 22px/1 var(--mono,ui-monospace,monospace);color:#FFD75E;text-shadow:0 2px 0 #8A6A00;pointer-events:none;animation:lvcoin 1.7s ease-out forwards}
+@keyframes lvcoin{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}100%{transform:translateY(-80vh) scale(1.1);opacity:0}}
+.lvcard{position:relative;background:var(--surface);color:var(--ink);border-radius:24px;padding:26px 28px 22px;text-align:center;
+  max-width:360px;width:100%;box-shadow:0 30px 70px rgba(0,0,0,.4);animation:lvpop .55s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes lvpop{from{transform:scale(.5) translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.lvcard .lveye{display:block;font:700 12px/1 var(--mono,ui-monospace,monospace);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.lvcard .lvn{display:block;font-size:46px;font-weight:800;line-height:1.05;margin:8px 0 2px;letter-spacing:-.02em}
+.lvcard .lvrank{display:block;font-style:normal;font-size:16px;opacity:.8;margin-bottom:14px}
+.lvcard .lvcash{display:inline-block;font:800 30px/1 var(--mono,ui-monospace,monospace);color:#1B8A5A;background:#E6F7EE;padding:10px 20px;border-radius:99px;animation:lvcash .8s .35s both}
+@keyframes lvcash{0%{transform:scale(.3) translateY(30px);opacity:0}60%{transform:scale(1.15) translateY(-4px);opacity:1}100%{transform:none;opacity:1}}
+.lvcard .lvsub{display:block;font-size:14px;margin-top:12px;line-height:1.4}
+.lvcard em{display:block;font-style:normal;font-size:12px;opacity:.55;margin-top:12px}
+@media (prefers-reduced-motion:reduce){#levelup,.lvbal,.lvcoin,.lvcard,.lvcard .lvcash{animation:none}.lvbal,.lvcoin{display:none}}
 /* ---- the trophy shelf ---------------------------------------------------- */
 .shelf{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 8px;padding:14px 12px 16px;
   background:color-mix(in srgb,var(--sun) 8%,var(--surface))}
@@ -5862,7 +5954,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 12, 12:21 AM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 12, 8:56 AM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -6821,8 +6913,55 @@ function syncLatches(){
   allGates().forEach(g=>{if(g.earned&&!p.gatesOpen[g.ex.sid]){p.gatesOpen[g.ex.sid]=today();changed=true;}});
   if(!p.lvl65){p.rankMax=1;p.lvl65=true;changed=true;}   // the old 1-13 latch is not a level
   const li=levelInfo(p.xp).lvl;
-  if(li>(p.rankMax||1)){p.rankMax=li;changed=true;vitalsFlash();}
+  if(li>(p.rankMax||1)){const from=p.rankMax||1;p.rankMax=li;changed=true;levelUp(from,li);}
   return changed;
+}
+/* LEVEL UP
+   Every level pays a purse (LEVEL_PURSE), and every fifth level - a new rank -
+   pays the rank purse on top. Until 12 September a level rose in silence
+   apart from the strip sliding in for ten seconds, and the money moved in a
+   number nobody was looking at. Now the level is announced: balloons, the
+   number, and the dollars counted out on the card. From boot (VITALS_ARMED
+   false) nothing shows - a level that rose while you were away is not news
+   you want to be handed at the door. */
+const LEVEL_PURSE=20;
+let LVUP_T=null;
+function levelCash(from,to){
+  let d=LEVEL_PURSE*Math.max(0,to-from);
+  for(let L=tierOfLevel(from)+1;L<=tierOfLevel(to);L++)d+=RANK_PURSE(L);
+  return d;
+}
+function levelUp(from,to){
+  vitalsFlash();
+  if(!VITALS_ARMED||!document.body)return;
+  const cash=levelCash(from,to), rankUp=tierOfLevel(to)>tierOfLevel(from);
+  let host=document.getElementById("levelup");
+  if(!host){host=document.createElement("div");host.id="levelup";host.setAttribute("role","status");host.setAttribute("aria-live","polite");document.body.appendChild(host);}
+  const cols=["#FF6B6B","#FFC93C","#4CC9F0","#9B5DE5","#2EC4B6","#FF9F1C","#F15BB5","#9EE493"];
+  let bal="";
+  for(let i=0;i<14;i++){
+    const x=(4+Math.random()*92).toFixed(1), d=(3.2+Math.random()*2.6).toFixed(2), dl=(Math.random()*1.4).toFixed(2), sc=(0.7+Math.random()*0.7).toFixed(2);
+    bal+='<i class="lvbal" style="left:'+x+'%;background:'+cols[i%cols.length]+';animation-duration:'+d+'s;animation-delay:'+dl+'s;transform:scale('+sc+')"></i>';
+  }
+  for(let i=0;i<10;i++){
+    const x=(10+Math.random()*80).toFixed(1), dl=(0.2+Math.random()*1.2).toFixed(2);
+    bal+='<b class="lvcoin" style="left:'+x+'%;animation-delay:'+dl+'s">$</b>';
+  }
+  host.innerHTML='<div class="lvbals">'+bal+'</div>'+
+    '<div class="lvcard"><span class="lveye">'+(rankUp?'New rank':'Level up')+'</span><b class="lvn">Level '+to+'</b><i class="lvrank">'+esc(rankName(tierOfLevel(to)))+'</i>'+
+    '<span class="lvcash" id="lvCash">+$'+cash+'</span>'+
+    '<span class="lvsub">'+(to-from>1?(to-from)+' levels at once. ':'')+(rankUp?'A new rank, and its purse on top. ':'')+'Nurse dollars — spend them in the locker.</span><em>tap anywhere to go on</em></div>';
+  host.hidden=false;host.classList.remove("bye");
+  host.onclick=()=>levelUpHide();
+  confetti(90);
+  if(LVUP_T)clearTimeout(LVUP_T);
+  LVUP_T=setTimeout(levelUpHide,7000);
+}
+function levelUpHide(){
+  const host=document.getElementById("levelup");if(!host||host.hidden)return;
+  if(LVUP_T){clearTimeout(LVUP_T);LVUP_T=null;}
+  host.classList.add("bye");
+  setTimeout(()=>{host.hidden=true;host.innerHTML="";},380);
 }
 function awardMilestones(silent){
   const p=S.profile;p.awarded=p.awarded||{};
@@ -6854,7 +6993,7 @@ function awardMilestones(silent){
 function checkTrophies(silent){
   /* a new week can open a rank while the app is still open */
   const lv=levelInfo(S.profile.xp).lvl;
-  if(lv>(S.profile.rankMax||1)){S.profile.rankMax=lv;vitalsFlash();}
+  if(lv>(S.profile.rankMax||1)){const from=S.profile.rankMax||1;S.profile.rankMax=lv;levelUp(from,lv);}
   awardMilestones(silent);
   let got=false;
   TROPHIES.forEach(tr=>{
@@ -7869,9 +8008,9 @@ function trophyDrawer(){
    XP is unchanged: it is what earns rank and opens exam gates. Dollars are a
    second thing entirely, and they come from exactly two places, both one-time
    and both already latched:
-     - a purse each time you reach a new rank
+     - a purse for every level, and a bigger one each time you reach a new rank
      - a bonus each time an exam gate opens
-   Nothing else pays. Tying dollars to ticking boxes or answering questions
+   (and, since the floor opened, a first clean win over a disease). Nothing else pays. Tying dollars to ticking boxes or answering questions
    would rebuild the farming surface XP already needed closing twice, and would
    put "what pays best" in front of "what is due".
 
@@ -7886,7 +8025,8 @@ function trophyDrawer(){
    its old tag in `was` so anyone who bought before the rise is billed what
    they paid, never the new price).
 
-   The purse pays on a flat, round ladder that is easy to read: rank 2 pays
+   Every level pays $20 (LEVEL_PURSE), announced on the level-up card, and the
+   rank purse pays on a flat, round ladder on top: rank 2 pays
    $100 and every rank after adds $20, so rank 13 pays $320. Ranks 2-13 come to
    $2,520. Six exam gates at $150 and the two finals at $300 add $1,500; with
    the opening grant that is $4,120 before a single fight - about half the
@@ -8226,6 +8366,7 @@ const lockOf=(row,val)=>{const m=LOCKS[row],id=m&&m[val];return (id&&!owns(id))?
 function dollarsEarned(){
   const p=S.profile;
   let d=GRANT;
+  d+=LEVEL_PURSE*Math.max(0,(p.rankMax||1)-1);          // every level above the first
   for(let L=2;L<=tierOfLevel(p.rankMax||1);L++)d+=RANK_PURSE(L);
   Object.keys(p.gatesOpen||{}).forEach(sid=>{d+=gateBonus(sid);});
   return d+(p.fightDollars||0);
@@ -8325,7 +8466,7 @@ function lockerBody(focus){
           :'<button class="btn sm'+(can?' primary':' cant')+'" data-buy="'+it.id+'">$'+it.p+'</button>')+
       '</div>';}).join("");
   return '<div class="lkhead"><div><span class="eyebrow">Nurse dollars</span><div class="lkbal">$'+bal+'</div></div>'+
-    '<div class="note" style="max-width:36ch">More arrive as you rank up, as exam gates open, and every time you beat a disease.</div></div>'+
+    '<div class="note" style="max-width:36ch">More arrive with every level, as exam gates open, and every time you beat a disease.</div></div>'+
     '<div class="lklist">'+rows+'</div>';
 }
 let shopBay=null;
@@ -8805,7 +8946,7 @@ function shopSection(){
   const b=BAYS.find(x=>x.id===shopBay);
   return drawer("locker","\u25A4","The locker",
     "$"+dollars()+" \u00b7 "+owned+" of "+LOCKER.length+" owned",
-    '<div class="dwpad" style="padding-bottom:0"><div class="note">Nurse dollars arrive when you reach a new rank and when an exam gate opens. '+
+    '<div class="dwpad" style="padding-bottom:0"><div class="note">Nurse dollars arrive with every level, with a bigger purse at each new rank, when an exam gate opens, and when you beat a disease. '+
       'Everything in the lockers is costume \u2014 who your nurse <i>is</i> was never for sale.</div></div>'+
     '<div class="dwpad">'+(b?bayPanel(b):bayWall())+'</div>',false)+
   drawer("swap","\u21C4","Staffing office",
@@ -8814,7 +8955,7 @@ function shopSection(){
 }
 function viewShop(){
   const b=BAYS.find(x=>x.id===shopBay);
-  return '<div class="vhead"><div><h1>The locker</h1><p>Nurse dollars arrive when you reach a new rank and when an exam gate opens. The lockers are costume \u2014 who your nurse <i>is</i> was never for sale. The staffing office is the one thing in here that changes the game.</p></div>'+
+  return '<div class="vhead"><div><h1>The locker</h1><p>Nurse dollars arrive with every level, with a bigger purse at each new rank, when an exam gate opens, and when you beat a disease. The lockers are costume \u2014 who your nurse <i>is</i> was never for sale. The staffing office is the one thing in here that changes the game.</p></div>'+
     '<div class="shopbal"><span class="eyebrow">Nurse dollars</span><div class="lkbal">$'+dollars()+'</div></div></div>'+
     (b?bayPanel(b):bayWall());
 }
@@ -12407,7 +12548,8 @@ function fightEnd(how){
     const first=!A.healed[F.b.id];
     A.healed[F.b.id]=(A.healed[F.b.id]||0)+1;
     /* the wood says something when you get back to it - once, the first time */
-    if(first)A.cheer=F.b.id;}
+    if(first)A.cheer=F.b.id;
+    try{advSfx("heal");}catch(e){}}
   if(how==="won"){
     /* Money comes from NEW ground. The first win over a disease pays the
        purse; farming the same easy one again pays a fraction, so the way to
@@ -12873,25 +13015,36 @@ function advState(){const p=S.profile;if(!p.adv)p.adv={visited:{},healed:{},at:"
    winds through it and the doors are scattered off the path at different
    depths - far ones small, near ones big - so it reads as a place, not a row.
    Positions are the FEET of each door. */
-const ADV_W=7600, ADV_H=1100, ADV_HOME={x:150,y:1040};
-const ADV_SX=ADV_W/4800;                      /* the backdrop was painted 4,800 wide; it is stretched to fit */
+/* THE WOOD IN CHAPTERS
+   The wood is no longer one 7,600-px picture. It is six pictures, one per
+   chapter, each 2,400 wide, with a gate at either end. Only the chapter you
+   are standing in is drawn, so the phone paints a third of what it did and
+   a walk never crosses more than one screen or two. Walking through a gate,
+   tapping a chapter chip, or choosing a door in another chapter carries you
+   to that chapter's picture, in at its near gate. */
+const ADV_W=2400, ADV_H=1100, ADV_HOME={x:150,y:1040};
+const ADV_SX=ADV_W/4800;                      /* the backdrop was painted 4,800 wide; it is fitted to a chapter */
+const ADV_CHAPTERS=["Content 1","Content 3","Module 1","Content 2","Module 2","Content 4"];
+const ADV_GATE_W=150, ADV_GATE_E=2250;         /* where the gates stand in every chapter */
+const advChapIndex=k=>ADV_CHAPTERS.indexOf(k);
 const ADV_NURSE_W=94;                         // the nurse's width in the wood (was 112)
 /* the path: a lazy wave the whole width of the wood, generated so it always
    reaches the far edge whatever the width; it crosses the stream on the bridge */
-const ADV_PATH=(function(){const ys=[1000,1030,995,1040,1010,1035,1000,1040,1005,1030];let d="M60 1030C200 1020 300 1000 420 1005";let x=420,k=0;
-  while(x<ADV_W-200){const nx=Math.min(ADV_W-40,x+240);const y=(nx===2820)?962:ys[k%ys.length];d+="S"+(nx-110)+" "+(y+(k%2?22:-22))+" "+nx+" "+y;x=nx;k++;}return d;})();
+const ADV_STREAM_X=1860;                     /* the stream crosses the Module 1 chapter here, on the bridge */
+function advPathFor(chapter){const ys=[1000,1030,995,1040,1010,1035,1000,1040,1005,1030];let d="M60 1030C200 1020 300 1000 420 1005";let x=420,k=0;
+  while(x<ADV_W-200){const nx=Math.min(ADV_W-40,x+240);const y=(chapter==="Module 1"&&nx===ADV_STREAM_X)?962:ys[k%ys.length];d+="S"+(nx-110)+" "+(y+(k%2?22:-22))+" "+nx+" "+y;x=nx;k++;}return d;}
 /* One row. Every tree and hut stands on a line above the street, 240 apart
    so no two canopies touch, and the street runs along the front of the
    picture with nothing on it - so the nurse can walk its whole length in
    the open and step up to any door from it (12 Sep: the wood was stretched
    from 4,800 to 7,600 for exactly that). */
 const ADV_PLACES={
-  "Content 1":[[300,872],[540,900],[780,880]],
-  "Content 3":[[1120,868],[1360,900],[1600,876],[1840,904],[2080,870],[2320,896],[2560,880]],
-  "Module 1":{hut:[3150,905],label:"MEDICINE HUT"},
-  "Content 2":[[3720,900],[3960,870],[4200,896],[4440,876]],
-  "Module 2":{hut:[5000,905],label:"APOTHECARY",floors:["ear","eye"]},
-  "Content 4":[[5560,880],[5800,904],[6040,868],[6280,896],[6520,872],[6760,900],[7000,876],[7240,892]]};
+  "Content 1":[[960,872],[1200,900],[1440,880]],
+  "Content 3":[[480,868],[720,900],[960,876],[1200,904],[1440,870],[1680,896],[1920,880]],
+  "Module 1":{hut:[1200,905],label:"MEDICINE HUT"},
+  "Content 2":[[840,900],[1080,870],[1320,896],[1560,876]],
+  "Module 2":{hut:[1200,905],label:"APOTHECARY",floors:["ear","eye"]},
+  "Content 4":[[360,880],[600,904],[840,868],[1080,896],[1320,872],[1560,900],[1800,876],[2040,892]]};
 /* a hut's doors, from its left wall; two rows of name plates under them */
 const ADV_HUT_GAP=48, ADV_STORY_H=110, ADV_ROW_MAX=10, ADV_HUT_K=1.3;   /* the huts are drawn a third larger than the trees' scale */
 /* A hut is one story per row of doors. Doors are grouped by wing (the eye
@@ -12911,7 +13064,7 @@ function advHutLayout(key){
   });
   return {at:at,stories:stories,floors:floor,maxRow:Math.max(1,...stories.map(x=>x.n))};
 }
-const ADV_SIGNS=[[212,992,"Content 1"],[990,958,"Content 3"],[2690,958,"Module 1"],[3590,958,"Content 2"],[4570,958,"Module 2"],[5400,958,"Content 4"]];
+const ADV_SIGN_AT=[330,958];                  /* the chapter's own signpost, just inside its west gate */
 function advDepth(y){return 0.62+Math.max(0,Math.min(1,(y-700)/380))*0.5;}   // far .62, near 1.12
 function advStops(){
   const out=[];const n={};
@@ -13005,8 +13158,11 @@ function advTree(s,healed,visited,seed,plain){
 /* the northern lights, the whole width of the sky: three ribbons that
    wander at their own pace, pink and violet and teal over the old cream */
 function advAuroraBands(){
+  /* soft edges without a blur filter (a Gaussian blur over the whole sky is
+     what a phone was repainting on every tile): three strokes, each wider
+     and fainter than the last */
   const band=(y0,amp,w,grad,ph)=>{let d="M-100 "+y0;for(let x=0;x<=ADV_W+200;x+=400){const y=y0+Math.sin(x/700+ph)*amp;d+=" L"+x+" "+y.toFixed(0);}
-    return '<path d="'+d+'" fill="none" stroke="url(#'+grad+')" stroke-width="'+w+'" stroke-linejoin="round"/>';};
+    return [[1,.55],[1.7,.28],[2.6,.12]].map(k=>'<path d="'+d+'" fill="none" stroke="url(#'+grad+')" stroke-width="'+Math.round(w*k[0])+'" stroke-linejoin="round" stroke-linecap="round" opacity="'+k[1]+'"/>').join("");};
   return band(250,70,70,"advaur1",0)+band(170,60,50,"advaur2",1.7)+band(330,50,60,"advaur3",3.1);
 }
 function advFarTrees(stops){
@@ -13015,8 +13171,9 @@ function advFarTrees(stops){
   const xs=[];
   for(let i=0;i<line.length-1;i++){const gap=line[i+1].x-line[i].x;if(gap<420)xs.push(line[i].x+gap/2);}
   /* and a few behind each hut's roof line, and at the wood's two ends */
-  [...new Set(huts.map(h=>h.grove))].forEach(g=>{const h=huts.find(x=>x.grove===g);xs.push(h.x-200,h.x+200);});
-  xs.push(line[0].x-160,line[line.length-1].x+180);
+  [...new Set(huts.map(h=>h.grove))].forEach(g=>{const h=huts.find(x=>x.grove===g);xs.push(h.x-560,h.x-330,h.x+330,h.x+560);});
+  if(line.length)xs.push(line[0].x-160,line[line.length-1].x+180);
+  if(!xs.length)return "";
   let far="";
   xs.sort((a,b)=>a-b).forEach((x,i)=>{
     const y=776+((i*7)%4)*9, d=advDepth(y)*0.92;
@@ -13104,14 +13261,14 @@ function advEmblem(wing,cx,cy,r){
 /* the fantasy layer: a stone gate with runes, a crescent moon, a weeping
    willow with real fronds, a mushroom the size of a house, crystals by the
    stream, and wisps that drift over the meadow */
-function advGate(x,y){
+function advGate(x,y,plaque){
   return '<g transform="translate('+x+' '+y+')">'+
     '<path d="M-92 0V-150Q-92 -230 0 -232Q92 -230 92 -150V0" fill="none" stroke="#6E6A8A" stroke-width="26" stroke-linecap="round"/>'+
     '<path d="M-92 0V-150Q-92 -230 0 -232Q92 -230 92 -150V0" fill="none" stroke="#8F8AB0" stroke-width="12" stroke-linecap="round" opacity=".7"/>'+
     [[-92,-40],[-92,-100],[92,-60],[92,-120],[-40,-215],[40,-215]].map(q=>'<circle cx="'+q[0]+'" cy="'+q[1]+'" r="4" fill="#DDEBD5" class="advglow"/>').join("")+
     '<path d="M-92 -20h20M-92 -70h20M-92 -125h18M72 -40h20M72 -95h20M-60 -205l10 -12M50 -205l-10 -12" stroke="#3E3A5C" stroke-width="2" opacity=".7"/>'+
-    '<path d="M-60 -262h120l6 13-6 13h-120l-6 -13z" fill="#9AA0A8" stroke="#4B4A55" stroke-width="2"/>'+
-    '<text x="0" y="-244" text-anchor="middle" font-size="15" font-family="Cormorant Garamond,Georgia,serif" font-weight="700" fill="#1E2430" letter-spacing="3">VAELITH</text>'+
+    (plaque===false?'':'<path d="M-60 -262h120l6 13-6 13h-120l-6 -13z" fill="#9AA0A8" stroke="#4B4A55" stroke-width="2"/>'+
+    '<text x="0" y="-244" text-anchor="middle" font-size="15" font-family="Cormorant Garamond,Georgia,serif" font-weight="700" fill="#1E2430" letter-spacing="3">VAELITH</text>')+
     '<circle cx="0" cy="-232" r="70" fill="#EDD79A" opacity=".08" class="advglow"/>'+
   '</g>';
 }
@@ -13144,6 +13301,15 @@ function advWisps(){
     w+='<g><circle r="7" fill="'+c+'" opacity=".55"/><circle r="16" fill="'+c+'" opacity=".16" class="advglow"/><animateMotion dur="'+(14+i*2)+'s" repeatCount="indefinite" path="M'+x+' '+y+'q60 -70 130 -20t120 40t-90 60t-160 -80z"/></g>';}
   return '<g class="advwisps">'+w+'</g>';
 }
+/* a gate at the end of a chapter: the arch, and a sign for where it leads */
+function advChapterGate(x,y,dir,key){
+  const C=ADV_STORY.chapters[key]||{sign:key};
+  const arrow=dir==="next"?(esc(C.sign)+' \u2192'):('\u2190 '+esc(C.sign));
+  return '<g class="advgatego" data-gate="'+dir+'" style="cursor:pointer">'+advGate(x,y,false)+
+    '<g transform="translate('+x+' '+(y-262)+')"><path d="M-66 -14h132l10 14-10 14h-132z" fill="#9AA0A8" stroke="#4B4A55" stroke-width="2"/>'+
+    '<text x="0" y="5" text-anchor="middle" font-size="14" font-family="Cormorant Garamond,Georgia,serif" font-weight="700" letter-spacing=".06em" fill="#1E2430">'+arrow+'</text></g>'+
+    '<rect x="'+(x-110)+'" y="'+(y-250)+'" width="220" height="260" fill="transparent"/></g>';
+}
 function advSignpost(x,y,label,key){
   return '<g class="advsign" data-chapter="'+esc(key)+'" transform="translate('+x+' '+y+')" style="cursor:pointer">'+
     '<ellipse cx="0" cy="3" rx="30" ry="6" fill="#000" opacity=".16"/><rect x="-4" y="-64" width="8" height="68" fill="#4B4A55"/>'+
@@ -13160,13 +13326,13 @@ function advStones(){
     '<path d="M'+(-w*0.55)+' '+(-h*0.2)+'L'+(-w*0.45)+' '+(-h*0.85)+'" stroke="#A9B0BC" stroke-width="3" opacity=".6"/>'+
     '<path d="M-3 '+(-h*0.7)+'h6M0 '+(-h*0.7)+'v10M-4 '+(-h*0.45)+'l4 -5 4 5" fill="none" stroke="#3F4450" stroke-width="1.4" opacity=".7"/>'+
     '<ellipse cx="'+(w*0.3)+'" cy="'+(-h*0.15)+'" rx="5" ry="3" fill="#7FA98C" opacity=".6"/></g>';
-  return stone(300,1000,74,14,-6)+stone(345,1012,58,12,4)+stone(3420,875,64,13,-3);
+  return stone(300,1000,74,14,-6)+stone(345,1012,58,12,4)+stone(2050,875,64,13,-3);
 }
 /* Lanterns along the path, lit already: the wood knows you are coming. */
 function advLanterns(){
   const lamp=(x,y)=>'<g transform="translate('+x+' '+y+')"><line x1="0" y1="0" x2="0" y2="-48" stroke="#3F4450" stroke-width="2.6"/><path d="M0 -48q10 -2 12 -12" fill="none" stroke="#3F4450" stroke-width="2.2"/>'+
     '<rect x="6" y="-62" width="12" height="15" rx="2" fill="#F3E7A6" stroke="#3F4450" stroke-width="1.2"/><circle cx="12" cy="-54" r="18" fill="#EDD79A" opacity=".22" class="advglow"/></g>';
-  return lamp(900,1060)+lamp(1720,1065)+lamp(2440,1060)+lamp(3560,1065)+lamp(4560,1060)+lamp(5440,1065)+lamp(6160,1060)+lamp(6760,1065)+lamp(7360,1060);
+  return lamp(560,1060)+lamp(1200,1065)+lamp(1840,1060);
 }
 function advFerns(extra){
   const R=artRnd(55);let g="";extra=extra||0;
@@ -13238,8 +13404,10 @@ function advCritter(kind,x,y,sc,flip){
   return g('<ellipse cx="0" cy="0" rx="20" ry="7" fill="#7E8DA0"/><path d="M-6 -6Q-26 -14 -30 -2" fill="none" stroke="#3E9A57" stroke-width="5" stroke-linecap="round"/><ellipse cx="2" cy="-12" rx="13" ry="8" fill="#3E9A57"/><path d="M-2 -16q-10 -18 -2 -24q4 12 10 14zM8 -16q2 -20 12 -22q-2 12 -4 16z" fill="#6FCF7A" opacity=".85"/><circle cx="14" cy="-18" r="6" fill="#3E9A57"/><path d="M18 -20l6 -1-5 3z" fill="#2C6B4A"/><circle cx="16" cy="-20" r="1.4" fill="#FEE440"/><circle cx="16" cy="-20" r="4" fill="#FEE440" opacity=".3" class="advglow"/>');
 }
 function advScene(){
-  const stops=advStops(), A=advState(), li=levelInfo(S.profile.xp);
-  const healedStops=stops.filter(s=>A.healed[s.id]), alive=stops.length?healedStops.length/stops.length:0;
+  const all=advStops(), A=advState(), li=levelInfo(S.profile.xp);
+  const chapter=ADV?ADV.chapter:ADV_CHAPTERS[0], ci=advChapIndex(chapter);
+  const stops=all.filter(s=>s.grove===chapter);
+  const healedStops=all.filter(s=>A.healed[s.id]), alive=all.length?healedStops.length/all.length:0;
   const tier=Math.min(5,Math.floor(alive*5+1e-6))+(healedStops.length?1:0);   /* 0 at the gate, up to 6 at dawn */
   const R=artRnd(77);
   const pines=(x0,y,n,h,col)=>{let d="";for(let i=0;i<n;i++){const x=x0+i*22,hh=h*(0.7+((i*7)%5)*0.12);d+='M'+x+' '+y+'L'+(x+11)+' '+(y-hh)+'L'+(x+22)+' '+y+'Z';}return '<path d="'+d+'" fill="'+col+'"/>';};
@@ -13263,17 +13431,27 @@ function advScene(){
   [...new Set(stops.filter(s=>s.kind==="hut").map(s=>s.grove))].forEach(g=>{
     const h0=stops.find(s=>s.kind==="hut"&&s.grove===g), hy=h0.gy||h0.y;
     items.push({y:hy,x:h0.x,html:'<g data-y="'+hy+'">'+advHut(stops,g)+'</g>'});});
-  ADV_SIGNS.forEach(g=>items.push({y:g[1],html:'<g data-y="'+g[1]+'">'+advSignpost(g[0],g[1],ADV_STORY.chapters[g[2]].sign,g[2])+'</g>'}));
-  items.push({y:980,html:'<g data-y="980">'+advMushroomHouse(6400,1080)+'</g>'});
+  items.push({y:ADV_SIGN_AT[1],x:ADV_SIGN_AT[0],html:'<g data-y="'+ADV_SIGN_AT[1]+'">'+advSignpost(ADV_SIGN_AT[0],ADV_SIGN_AT[1],(ADV_STORY.chapters[chapter]||{sign:chapter}).sign,chapter)+'</g>'});
+  if(chapter==="Content 1")items.push({y:980,x:1900,html:'<g data-y="980">'+advMushroomHouse(1900,1080)+'</g>'});
+  /* the healed sit out on the porch, in front of their own door, and have
+     something to say about the neighbours */
+  stops.filter(s=>s.kind==="tree"&&A.healed[s.id]).forEach(s=>{
+    const py=(s.gy||s.y)+10, px=s.x+62*s.s, k=0.4*s.s;
+    items.push({y:py,x:px,html:'<g class="advporch" data-porch="'+s.id+'" data-y="'+py+'" style="cursor:pointer"><g transform="translate('+px.toFixed(0)+' '+py+') scale('+k.toFixed(3)+') translate(-300 -212)">'+advElder(advPerson(s.b),true)+'</g></g>'});
+  });
+  /* the gates: the way back at the west end, the way on at the east */
+  const prevK=ADV_CHAPTERS[ci-1], nextK=ADV_CHAPTERS[ci+1];
+  if(prevK)items.push({y:1030,x:ADV_GATE_W,html:'<g data-y="1030">'+advChapterGate(ADV_GATE_W,1030,"prev",prevK)+'</g>'});
+  if(nextK)items.push({y:1030,x:ADV_GATE_E,html:'<g data-y="1030">'+advChapterGate(ADV_GATE_E,1030,"next",nextK)+'</g>'});
   /* The nurse and the angel are not drawn inside the big picture. They live
      on a layer of their own over it, so a step is a transform on a small
      composited box - not a repaint of a 4,800-px drawing on every frame,
      which is what made a walk shake and lag on a phone. They are always in
      front of the wood (a tap on a tree lands in front of it - advFront). */
-  const walkers='<div class="advwalklayer" id="advWalkers" style="transform:scale('+ADV_ZOOM+')">'+
+  const walkers='<div class="advwalklayer" id="advWalkers" style="width:'+ADV_W+'px;height:'+ADV_H+'px;transform:scale('+ADV_ZOOM+')">'+
    '<div id="advAngel" class="advwalker" style="transform:translate('+(ADV.x+ADV_ANGEL_DX)+'px,'+(ADV.y+ADV_ANGEL_DY)+'px) scale('+(ns*ADV_ANGEL_K).toFixed(3)+')">'+
      '<svg viewBox="-40 -40 80 90" width="80" height="90" style="margin:-40px 0 0 -40px">'+advAngel()+'</svg></div>'+
-   '<div id="advNurse" class="advwalker'+(ADV.walking?' walking':'')+'" style="transform:translate('+ADV.x+'px,'+ADV.y+'px) scale('+ns.toFixed(3)+')"><i class="advshadow"></i>'+nurse+'</div>'+
+   '<div id="advNurse" class="advwalker'+(ADV.walking?' walking':'')+(ADV.face==="left"?' faceleft':'')+'" style="transform:translate('+ADV.x+'px,'+ADV.y+'px) scale('+ns.toFixed(3)+')"><i class="advshadow"></i><div class="advfig">'+nurse+'</div></div>'+
   '</div>';
   /* what the healed doors have brought back */
   const bloom=(x,y,n,seed)=>{const r=artRnd(seed);let t="";const C=["#E8C4D0","#D6B25A","#B9A6E0","#E9D48A","#FFFFFF","#F7A8C4","#9DBBE0","#D6E8C2"];
@@ -13307,15 +13485,16 @@ function advScene(){
     '<linearGradient id="advpath" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B4B0A3"/><stop offset="1" stop-color="#8C877A"/></linearGradient>'+
     '<linearGradient id="advaur1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#DDEBD5" stop-opacity="0"/><stop offset=".3" stop-color="#DDEBD5" stop-opacity=".38"/><stop offset=".6" stop-color="#B9C4E0" stop-opacity=".34"/><stop offset="1" stop-color="#E8E1C8" stop-opacity="0"/></linearGradient>'+
     '<linearGradient id="advaur2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E8E1C8" stop-opacity="0"/><stop offset=".4" stop-color="#EDD79A" stop-opacity=".3"/><stop offset=".7" stop-color="#C5D2E6" stop-opacity=".36"/><stop offset="1" stop-color="#DDEBD5" stop-opacity="0"/></linearGradient>'+
-    '<filter id="advsoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>'+
+    '<radialGradient id="advmist" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#E6EDE8" stop-opacity=".42"/><stop offset=".6" stop-color="#E6EDE8" stop-opacity=".18"/><stop offset="1" stop-color="#E6EDE8" stop-opacity="0"/></radialGradient>'+
+    '<radialGradient id="advshimmer" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#EDD79A" stop-opacity=".6"/><stop offset="1" stop-color="#EDD79A" stop-opacity="0"/></radialGradient>'+
     '<linearGradient id="advhaze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B9A6E0" stop-opacity="0"/><stop offset=".55" stop-color="#C9B8E8" stop-opacity=".32"/><stop offset="1" stop-color="#DDEBD5" stop-opacity="0"/></linearGradient>'+
     '<linearGradient id="advaur3" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E8C4D0" stop-opacity="0"/><stop offset=".3" stop-color="#F7A8C4" stop-opacity=".34"/><stop offset=".65" stop-color="#B9A6E0" stop-opacity=".38"/><stop offset="1" stop-color="#8FD3C9" stop-opacity="0"/></linearGradient>'+
     '<linearGradient id="advstreak" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".35" stop-color="#F3E7A6" stop-opacity=".7"/><stop offset="1" stop-color="#F3E7A6" stop-opacity="0"/></linearGradient>'+
-    '<path id="advPathEl" d="'+ADV_PATH+'"/>'+
+    '<path id="advPathEl" d="'+advPathFor(chapter)+'"/>'+
    '</defs>'+
    /* sky: stars, aurora, sun and its rays */
    '<rect width="'+ADV_W+'" height="'+ADV_H+'" fill="url(#advsky)"/>'+stars+shoot+
-   '<g class="advaurora" filter="url(#advsoft)">'+advAuroraBands()+'</g>'+
+   '<g class="advaurora">'+advAuroraBands()+'</g>'+
    '<g class="advrays" style="transform-origin:520px 520px">'+[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>'<path d="M520 520L'+(520+Math.cos(i*Math.PI/6)*900).toFixed(0)+' '+(520+Math.sin(i*Math.PI/6)*900).toFixed(0)+'L'+(520+Math.cos(i*Math.PI/6+0.09)*900).toFixed(0)+' '+(520+Math.sin(i*Math.PI/6+0.09)*900).toFixed(0)+'Z" fill="#EDD79A" opacity=".06"/>').join("")+'</g>'+
    '<circle cx="520" cy="520" r="260" fill="url(#advsun)"/><circle cx="520" cy="520" r="40" fill="#FFF8E1"/>'+
    /* mountains and the far forest */
@@ -13331,10 +13510,10 @@ function advScene(){
    '<ellipse cx="1100" cy="800" rx="760" ry="90" fill="#5E9A66"/><ellipse cx="300" cy="860" rx="520" ry="80" fill="#4E8459"/><ellipse cx="2150" cy="820" rx="700" ry="100" fill="#5E9A66"/>'+
    '<g class="advwater"><ellipse cx="1000" cy="748" rx="470" ry="34" fill="url(#advlake)"/><ellipse cx="1000" cy="748" rx="470" ry="34" fill="none" stroke="#3B6B4E" stroke-width="8" opacity=".55"/>'+
      '<path d="M640 742q60 6 120 0M820 752q70 8 140 0M1040 740q60 6 120 0M1240 750q50 5 100 0" fill="none" stroke="#FFF6D6" stroke-width="2.4" opacity=".75"/>'+
-     '<ellipse cx="900" cy="746" rx="60" ry="8" fill="#EDD79A" opacity=".5" filter="url(#advsoft)"/></g>'+
+     '<ellipse cx="900" cy="746" rx="60" ry="8" fill="url(#advshimmer)"/></g>'+
    '</g>'+
    /* mist on the water and over the meadow - the thing that makes a wood old */
-   '<g class="advaurora" opacity=".85">'+[[700,770,420,26],[1250,790,380,22],[300,830,300,20],[1900,800,420,24],[2600,790,360,22],[3100,800,300,20],[3700,795,380,22],[4150,805,300,20],[4550,800,320,22]].map(m=>'<ellipse cx="'+Math.round(m[0]*ADV_SX)+'" cy="'+m[1]+'" rx="'+Math.round(m[2]*ADV_SX)+'" ry="'+m[3]+'" fill="#E6EDE8" opacity=".32" filter="url(#advsoft)"/>').join("")+'</g>'+
+   '<g class="advaurora" opacity=".85">'+[[700,770,420,26],[1250,790,380,22],[300,830,300,20],[1900,800,420,24],[2600,790,360,22],[3100,800,300,20],[3700,795,380,22],[4150,805,300,20],[4550,800,320,22]].map(m=>'<ellipse cx="'+Math.round(m[0]*ADV_SX)+'" cy="'+m[1]+'" rx="'+Math.round(m[2]*ADV_SX)+'" ry="'+m[3]+'" fill="url(#advmist)"/>').join("")+'</g>'+
    /* the cottage on the far hill */
    '<g transform="translate('+Math.round(2280*ADV_SX)+' 560) scale(.9)"><ellipse cx="100" cy="98" rx="150" ry="14" fill="#000" opacity=".14"/>'+
      '<rect x="0" y="22" width="200" height="74" rx="4" fill="#9C7449" stroke="#4E3520" stroke-width="2.5"/>'+
@@ -13342,27 +13521,27 @@ function advScene(){
      [14,58,102,146].map(x=>'<rect x="'+x+'" y="40" width="28" height="34" rx="2" fill="#FFE39A" stroke="#4E3520"/><rect x="'+(x+3)+'" y="43" width="22" height="28" fill="#FFF6D6" opacity=".7"/><circle cx="'+(x+14)+'" cy="57" r="24" fill="#FEE440" opacity=".18" class="advglow"/>').join("")+
      '<path d="M-8 96h216" stroke="#4E3520" stroke-width="3"/><path d="M20 66q-34-34 0-68M180 66q34-34 0-68" fill="none" stroke="#9CC9A8" stroke-width="3.5"/></g>'+
    /* willow by the stream, the stream, the bridge, a rainbow over it */
-   advWillow(2900,770)+advGate(150,1030)+advMoon()+advCrystals(2700,1015)+advWisps()+advFerns(tier)+
-   /* the stream runs between Content 3 and the medicine hut */
-   '<g class="advwater"><path d="M2790 700Q2860 820 2810 958T2850 '+ADV_H+'" fill="none" stroke="#5E88A6" stroke-width="40" stroke-linecap="round" opacity=".9"/>'+
-     '<path d="M2790 700Q2860 820 2810 958T2850 '+ADV_H+'" fill="none" stroke="#D5E6EE" stroke-width="6" stroke-linecap="round" opacity=".6"/></g>'+
+   (chapter==="Module 1"?advWillow(1700,770):'')+(ci===0?advGate(ADV_GATE_W,1030):'')+advMoon()+(chapter==="Module 2"?advCrystals(1800,1015):'')+advWisps()+advFerns(tier)+
+   /* the stream runs past the medicine hut */
+   (chapter==="Module 1"?'<g class="advwater"><path d="M'+(ADV_STREAM_X-30)+' 700Q'+(ADV_STREAM_X+40)+' 820 '+(ADV_STREAM_X-10)+' 958T'+(ADV_STREAM_X+30)+' '+ADV_H+'" fill="none" stroke="#5E88A6" stroke-width="40" stroke-linecap="round" opacity=".9"/>'+
+     '<path d="M'+(ADV_STREAM_X-30)+' 700Q'+(ADV_STREAM_X+40)+' 820 '+(ADV_STREAM_X-10)+' 958T'+(ADV_STREAM_X+30)+' '+ADV_H+'" fill="none" stroke="#D5E6EE" stroke-width="6" stroke-linecap="round" opacity=".6"/></g>':'')+
    advFarTrees(stops)+
    advStones()+advLanterns()+
    /* the path */
    '<use href="#advPathEl" fill="none" stroke="url(#advpath)" stroke-width="54" stroke-linecap="round"/>'+
    '<use href="#advPathEl" fill="none" stroke="#D7D2C2" stroke-width="18" stroke-linecap="round" stroke-dasharray="22 18" opacity=".45"/>'+
-   '<g transform="translate(2820 962)"><path d="M-70 8Q0 -56 70 8" fill="none" stroke="#5F6470" stroke-width="20"/><path d="M-70 8Q0 -56 70 8" fill="none" stroke="#A8ADB5" stroke-width="10"/>'+
+   (chapter!=="Module 1"?'':'<g transform="translate('+ADV_STREAM_X+' 962)"><path d="M-70 8Q0 -56 70 8" fill="none" stroke="#5F6470" stroke-width="20"/><path d="M-70 8Q0 -56 70 8" fill="none" stroke="#A8ADB5" stroke-width="10"/>'+
      [-56,-36,-16,4,24,44].map(x=>'<line x1="'+x+'" y1="'+(8-Math.max(0,28-Math.abs(x)*0.45)).toFixed(0)+'" x2="'+x+'" y2="'+(-24-Math.max(0,28-Math.abs(x)*0.45)).toFixed(0)+'" stroke="#6B4A2E" stroke-width="3.5"/>').join("")+
-     '<path d="M-64 -26Q0 -80 64 -26" fill="none" stroke="#6B4A2E" stroke-width="3.5"/></g>'+
+     '<path d="M-64 -26Q0 -80 64 -26" fill="none" stroke="#6B4A2E" stroke-width="3.5"/></g>')+
    /* frogs, lily pads, flowers, mushrooms */
-   '<g transform="translate(2780 1030)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#6BA043"/><circle cx="-5" cy="-8" r="3" fill="#FFF"/><circle cx="5" cy="-8" r="3" fill="#FFF"/><circle cx="-5" cy="-8" r="1.4"/><circle cx="5" cy="-8" r="1.4"/></g>'+
-   '<g transform="translate(2870 1070)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#5E9A48"/><circle cx="-5" cy="-8" r="3" fill="#FFF"/><circle cx="5" cy="-8" r="3" fill="#FFF"/><circle cx="-5" cy="-8" r="1.4"/><circle cx="5" cy="-8" r="1.4"/></g>'+
-   flowers(160,1085,34,3,1)+flowers(1240,1088,36,5,1)+flowers(1960,1090,32,7,1)+flowers(2600,1088,30,11)+flowers(3340,930,22,47)+flowers(3840,1090,34,13,1)+flowers(4320,1088,30,17,1)+flowers(4800,960,26,19)+
-   flowers(1000,935,22,23)+flowers(1720,935,22,29)+flowers(2440,935,24,31)+flowers(4080,935,20,37)+flowers(660,935,22,41)+flowers(5680,935,18,43)+flowers(5300,1088,34,53,1)+flowers(6160,1090,30,59,1)+flowers(6880,935,22,61)+flowers(7120,1088,32,67,1)+
+   (chapter!=="Module 1"?'':'<g transform="translate('+(ADV_STREAM_X-40)+' 1030)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#6BA043"/><circle cx="-5" cy="-8" r="3" fill="#FFF"/><circle cx="5" cy="-8" r="3" fill="#FFF"/><circle cx="-5" cy="-8" r="1.4"/><circle cx="5" cy="-8" r="1.4"/></g>')+
+   (chapter!=="Module 1"?'':'<g transform="translate('+(ADV_STREAM_X+50)+' 1070)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#5E9A48"/><circle cx="-5" cy="-8" r="3" fill="#FFF"/><circle cx="5" cy="-8" r="3" fill="#FFF"/><circle cx="-5" cy="-8" r="1.4"/><circle cx="5" cy="-8" r="1.4"/></g>')+
+   flowers(420,1085,34,3+ci,1)+flowers(1000,1090,32,7+ci,1)+flowers(1620,1088,30,11+ci,1)+flowers(2120,1086,26,13+ci)+
+   flowers(640,935,22,23+ci)+flowers(1400,935,22,29+ci)+flowers(2000,935,20,31+ci)+
    /* the welcome sign */
-   '<g transform="translate(56 950)"><path d="M-30 6L-26 -70Q0 -96 26 -70L30 6Z" fill="#8E949C" stroke="#4B4A55" stroke-width="2"/><path d="M-22 0L-19 -66Q0 -86 19 -66L22 0" fill="none" stroke="#C9CFD4" stroke-width="1.2" opacity=".7"/>'+
+   (ci!==0?'':'<g transform="translate(56 950)"><path d="M-30 6L-26 -70Q0 -96 26 -70L30 6Z" fill="#8E949C" stroke="#4B4A55" stroke-width="2"/><path d="M-22 0L-19 -66Q0 -86 19 -66L22 0" fill="none" stroke="#C9CFD4" stroke-width="1.2" opacity=".7"/>'+
      '<text x="0" y="-52" text-anchor="middle" font-size="15" font-family="Cormorant Garamond,Georgia,serif" font-weight="700" letter-spacing=".08em" fill="#1E2430">Vaelith</text><text x="0" y="-34" text-anchor="middle" font-size="10" font-family="Cormorant Garamond,Georgia,serif" font-style="italic" fill="#2E3457">the Wood</text>'+
-     '<line x1="-38" y1="6" x2="-38" y2="-34" stroke="#3B3B3B" stroke-width="2.4"/><rect x="-45" y="-46" width="14" height="14" rx="2" fill="#F3E7A6" stroke="#3B3B3B"/><circle cx="-38" cy="-39" r="16" fill="#EDD79A" opacity=".3" class="advglow"/></g>'+
+     '<line x1="-38" y1="6" x2="-38" y2="-34" stroke="#3B3B3B" stroke-width="2.4"/><rect x="-45" y="-46" width="14" height="14" rx="2" fill="#F3E7A6" stroke="#3B3B3B"/><circle cx="-38" cy="-39" r="16" fill="#EDD79A" opacity=".3" class="advglow"/></g>')+
    /* the groves and the hut */
    stage+
    /* life in the air */
@@ -13374,15 +13553,19 @@ function advScene(){
 /* ---- the view ---- */
 function viewAdventure(){
   const A=advState();
-  if(!ADV){const s=advStops().find(x=>x.id===A.at), rp=(A.at==="spot"&&A.spot)?A.spot:advRest(s);ADV={at:s?s.id:(A.at==="spot"&&A.spot?"spot":"home"),x:rp.x,y:rp.y,visit:null,beat:0,walking:false};}
+  if(!ADV){const s=advStops().find(x=>x.id===A.at), rp=(A.at==="spot"&&A.spot)?A.spot:advRest(s);
+    ADV={at:s?s.id:(A.at==="spot"&&A.spot?"spot":"home"),x:rp.x,y:rp.y,visit:null,beat:0,walking:false,
+         chapter:s?s.grove:((A.at==="spot"&&A.spot&&A.spot.chapter)||ADV_CHAPTERS[0])};}
   const stops=advStops();
   const done=Object.keys(A.healed).filter(k=>A.healed[k]).length;
   const toldWhere=ADV.visit||ADV.story?"":advWhereBar();
-  if(!A.introDone&&!ADV.story&&!ADV.visit)ADV.story={kind:"intro",i:0};
+  if(!A.introDone&&!ADV.story&&!ADV.visit){ADV.story={kind:"intro",i:0};
+    /* the first time: she walks in through the gate while the angel speaks */
+    if(!ADV.walkedIn){ADV.walkedIn=true;ADV.x=-70;ADV.y=1040;setTimeout(()=>{if(ADV&&!ADV.walking)advWalk({x:ADV_HOME.x+70,y:1040},()=>{ADV.at="home";});},350);}}
   if(A.cheer&&!ADV.story&&!ADV.visit){
     const s=advStops().find(x=>x.id===A.cheer);
     ADV.story={kind:"cheer",id:A.cheer};
-    if(s){const rp=advRest(s);ADV.at=s.id;ADV.x=rp.x;ADV.y=rp.y;A.at=s.id;}
+    if(s){const rp=advRest(s);ADV.at=s.id;ADV.x=rp.x;ADV.y=rp.y;ADV.chapter=s.grove;A.at=s.id;}
     A.cheer=null;saveCore();
   }
   if(advAllHealed()&&!A.dawnDone&&!ADV.story&&!ADV.visit)ADV.story={kind:"dawn"};
@@ -13390,7 +13573,7 @@ function viewAdventure(){
       '<button type="button" class="btn ghost" id="advSkip">Just fight instead</button></div>'+
     advChapterBar()+
     '<div class="advwrap">'+(ADV_FULL?'<button type="button" class="advtool advback" id="advExit" aria-label="Leave full screen">\u2039 Back</button>':'')+
-      '<div class="advtools">'+(ADV_FULL?'<button type="button" class="advtool" data-zoom="out" aria-label="Zoom out">\u2212</button><button type="button" class="advtool" data-zoom="in" aria-label="Zoom in">+</button>':'<button type="button" class="advtool" id="advFull" aria-label="Full screen" title="Full screen">\u2922</button>')+'</div>'+
+      '<div class="advtools"><button type="button" class="advtool" id="advSound" aria-label="'+(advSoundOn()?'Sound on':'Sound off')+'" aria-pressed="'+advSoundOn()+'">'+(advSoundOn()?'\uD83D\uDD0A':'\uD83D\uDD07')+'</button>'+(ADV_FULL?'<button type="button" class="advtool" data-zoom="out" aria-label="Zoom out">\u2212</button><button type="button" class="advtool" data-zoom="in" aria-label="Zoom in">+</button>':'<button type="button" class="advtool" id="advFull" aria-label="Full screen" title="Full screen">\u2922</button>')+'</div>'+
       '<div class="advscene">'+advScene()+'</div>'+
       (ADV.visit?advVisitPanel():ADV.story?advStoryPanel():toldWhere)+
     '</div>'+
@@ -13402,10 +13585,11 @@ function viewAdventure(){
    in the chapter you are standing in first. */
 function advNextStop(){
   const A=advState(), stops=advStops();
-  const here=stops.find(s=>s.id===ADV.at);
   const open=stops.filter(s=>!A.healed[s.id]);
   if(!open.length)return null;
-  const d=s=>Math.hypot(s.x-ADV.x,(s.gy||s.y)-ADV.y)+(here&&s.grove!==here.grove?800:0)+(A.visited[s.id]?0:-1);
+  /* the nearest open door in this chapter; failing that, the nearest chapter with one */
+  const ci=advChapIndex(ADV.chapter);
+  const d=s=>Math.abs(advChapIndex(s.grove)-ci)*100000+(s.grove===ADV.chapter?Math.hypot(s.x-ADV.x,(s.gy||s.y)-ADV.y):s.x)+(A.visited[s.id]?0:-1);
   return open.slice().sort((a,b)=>d(a)-d(b))[0];
 }
 function advWhereBar(){
@@ -13414,14 +13598,17 @@ function advWhereBar(){
   const next=advNextStop();
   const C=here?(ADV_STORY.chapters[here.grove]||{name:here.grove}):null;
   const mine=here?stops.filter(s=>s.grove===here.grove):[], done=mine.filter(s=>A.healed[s.id]).length;
-  const nearG=(!here&&ADV.at==="spot"&&stops.length)?stops.slice().sort((a,b)=>Math.hypot(a.x-ADV.x,(a.gy||a.y)-ADV.y)-Math.hypot(b.x-ADV.x,(b.gy||b.y)-ADV.y))[0].grove:null;
+  const nearG=(!here&&ADV.at!=="home"&&stops.length)?ADV.chapter:null;
   const NC=nearG?(ADV_STORY.chapters[nearG]||{name:nearG}):null, nMine=nearG?stops.filter(s=>s.grove===nearG):[], nDone=nMine.filter(s=>A.healed[s.id]).length;
   const where=here?('You are at '+esc(C.sign||C.name)+' \u2014 '+done+' of '+mine.length+' healed here')
     :NC?('You are on the path near '+esc(NC.sign||NC.name)+' \u2014 '+nDone+' of '+nMine.length+' healed there')
     :'You are at the gate of '+ADV_WOOD;
-  const what=next?(A.visited[next.id]?'Next: fight for '+esc(advNpc(next.b).split(",")[0]):'Next: meet '+esc(advNpc(next.b).split(",")[0])+' \u2014 '+esc(next.b.name)):'Every door is lit.';
-  return '<div class="advwhere"><span class="advwhere-t"><b>'+where+'</b><i>'+what+'</i></span>'+
+  const far=next&&next.grove!==ADV.chapter?' (through the gate, in '+esc((ADV_STORY.chapters[next.grove]||{}).sign||next.grove)+')':'';
+  const what=next?(A.visited[next.id]?'Next: fight for '+esc(advNpc(next.b).split(",")[0]):'Next: meet '+esc(advNpc(next.b).split(",")[0])+' \u2014 '+esc(next.b.name))+far:'Every door is lit.';
+  const g=ADV.gossip&&Date.now()-ADV.gossip.at<7000?ADV.gossip:null;
+  return '<div class="advwhere'+(g?' gossip':'')+'"><span class="advwhere-t"><b>'+(g?esc(g.who)+', from the porch':where)+'</b><i>'+(g?esc(g.text):what)+'</i></span>'+
     (next?'<button type="button" class="btn primary sm" data-adv="'+next.id+'">Walk there</button>':'')+
+    '<button type="button" class="btn sm ghost" id="advChart">Chart</button><button type="button" class="btn sm ghost" id="advMap">Map</button>'+
     '<button type="button" class="btn sm ghost" id="advHow">How this works</button></div>';
 }
 /* The chapters, as a bar over the scene. Tapping one carries you to that part
@@ -13432,8 +13619,8 @@ function advChapterBar(){
   const keys=[];const seen={};
   stops.forEach(s=>{if(!seen[s.grove]){seen[s.grove]=1;keys.push(s.grove);}});
   if(keys.length<2)return "";
-  const here=(ADV&&ADV.story&&ADV.story.kind==="chapter")?ADV.story.key:null;
-  const at=ADV?stops.find(s=>s.id===ADV.at):null;
+  const here=(ADV&&ADV.story&&ADV.story.kind==="chapter")?ADV.story.key:(ADV?ADV.chapter:null);
+  const at=null;
   return '<div class="advchapbar" role="group" aria-label="Chapters of Vaelith">'+
     keys.map(k=>{
       const C=ADV_STORY.chapters[k]||{name:k,sign:k};
@@ -13453,9 +13640,42 @@ function advStoryPanel(){
     const beats=ADV_STORY.intro, i=Math.min(st.i,beats.length-1), last=i===beats.length-1;
     return '<div class="advsheet" role="dialog" aria-label="The angel at the gate">'+angel+'<div class="advtalk">'+
       '<div class="advsteps">'+beats.map((x,k)=>'<i class="'+(k<i?'done':k===i?'on':'')+'"></i>').join("")+'</div>'+
-      '<div class="advbubble angel"><span class="advwho">'+ADV_GUIDE+'</span><p>'+beats[i].text+'</p></div>'+
+      '<div class="advbubble angel"><span class="advwho">'+ADV_GUIDE+'</span><p class="advtyped" data-text="'+esc(beats[i].text)+'"></p></div>'+
       '<div class="advbtns">'+(i>0?'<button type="button" class="btn sm" id="advStoryBack">Back</button>':'')+
         '<button type="button" class="btn primary" id="advStoryNext">'+(last?'Choose a door':'Next')+'</button></div></div></div>';
+  }
+  if(st.kind==="chart"){
+    /* THE CHART: everyone met so far, what they said, and what it turned out to be */
+    const stops=advStops().filter(s=>A.visited[s.id]);
+    const known=S.profile.dxKnown||{};
+    const rows=ADV_CHAPTERS.map(k=>{const mine=stops.filter(s=>s.grove===k);if(!mine.length)return "";
+      const C=ADV_STORY.chapters[k]||{sign:k};
+      return '<div class="advchartch"><span class="eyebrow">'+esc(C.sign||k)+'</span>'+mine.map(s=>
+        '<div class="advchartrow'+(A.healed[s.id]?' healed':'')+'"><b>'+esc(advNpc(s.b))+'</b>'+
+        '<i>'+(A.healed[s.id]?'healed \u2014 '+esc(s.b.name):known[s.id]?'named: '+esc(s.b.name):'still to name')+'</i>'+
+        '<div class="advlines">'+s.b.sym.yes.map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>'+
+        '<button type="button" class="btn sm" data-adv="'+s.id+'">'+(A.healed[s.id]?'Visit':'Go back')+'</button></div>').join("")+'</div>';}).join("");
+    return '<div class="advsheet chart" role="dialog" aria-label="Your chart">'+angel+'<div class="advtalk">'+
+      '<span class="advwho">Your chart \u00b7 '+stops.length+' met \u00b7 '+stops.filter(s=>A.healed[s.id]).length+' healed</span>'+
+      (rows||'<div class="advbubble angel"><p>Nothing written yet. Knock on a door and listen; what you hear goes here.</p></div>')+
+      '<div class="advbtns"><button type="button" class="btn sm ghost" id="advStoryClose">Close</button></div></div></div>';
+  }
+  if(st.kind==="map"){
+    /* THE MAP: six chapters on a winding road, the one you stand in lit */
+    const all=advStops();
+    const pts=ADV_CHAPTERS.map((k,i)=>({k:k,x:70+i*150,y:i%2?150:70}));
+    const road=pts.map((p,i)=>(i?"L":"M")+p.x+" "+p.y).join(" ");
+    const nodes=pts.map(p=>{const mine=all.filter(s=>s.grove===p.k), done=mine.filter(s=>A.healed[s.id]).length, C=ADV_STORY.chapters[p.k]||{sign:p.k};
+      const here=p.k===ADV.chapter, lit=done===mine.length&&mine.length>0;
+      return '<g class="advmapnode'+(here?' here':'')+(lit?' lit':'')+'" data-gochap="'+esc(p.k)+'" style="cursor:pointer" transform="translate('+p.x+' '+p.y+')">'+
+        '<circle r="26" fill="'+(lit?'#E9D48A':here?'#0E7C70':'#2A2D66')+'" stroke="#DFF7F2" stroke-width="'+(here?4:2)+'"/>'+
+        '<text y="5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="IBM Plex Mono,monospace">'+done+'/'+mine.length+'</text>'+
+        '<text y="46" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)" font-family="Cormorant Garamond,Georgia,serif">'+esc(C.sign||p.k)+'</text>'+
+        (here?'<text y="-36" text-anchor="middle" font-size="10" fill="var(--accent)" font-family="IBM Plex Mono,monospace">YOU ARE HERE</text>':'')+'</g>';}).join("");
+    return '<div class="advsheet map" role="dialog" aria-label="The map of Vaelith">'+angel+'<div class="advtalk">'+
+      '<span class="advwho">Vaelith \u00b7 six chapters \u00b7 '+all.filter(s=>A.healed[s.id]).length+' of '+all.length+' healed</span>'+
+      '<svg class="advmap" viewBox="0 0 900 220" role="img" aria-label="The road through Vaelith"><path d="'+road+'" fill="none" stroke="#B4B0A3" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/><path d="'+road+'" fill="none" stroke="#D7D2C2" stroke-width="5" stroke-dasharray="14 12" opacity=".7"/>'+nodes+'</svg>'+
+      '<div class="advbtns"><span class="advmeta">Tap a chapter to go there.</span><button type="button" class="btn sm ghost" id="advStoryClose">Close</button></div></div></div>';
   }
   if(st.kind==="chapter"){
     const C=ADV_STORY.chapters[st.key];if(!C)return "";
@@ -13492,9 +13712,16 @@ function advBeats(b){
   const low=x=>x.charAt(0).toLowerCase()+x.slice(1);
   const sym=b.sym.yes.map(low);
   const say=(xs)=>xs.length>1?xs.slice(0,-1).join(", ")+", and "+xs[xs.length-1]:xs[0];
+  /* the nurse asks, the patient answers: the symptoms come out in the
+     patient's own words, one question at a time, not as a printed list */
+  const half=Math.ceil(sym.length/2), first=sym.slice(0,half), rest=sym.slice(half);
+  const ask=[{q:"What has been troubling you most?",who:"npc",a:"It has been "+esc(say(first))+". That is the worst of it."}];
+  if(rest.length)ask.push({q:"May I look you over?",who:"angel",a:"Look for yourself, and mark it: "+esc(say(rest))+"."});
+  else ask.push({q:"May I look you over?",who:"angel",a:"Look for yourself. What "+esc(n)+" told you is what there is to see."});
   return [
-    {who:"npc",  text:(ADV_VOICE[b.id]&&ADV_VOICE[b.id].say)?esc(ADV_VOICE[b.id].say):"Thank you for coming. Lately it has been "+esc(say(sym))+". I did not know who to tell."},
-    {who:"angel",text:"Look on "+esc(n)+", and listen. Keep these close:",lines:b.sym.yes},
+    {who:"npc",  text:(ADV_VOICE[b.id]&&ADV_VOICE[b.id].say)?esc(ADV_VOICE[b.id].say):"Thank you for coming. I did not know who to tell."},
+    {who:"ask",  text:"Sit with "+esc(n)+" and ask. What is said is what there is to notice.",ask:ask},
+    {who:"angel",text:"You heard it from "+esc(n)+". Keep these close:",lines:b.sym.yes},
     {who:"angel",text:"Here is why this has come upon "+esc(n)+".",lines:b.cause.yes},
     {who:"angel",text:"Now, your hands. This is what is done:",lines:b.fight.yes},
     {who:"angel",text:"And your magic is the teaching. Before "+esc(n)+" goes home:",lines:b.keep.yes},
@@ -13539,29 +13766,72 @@ function advInside(b,revealed,healed){
 }
 function advVisitPanel(){
   const b=BOSSES.find(x=>x.id===ADV.visit);if(!b)return "";
-  const A=advState(), n=advFirst(b);
-  if(A.healed[b.id]&&ADV.beat===0&&!ADV.again){
+  const A=advState(), n=advFirst(b), healed=!!A.healed[b.id];
+  const room=(revealed)=>'<div class="advroomwrap" id="advRoom">'+advInside(b,revealed,healed)+
+    '<div class="advroomcap"><b>'+esc(advNpc(b))+'</b><i>'+(healed?'well again':'needs you')+'</i></div></div>';
+  const box=(who,name,text,extra,more)=>'<div class="advvn '+who+'" id="advVn">'+
+    '<span class="advwho">'+name+'</span><p class="advtyped" data-text="'+text+'"></p>'+(extra||'')+
+    (more?'<i class="advmore" aria-hidden="true">tap to go on \u25B8</i>':'')+'</div>';
+  if(healed&&ADV.beat===0&&!ADV.again){
     const t=ADV_STORY.thanks[artHash(b.id)%ADV_STORY.thanks.length];
-    return '<div class="advsheet inside" role="dialog" aria-label="Inside the door">'+
-      '<div class="advroomwrap">'+advInside(b,true,true)+'<div class="advroomcap"><b>'+esc(advNpc(b))+'</b><i>well again</i></div></div>'+
-      '<div class="advtalk"><div class="advbubble npc"><span class="advwho">'+esc(advNpc(b))+'</span><p>'+esc(t)+'</p></div>'+
-      '<div class="advbubble angel"><span class="advwho">'+ADV_GUIDE+'</span><p>One more light in Vaelith. You may hear the tale again, or meet '+esc(b.name)+' once more for the practice of it.</p></div>'+
-      '<div class="advbtns"><button type="button" class="btn sm" id="advAgain">Hear the tale again</button><button type="button" class="btn primary" id="advHelp">Fight it again</button><button type="button" class="btn sm ghost" id="advLeave">Leave the door</button></div></div></div>';
+    return '<div class="advsheet inside vn" role="dialog" aria-label="Inside the door">'+room(true)+
+      box("npc",esc(advNpc(b)),esc(t),'','')+
+      '<div class="advvnbar"><span class="advmeta">One more light in Vaelith.</span>'+
+        '<button type="button" class="btn sm" id="advAgain">Hear the tale again</button><button type="button" class="btn primary sm" id="advHelp">Fight it again</button><button type="button" class="btn sm ghost" id="advLeave">Leave</button></div></div>';
   }
   const beats=advBeats(b), i=Math.min(ADV.beat,beats.length-1), B=beats[i];
-  const bubble=B.who==="reveal"
-    ? '<div class="advreveal"><span class="advwho">You’ve discovered</span><b>'+esc(B.name)+'</b>'+(B.tag?'<i>'+esc(B.tag)+'</i>':'')+'<p>'+B.text+'</p></div>'
-    : '<div class="advbubble '+B.who+'"><span class="advwho">'+(B.who==="npc"?esc(advNpc(b)):ADV_GUIDE)+'</span><p>'+B.text+'</p>'+
-      (B.lines?'<div class="advlines">'+B.lines.map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>':'')+'</div>';
-  return '<div class="advsheet inside" role="dialog" aria-label="Inside the door">'+
-    '<div class="advroomwrap">'+advInside(b,B.who==="reveal"||!!A.healed[b.id],!!A.healed[b.id])+'<div class="advroomcap"><b>'+esc(advNpc(b))+'</b><i>'+(A.healed[b.id]?'well again':'needs you')+'</i></div></div>'+
-    '<div class="advtalk">'+
-      '<div class="advsteps">'+beats.map((x,k)=>'<i class="'+(k<i?'done':k===i?'on':'')+'"></i>').join("")+'</div>'+
-      bubble+
-      '<div class="advbtns">'+(i>0?'<button type="button" class="btn sm" id="advBack">Back</button>':'')+
-        (B.who==="reveal"?'<button type="button" class="btn primary" id="advHelp">Help '+esc(n)+' →</button>':'<button type="button" class="btn primary" id="advNext">'+(i===0?'Listen':'Next')+'</button>')+
-        '<button type="button" class="btn sm ghost" id="advLeave">Leave the door</button></div>'+
-    '</div></div>';
+  const steps='<div class="advsteps">'+beats.map((x,k)=>'<i class="'+(k<i?'done':k===i?'on':'')+'"></i>').join("")+'</div>';
+  let talk="", bar="";
+  if(B.who==="ask"){
+    const asked=ADV.asked||{};
+    const qs=B.ask.map((q,k)=>asked[k]
+      ?'<div class="advqa '+q.who+'"><b>'+esc(q.q)+'</b><span class="advwho">'+(q.who==="npc"?esc(advNpc(b)):ADV_GUIDE)+'</span><p class="advtyped" data-text="'+q.a+'"></p></div>'
+      :'<button type="button" class="advq" data-ask="'+k+'">'+esc(q.q)+'</button>').join("");
+    const any=Object.keys(asked).length>0;
+    talk='<div class="advvn ask" id="advVn"><span class="advwho">Your nurse asks</span>'+
+      (any?'':'<p>'+B.text+'</p>')+qs+'</div>';
+    bar='<div class="advvnbar">'+steps+(i>0?'<button type="button" class="btn sm" id="advBack">Back</button>':'')+
+      (any?'<button type="button" class="btn primary sm" id="advNext">I think I see it \u2192</button>':'')+
+      '<button type="button" class="btn sm ghost" id="advLeave">Leave</button></div>';
+  }else if(B.who==="reveal"){
+    talk='<div class="advvn reveal" id="advVn"><span class="advwho">You\u2019ve discovered</span><b class="advname">'+esc(B.name)+'</b>'+(B.tag?'<i class="advtag">'+esc(B.tag)+'</i>':'')+
+      '<p class="advtyped" data-text="'+esc(B.text)+'"></p></div>';
+    bar='<div class="advvnbar">'+steps+'<button type="button" class="btn sm" id="advBack">Back</button>'+
+      '<button type="button" class="btn primary" id="advHelp">Help '+esc(n)+' \u2192</button><button type="button" class="btn sm ghost" id="advLeave">Leave</button></div>';
+  }else{
+    const lines=B.lines?'<div class="advlines">'+B.lines.map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>':'';
+    talk=box(B.who,B.who==="npc"?esc(advNpc(b)):ADV_GUIDE,B.text,lines,true);
+    bar='<div class="advvnbar">'+steps+(i>0?'<button type="button" class="btn sm" id="advBack">Back</button>':'')+
+      '<button type="button" class="btn primary sm" id="advNext">'+(i===0?'Listen':'Next')+'</button><button type="button" class="btn sm ghost" id="advLeave">Leave</button></div>';
+  }
+  return '<div class="advsheet inside vn" role="dialog" aria-label="Inside the door">'+room(B.who==="reveal"||healed)+talk+bar+'</div>';
+}
+/* THE TYPING
+   A line of talk arrives a few letters at a time, the way a person speaks,
+   with a tick as it goes. A tap while it is still arriving lands the whole
+   line at once; a tap after that goes on to the next. */
+let ADV_TYPE=null;
+function advTypeStart(){
+  if(ADV_TYPE){clearInterval(ADV_TYPE.t);ADV_TYPE=null;}
+  const els=[...document.querySelectorAll(".advtyped[data-text]")].filter(e=>!e.dataset.done);
+  if(!els.length)return;
+  const still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const el=els[0], text=el.dataset.text.replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'");
+  if(still||text.length<4){el.textContent=text;el.dataset.done="1";els.slice(1).forEach(x=>{x.textContent=x.dataset.text;x.dataset.done="1";});return;}
+  els.slice(1).forEach(x=>{x.textContent=x.dataset.text.replace(/&amp;/g,"&");x.dataset.done="1";});
+  let k=0;el.textContent="";const vn=el.closest(".advvn");if(vn)vn.classList.add("typing");
+  ADV_TYPE={el:el,t:setInterval(()=>{
+    k=Math.min(text.length,k+2);el.textContent=text.slice(0,k);
+    if(k%12===0)advSfx("talk");
+    if(k>=text.length){clearInterval(ADV_TYPE.t);ADV_TYPE=null;el.dataset.done="1";if(vn)vn.classList.remove("typing");}
+  },26)};
+}
+function advTypeFinish(){
+  if(!ADV_TYPE)return false;
+  const el=ADV_TYPE.el;clearInterval(ADV_TYPE.t);ADV_TYPE=null;
+  el.textContent=el.dataset.text.replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'");el.dataset.done="1";
+  const vn=el.closest(".advvn");if(vn)vn.classList.remove("typing");
+  return true;
 }
 /* ---- the people behind the doors ----
    Every door is one person and they look the same every time you open it. The
@@ -13659,14 +13929,76 @@ function advPlace(N,G,x,y){
   if(N)N.style.transform="translate("+x+"px,"+y+"px) scale("+sc.toFixed(3)+")";
   if(G)G.style.transform="translate("+(x+ADV_ANGEL_DX)+"px,"+(y+ADV_ANGEL_DY)+"px) scale("+(sc*ADV_ANGEL_K).toFixed(3)+")";
 }
+/* SOUND IN THE WOOD
+   A handful of small cues, made on the spot with the audio API so there are
+   no files to load: a footstep, a door, a chime for a healed house, the wind
+   of a gate, a tick as a line of talk arrives. Off with one tap, remembered.
+   A phone will not play a sound until the person has touched the page, so
+   the first tap anywhere unlocks it. */
+let ADV_AC=null;
+function advSoundOn(){return S.profile.advSound!==false;}
+function advAudio(){
+  if(!advSoundOn())return null;
+  try{if(!ADV_AC)ADV_AC=new (window.AudioContext||window.webkitAudioContext)();if(ADV_AC.state==="suspended")ADV_AC.resume();return ADV_AC;}catch(e){return null;}
+}
+function advSfx(kind){
+  const ac=advAudio();if(!ac)return;
+  const t=ac.currentTime, out=ac.destination;
+  const tone=(f,at,dur,vol,type)=>{const o=ac.createOscillator(),g=ac.createGain();o.type=type||"sine";o.frequency.setValueAtTime(f,at);
+    g.gain.setValueAtTime(0.0001,at);g.gain.exponentialRampToValueAtTime(vol,at+0.012);g.gain.exponentialRampToValueAtTime(0.0001,at+dur);
+    o.connect(g);g.connect(out);o.start(at);o.stop(at+dur+0.02);};
+  const hush=(at,dur,vol,f0,f1)=>{const n=ac.createBufferSource(),buf=ac.createBuffer(1,ac.sampleRate*dur,ac.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);n.buffer=buf;
+    const fl=ac.createBiquadFilter();fl.type="bandpass";fl.frequency.setValueAtTime(f0,at);fl.frequency.exponentialRampToValueAtTime(f1,at+dur);fl.Q.value=1.2;
+    const g=ac.createGain();g.gain.setValueAtTime(vol,at);g.gain.exponentialRampToValueAtTime(0.0001,at+dur);n.connect(fl);fl.connect(g);g.connect(out);n.start(at);};
+  if(kind==="step")hush(t,0.07,0.05,600,220);
+  else if(kind==="door"){tone(392,t,0.18,0.06,"triangle");tone(523,t+0.09,0.24,0.06,"triangle");}
+  else if(kind==="heal"){[523,659,784,1046].forEach((f,i)=>tone(f,t+i*0.09,0.5,0.07,"sine"));}
+  else if(kind==="gate")hush(t,0.6,0.09,300,1600);
+  else if(kind==="talk")tone(880,t,0.05,0.025,"sine");
+  else if(kind==="pick")tone(660,t,0.09,0.04,"triangle");
+}
+function advSoundToggle(){S.profile.advSound=!advSoundOn();saveCore();if(advSoundOn())advSfx("pick");render();}
+/* Changing chapter: the nurse arrives just inside the near gate of the new
+   picture, and the camera lands on her. */
+function advGoChapter(key,side){
+  if(advChapIndex(key)<0)return;
+  const A=advState();
+  ADV.chapter=key;ADV.at="spot";ADV.visit=null;ADV.story=null;
+  ADV.x=side==="east"?ADV_GATE_E-90:ADV_GATE_W+90;ADV.y=1040;
+  A.at="spot";A.spot={x:ADV.x,y:ADV.y,chapter:key};saveCore();
+  advSfx("gate");
+  render();
+  const sc=$(".advscene");if(sc){sc.classList.remove("advarrive");void sc.offsetWidth;sc.classList.add("advarrive");}
+  advFollow(ADV.x,ADV.y,false);
+}
+/* through the gate at this end of the chapter, on foot */
+function advWalkGate(dir,then){
+  if(!ADV||ADV.walking)return;
+  const ci=advChapIndex(ADV.chapter), key=ADV_CHAPTERS[dir==="next"?ci+1:ci-1];if(!key)return;
+  const gx=dir==="next"?ADV_GATE_E-40:ADV_GATE_W+40;
+  advWalk({x:gx,y:1040},()=>{advGoChapter(key,dir==="next"?"west":"east");if(then)then();});   /* straight on: no frame in which the walk looks over */
+}
 function advWalkTo(id){
   const s=advStops().find(x=>x.id===id);if(!s||ADV.walking)return;
   if(ADV.story&&ADV.story.kind==="intro")return;
+  /* a door in another chapter: out through the gate, then on to it */
+  if(s.grove!==ADV.chapter){
+    const dir=advChapIndex(s.grove)>advChapIndex(ADV.chapter)?"next":"prev";
+    advWalkGate(dir,()=>advWalkTo(id));return;
+  }
   advWalk(advRest(s),()=>{
-    ADV.at=id;ADV.visit=id;ADV.beat=0;ADV.again=false;ADV.story=null;
+    ADV.at=id;ADV.beat=0;ADV.again=false;ADV.story=null;ADV.asked={};
     const A=advState();A.at=id;A.visited[id]=true;saveCore();
-    render();
-    const sh=$(".advsheet");if(sh)sh.scrollIntoView({behavior:"smooth",block:"nearest"});
+    /* the door: it lights, the figure steps in and is gone, then the room */
+    advSfx("door");
+    const N=$("#advNurse"), dz=advDepth(s.gy||s.y)*(s.kind==="hut"?s.s:1);
+    const door=document.querySelector('.advdoor[data-adv="'+id+'"]');if(door)door.classList.add("open");
+    if(N&&!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)){
+      N.classList.remove("walking");N.classList.add("entering");
+      N.style.transform="translate("+s.x+"px,"+((s.gy||s.y)+2)+"px) scale("+(dz*0.55).toFixed(3)+")";
+      setTimeout(()=>{ADV.visit=id;render();const sh=$(".advsheet");if(sh)sh.scrollIntoView({behavior:"smooth",block:"nearest"});},560);
+    }else{ADV.visit=id;render();}
   });
 }
 /* Anywhere on the ground is a place to stand. A tap on the wood itself walks
@@ -13679,7 +14011,7 @@ const ADV_GROUND={top:860,bottom:1080,left:40};
    of it, where the nurse is drawn in front of it rather than lost behind. */
 function advFront(x,y){
   let best=null;
-  advStops().forEach(s=>{
+  advStops().filter(s=>s.grove===ADV.chapter).forEach(s=>{
     const by=(s.gy||s.y), d=advDepth(by), half=(s.kind==="hut"?150:95)*d;
     if(Math.abs(x-s.x)<half&&y<by+8&&y>by-340*d){if(!best||by>best.by)best={by:by,s:s};}
   });
@@ -13694,7 +14026,7 @@ function advWalkSpot(x,y){
             y:Math.round(Math.max(ADV_GROUND.top,Math.min(ADV_GROUND.bottom,f.y)))};
   advWalk(to,()=>{
     ADV.at="spot";ADV.visit=null;ADV.story=null;
-    const A=advState();A.at="spot";A.spot={x:to.x,y:to.y};saveCore();
+    const A=advState();A.at="spot";A.spot={x:to.x,y:to.y,chapter:ADV.chapter};saveCore();
     render();
   });
   return true;
@@ -13709,8 +14041,37 @@ function advWalk(to,onArrive){
   if(N){N.style.transition="none";N.classList.add("walking");}
   if(G)G.style.transition="none";
   let seg=1, along=0, last=performance.now();
+  /* THE CAMERA
+     While the nurse walks, the view does not scroll. Writing scrollLeft on
+     every frame made the picture and the nurse fall out of step on a phone
+     (the scroll lands on the compositor a frame late, the transform does
+     not), which read as a stutter. Instead the whole world slides by a
+     transform, set in the same frame as the nurse's own, and the real scroll
+     position is written once, on arrival. */
+  const sc=$(".advscene"), world=sc&&sc.querySelector(".advworld");
+  const cam=sc?{x:sc.scrollLeft,y:sc.scrollTop,sx:sc.scrollLeft,sy:sc.scrollTop}:null;
+  if(sc){sc.classList.add("moving","walkcam");sc.style.overflow="hidden";}
+  const camTo=(x,y)=>{
+    if(!sc||!world)return;
+    const k=sc.scrollWidth/ADV_W;
+    const maxX=sc.scrollWidth-sc.clientWidth, maxY=sc.scrollHeight-sc.clientHeight;
+    const vx=x*k-cam.x, vy=y*k-cam.y;
+    const lo=sc.clientWidth*0.3, hi=sc.clientWidth*0.7, tlo=sc.clientHeight*0.3, thi=sc.clientHeight*0.8;
+    if(vx<lo)cam.x-=(lo-vx);else if(vx>hi)cam.x+=(vx-hi);
+    if(vy<tlo)cam.y-=(tlo-vy);else if(vy>thi)cam.y+=(vy-thi);
+    cam.x=Math.max(0,Math.min(maxX,cam.x));cam.y=Math.max(0,Math.min(maxY,cam.y));
+    world.style.transform="translate("+(-(cam.x-cam.sx)).toFixed(1)+"px,"+(-(cam.y-cam.sy)).toFixed(1)+"px)";
+  };
+  const camDone=()=>{
+    if(!sc)return;
+    if(world)world.style.transform="";
+    sc.style.overflow="";sc.classList.remove("walkcam");
+    sc.scrollLeft=Math.round(cam.x);sc.scrollTop=Math.round(cam.y);
+    setTimeout(()=>{if(!ADV||!ADV.walking)sc.classList.remove("moving");},200);
+  };
   const arrive=()=>{
     ADV.x=to.x;ADV.y=to.y;ADV.walking=false;
+    camDone();
     onArrive();
   };
   if(still){arrive();return;}
@@ -13723,11 +14084,13 @@ function advWalk(to,onArrive){
       if(move>=left){move-=left;seg++;along=0;}
       else{along+=move;move=0;}
     }
-    if(seg>=way.length){advPlace(N,G,to.x,to.y);advFollow(to.x,to.y,true);arrive();return;}
+    if(seg>=way.length){advPlace(N,G,to.x,to.y);camTo(to.x,to.y);arrive();return;}
     const a=way[seg-1], b=way[seg], len=Math.hypot(b.x-a.x,b.y-a.y)||1, t=along/len;
     const x=a.x+(b.x-a.x)*t, y=a.y+(b.y-a.y)*t;
+    if(N&&Math.abs(b.x-a.x)>2){const left=b.x<a.x;if((ADV.face==="left")!==left){ADV.face=left?"left":"right";N.classList.toggle("faceleft",left);}}
+    if(now-(ADV.lastStep||0)>340){ADV.lastStep=now;advSfx("step");}
     ADV.x=x;ADV.y=y;
-    advPlace(N,G,x,y);advFollow(x,y,false);
+    advPlace(N,G,x,y);camTo(x,y);
     requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -13766,17 +14129,17 @@ function advDrag(sc){
   sc.addEventListener("pointerup",up);sc.addEventListener("pointerleave",up);sc.addEventListener("pointercancel",up);
   /* hold the animations while the view moves (see .advscene.moving) */
   let moveT=null;
-  const moving=()=>{sc.classList.add("moving");if(moveT)clearTimeout(moveT);moveT=setTimeout(()=>{moveT=null;sc.classList.remove("moving");},180);};
+  const moving=()=>{sc.classList.add("moving");if(moveT)clearTimeout(moveT);moveT=setTimeout(()=>{moveT=null;if(!(ADV&&ADV.walking))sc.classList.remove("moving");},180);};
   sc.addEventListener("scroll",moving,{passive:true});
   /* a tap on the ground (not a drag, not a door) walks the nurse there */
   let tap=null, lastPinch=0;
-  sc.addEventListener("pointerdown",e=>{if(e.target.closest("[data-adv],[data-chapter],[data-gochap],button,a,.advsheet,.advwhere,.advtools,.advback"))return;tap={x:e.clientX,y:e.clientY,t:Date.now(),id:e.pointerId};});
+  sc.addEventListener("pointerdown",e=>{if(e.target.closest("[data-adv],[data-chapter],[data-gochap],[data-gate],button,a,.advsheet,.advwhere,.advtools,.advback"))return;tap={x:e.clientX,y:e.clientY,t:Date.now(),id:e.pointerId};});
   sc.addEventListener("pointerup",e=>{
     const t=tap;tap=null;if(!t||t.id!==e.pointerId)return;
     if(Math.hypot(e.clientX-t.x,e.clientY-t.y)>10||Date.now()-t.t>600||Date.now()-lastPinch<400)return;
     const svg=sc.querySelector("svg.advsvg");if(!svg)return;
-    const r=svg.getBoundingClientRect();
-    advWalkSpot((e.clientX-r.left)/r.width*ADV_W,(e.clientY-r.top)/r.height*ADV_H);
+    const r=svg.getBoundingClientRect(), k=r.width/ADV_W;     /* width only: the box carries padding below the wood */
+    advWalkSpot((e.clientX-r.left)/k,(e.clientY-r.top)/k);
   });
   /* Two fingers: pinch to zoom about the midpoint. While the fingers are
      down the picture is only scaled with a transform - cheap, one frame at a
@@ -13841,23 +14204,40 @@ function wireAdventure(){
   const sk=$("#advSkip");if(sk)sk.onclick=()=>{ADV=null;ADV_OPEN=false;render();window.scrollTo(0,0);};
   $$("[data-gochap]").forEach(d=>d.onclick=()=>{
     if(ADV&&ADV.walking)return;
-    const k=d.dataset.gochap, mine=advStops().filter(s=>s.grove===k);
+    const k=d.dataset.gochap;
+    /* another chapter is another picture: go there, in at the near gate */
+    if(k!==ADV.chapter)advGoChapter(k,advChapIndex(k)>advChapIndex(ADV.chapter)?"west":"east");
     ADV.visit=null;ADV.story={kind:"chapter",key:k};render();
-    /* carry the view to that part of the forest, even though the nurse has
-       not walked there yet - she walks when you pick one of its doors */
-    if(mine.length){const cx=mine.reduce((a,s)=>a+s.x,0)/mine.length;advFollow(cx,mine[0].y,true);}
     const sh=$(".advsheet");if(sh)sh.scrollIntoView({behavior:"smooth",block:"nearest"});
   });
+  $$("[data-gate]").forEach(g=>g.onclick=e=>{e.stopPropagation();advWalkGate(g.dataset.gate);});
+  {const so=$("#advSound");if(so)so.onclick=advSoundToggle;}
   $$("[data-chapter]").forEach(d=>d.onclick=()=>{if(ADV.walking)return;ADV.visit=null;ADV.story={kind:"chapter",key:d.dataset.chapter};render();const sh=$(".advsheet");if(sh)sh.scrollIntoView({behavior:"smooth",block:"nearest"});});
   const hw=$("#advHow");if(hw)hw.onclick=()=>{if(ADV.walking)return;ADV.visit=null;ADV.story={kind:"intro",i:0,again:true};render();};
+  {const c=$("#advChart");if(c)c.onclick=()=>{if(ADV.walking)return;ADV.visit=null;ADV.story={kind:"chart"};render();};}
+  {const m=$("#advMap");if(m)m.onclick=()=>{if(ADV.walking)return;ADV.visit=null;ADV.story={kind:"map"};render();};}
+  $$("[data-porch]").forEach(g=>g.onclick=e=>{e.stopPropagation();if(ADV.walking)return;
+    const s=advStops().find(x=>x.id===g.dataset.porch), next=advNextStop();
+    const who=s?advNpc(s.b).split(",")[0]:"";
+    const sym=String(next?next.b.sym.yes[0]:"").replace(/\.$/,"");
+    const line=next?("Have you looked in on "+advNpc(next.b).split(",")[0]+"? "+sym.charAt(0).toUpperCase()+sym.slice(1)+", I hear. Go gently."):"Every door on this road is lit. Sit a while.";
+    ADV.gossip={who:who,text:line,at:Date.now()};advSfx("talk");render();
+    setTimeout(()=>{if(ADV&&ADV.gossip&&Date.now()-ADV.gossip.at>6500){ADV.gossip=null;render();}},7000);});
   const sn=$("#advStoryNext");if(sn)sn.onclick=()=>{const st=ADV.story;if(st.i>=ADV_STORY.intro.length-1){advState().introDone=true;saveCore();ADV.story=null;}else st.i++;render();};
   const sb=$("#advStoryBack");if(sb)sb.onclick=()=>{ADV.story.i=Math.max(0,ADV.story.i-1);render();};
   const sc2=$("#advStoryClose");if(sc2)sc2.onclick=()=>{if(ADV.story&&ADV.story.kind==="dawn"){advState().dawnDone=true;saveCore();}ADV.story=null;render();};
   const ag2=$("#advAgain");if(ag2)ag2.onclick=()=>{ADV.again=true;ADV.beat=0;render();};
   $$("[data-adv]").forEach(d=>d.onclick=()=>advWalkTo(d.dataset.adv));
   const nx=$("#advNext");if(nx)nx.onclick=()=>{ADV.beat++;render();};
+  $$("[data-ask]").forEach(q=>q.onclick=()=>{ADV.asked=ADV.asked||{};ADV.asked[q.dataset.ask]=true;advSfx("pick");render();});
+  /* a tap on the scene or the talk: land the line, or go on */
+  ["#advRoom","#advVn"].forEach(sel=>{const el=$(sel);if(!el)return;el.onclick=e=>{
+    if(e.target.closest("button,a,[data-ask]"))return;
+    if(advTypeFinish())return;
+    const nxt=$("#advNext");if(nxt&&!$("#advVn").classList.contains("ask"))nxt.click();};});
+  advTypeStart();
   const bk=$("#advBack");if(bk)bk.onclick=()=>{ADV.beat=Math.max(0,ADV.beat-1);render();};
-  const lv=$("#advLeave");if(lv)lv.onclick=()=>{ADV.visit=null;ADV.again=false;render();};
+  const lv=$("#advLeave");if(lv)lv.onclick=()=>{ADV.visit=null;ADV.again=false;render();const N=$("#advNurse");if(N)N.classList.add("arriving");advSfx("door");};
   const hp=$("#advHelp");if(hp)hp.onclick=()=>{const id=ADV.visit;ADV.visit=null;S.profile.dxKnown=S.profile.dxKnown||{};S.profile.dxKnown[id]=true;saveCore();fightStart(id);if(FIGHT)FIGHT.adv=true;render();window.scrollTo(0,0);};
 }
 
@@ -13875,9 +14255,12 @@ const ADV_ZMIN=0.45;
    11 Sep. So the ceiling is set by the pixels, not by taste. */
 const ADV_ZMAX=Math.max(1.6,Math.min(2.6,16000/(ADV_W*(window.devicePixelRatio||1))));   /* never under 1.6: a phone still gets to lean in */
 /* zoom the wood about a point of the view (client coords inside the scene) */
+/* the wood may never be shorter than the view, or the view's own backdrop
+   shows under it (the bare band at the bottom of a phone, 12 Sep) */
+function advZmin(sc){return Math.max(ADV_ZMIN,(sc?sc.clientHeight:0)/ADV_H);}
 function advZoomTo(z,cx,cy){
   const sc=$(".advscene"), svg=sc&&sc.querySelector("svg.advsvg");if(!sc||!svg)return;
-  z=Math.max(ADV_ZMIN,Math.min(ADV_ZMAX,z));
+  z=Math.max(advZmin(sc),Math.min(ADV_ZMAX,z));
   if(cx==null){cx=sc.clientWidth/2;cy=sc.clientHeight/2;}
   const kOld=ADV_ZOOM, sx=(sc.scrollLeft+cx)/kOld, sy=(sc.scrollTop+cy)/kOld;
   ADV_ZOOM=z;svg.style.width=Math.round(ADV_W*z)+"px";svg.style.height=Math.round(ADV_H*z)+"px";
@@ -13887,6 +14270,7 @@ function advZoomTo(z,cx,cy){
 function advSetFull(on){
   ADV_FULL=!!on;document.body.classList.toggle("advfull",ADV_FULL);
   render();
+  {const sc=$(".advscene");if(sc&&ADV_ZOOM<advZmin(sc))advZoomTo(advZmin(sc));}
   if(ADV_FULL)advFollow(ADV?ADV.x:0,ADV?ADV.y:0,false);
 }
 function viewFight(){
@@ -18627,7 +19011,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 12, 12:21 AM":"This browser is not saving anything. Build Sep 12, 12:21 AM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 12, 8:56 AM":"This browser is not saving anything. Build Sep 12, 8:56 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -19128,7 +19512,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 12, 12:21 AM":"This browser is not saving anything. Build Sep 12, 12:21 AM");
+    (LS_OK?"Saved in this browser. Build Sep 12, 8:56 AM":"This browser is not saving anything. Build Sep 12, 8:56 AM");
 })();
 </script>
 
