@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 12, 2:49 PM-->
+<!--TROPHOS-BUILD:Sep 12, 4:46 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -2245,6 +2245,8 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 .grph{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:0 2px 8px;
   font-size:13.5px;font-weight:700;color:var(--ink)}
 .grph span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);font-weight:400}
+.mgrouph{grid-column:1 / -1;display:flex;align-items:baseline;gap:9px;margin:4px 2px -4px;font-size:13.5px;font-weight:700;color:var(--ink)}
+.mgrouph i{font-family:"IBM Plex Mono",monospace;font-size:11px;font-style:normal;color:var(--accent);letter-spacing:.04em;text-transform:uppercase}
 @media (max-width:420px){
   .tilet b{font-size:14.5px}
   .tile.topic .tilet b{font-size:13px}
@@ -8644,7 +8646,7 @@ const SEED_EVENTS=[
  {c:"NUR 314",t:"314 DQ 4 — reply to peer 2",y:"Assignment",d:"2026-09-27",n:"Module 4, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-3f474b9788"},
  {c:"NUR 305",t:"305 DQ 5 initial post — Instructional methods",y:"Assignment",d:"2026-09-30",n:"Module 5. Initial post due by midnight Wednesday.",sid:"305-97fcabca6c"},
  {c:"NUR 314",t:"314 DQ 5 initial post — Cardiovascular disease",y:"Assignment",d:"2026-09-30",n:"Module 5, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 30, 26; Hinkle 24, 25, 27",sid:"314-6b63a09451"},
- {c:"NUR 308T",t:"308 Exam 1 — content 1-4",y:"Exam",d:"2026-10-01",n:"Exam first, covering weeks 1-4. Class continues after: introduction to nutrition. Exemplars: GERD; gastritis; peptic ulcer disease; upper GI disorders.",sid:"308T-3e94175f66"},
+ {c:"NUR 308T",t:"308 Exam 1 — modules 1-4",y:"Exam",d:"2026-10-01",n:"Exam first, covering weeks 1-4. Class continues after: introduction to nutrition. Exemplars: GERD; gastritis; peptic ulcer disease; upper GI disorders.",sid:"308T-3e94175f66"},
  {c:"NUR 314",t:"314 DQ 5 — reply to peer 1",y:"Assignment",d:"2026-10-03",n:"Module 5, login 2 of 3. Must be a different day from your initial post.",sid:"314-ac7eac6fcb"},
  {c:"NUR 305",t:"305 DQ 5 — reply to 2 peers",y:"Assignment",d:"2026-10-04",n:"Module 5. Two peer replies, both due by midnight Sunday.",sid:"305-1445cd5e5e"},
  {c:"NUR 305",t:"Educational assessment paper due",y:"Assignment",d:"2026-10-04",n:"Module 5",sid:"305-5f420b5866"},
@@ -8670,7 +8672,7 @@ const SEED_EVENTS=[
  {c:"NUR 314",t:"314 DQ 8 — reply to peer 2",y:"Assignment",d:"2026-10-25",n:"Module 8, login 3 of 3. Due by midnight Sunday, on a third separate day.",sid:"314-91f9604018"},
  {c:"NUR 305",t:"305 DQ 9 initial post — Health promotion strategies & behavior change theory",y:"Assignment",d:"2026-10-28",n:"Module 9. Initial post due by midnight Wednesday.",sid:"305-6941ea102f"},
  {c:"NUR 314",t:"314 DQ 9 initial post — Diabetes",y:"Assignment",d:"2026-10-28",n:"Module 9, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 41",sid:"314-2126c6a931"},
- {c:"NUR 308T",t:"308 Exam 2 — content 5, 6, 7, 8",y:"Exam",d:"2026-10-29",n:"Exam first, covering weeks 5-8. Class continues after: introduction to hormonal regulation & metabolism. Exemplars: endocrine; diabetes; thyroid disorders; adrenal disorders.",sid:"308T-e3f3179eb7"},
+ {c:"NUR 308T",t:"308 Exam 2 — modules 5-8",y:"Exam",d:"2026-10-29",n:"Exam first, covering weeks 5-8. Class continues after: introduction to hormonal regulation & metabolism. Exemplars: endocrine; diabetes; thyroid disorders; adrenal disorders.",sid:"308T-e3f3179eb7"},
  {c:"NUR 314",t:"314 DQ 9 — reply to peer 1",y:"Assignment",d:"2026-10-31",n:"Module 9, login 2 of 3. Must be a different day from your initial post.",sid:"314-9f72c8ebba"},
  {c:"NUR 305",t:"305 DQ 9 — reply to 2 peers",y:"Assignment",d:"2026-11-01",n:"Module 9. Two peer replies, both due by midnight Sunday.",sid:"305-3727764040"},
  {c:"NUR 305",t:"Teaching plan assignment due",y:"Assignment",d:"2026-11-01",n:"Module 9",sid:"305-f9da99f26d"},
@@ -8691,7 +8693,7 @@ const SEED_EVENTS=[
  {c:"NUR 314",t:"314 Exam 3",y:"Exam",d:"2026-11-17",n:"Content from modules 8, 9, 10, 11",sid:"314-91212aa7b6"},
  {c:"NUR 305",t:"305 DQ 12 initial post — Environmental health",y:"Assignment",d:"2026-11-18",n:"Module 12. Initial post due by midnight Wednesday.",sid:"305-cb54c42e35"},
  {c:"NUR 314",t:"314 DQ 12 initial post — Immunity diseases",y:"Assignment",d:"2026-11-18",n:"Module 12, login 1 of 3. Initial post by midnight Wednesday. Reading: Abrams ch. 13",sid:"314-14bfbb7bde"},
- {c:"NUR 308T",t:"308 Exam 3 — content 9-11",y:"Exam",d:"2026-11-19",n:"Exam first, covering weeks 9-11. Class continues after: immunity. Exemplars: HIV & AIDS; rheumatoid arthritis.",sid:"308T-ddc27d536f"},
+ {c:"NUR 308T",t:"308 Exam 3 — modules 9-11",y:"Exam",d:"2026-11-19",n:"Exam first, covering weeks 9-11. Class continues after: immunity. Exemplars: HIV & AIDS; rheumatoid arthritis.",sid:"308T-ddc27d536f"},
  {c:"NUR 308T",t:"Dynamic Quiz — Fluid, electrolyte & acid-base",y:"Quiz",d:"2026-11-19",n:"10 Qs min · 1% of grade · due before class · no late quizzes",sid:"308T-2a7a51859b"},
  {c:"NUR 314",t:"314 DQ 12 — reply to peer 1",y:"Assignment",d:"2026-11-21",n:"Module 12, login 2 of 3. Must be a different day from your initial post.",sid:"314-636855a2fc"},
  {c:"NUR 305",t:"305 DQ 12 — reply to 2 peers",y:"Assignment",d:"2026-11-22",n:"Module 12. Two peer replies, both due by midnight Sunday.",sid:"305-bc2fcc710e"},
@@ -8920,7 +8922,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 12, 2:49 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 12, 4:46 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -9525,7 +9527,7 @@ function migrateNotes(){
   if(S.profile.mig2)return false;
   let n=0;
   const RENAME={"Exam 1":"314 Exam 1","Exam 2":"314 Exam 2","Exam 3":"314 Exam 3","Final Exam":"314 Final Exam",
-    "Exam #1 \u2014 content 1-4":"308 Exam 1 \u2014 content 1-4","Exam #2 \u2014 content 5, 6, 7, 8":"308 Exam 2 \u2014 content 5, 6, 7, 8","Exam #3 \u2014 content 9-11":"308 Exam 3 \u2014 content 9-11"};
+    "Exam #1 \u2014 content 1-4":"308 Exam 1 \u2014 modules 1-4","Exam #2 \u2014 content 5, 6, 7, 8":"308 Exam 2 \u2014 modules 5-8","Exam #3 \u2014 content 9-11":"308 Exam 3 \u2014 modules 9-11"};
   S.events.forEach(e=>{if(RENAME[e.title]){e.title=RENAME[e.title];n++;}});
   S.events.forEach(e=>{
     if(e.type==="Quiz"&&e.notes&&/^10 (questions|Qs)/.test(e.notes)&&e.notes!=="10 Qs min \u00b7 1% of grade \u00b7 due before class \u00b7 no late quizzes"){
@@ -14248,7 +14250,7 @@ function studyExamView(){
   return ''+
   '<div class="vhead"><div>'+studyCrumb(esc(c.code||"Class"),"class")+
     '<h1 style="margin-top:6px;font-size:24px">'+esc(ex.ev?ex.ev.title:"Not yet tied to an exam")+'</h1>'+
-    '<p>'+(ex.ev?prettyDay(ex.ev.date)+' · ':'')+nTop+' topic'+(nTop===1?'':'s')+
+    '<p>'+(ex.ev?prettyDay(ex.ev.date)+' · ':'')+(groups.some(g=>g.mod)?groups.length+' module'+(groups.length===1?'':'s')+' · ':'')+nTop+' topic'+(nTop===1?'':'s')+
       ' · '+(left?left+' of '+all.length+' left':'all '+all.length+' right')+'</p></div>'+
     '<div class="row"><button class="btn primary" data-bex="'+esc(studyExam)+'">'+
       (left?'Study all '+left:'Review all '+all.length)+'</button></div></div>'+
@@ -17685,7 +17687,8 @@ function viewFight(){
         '<span class="ctileart">'+coverArt(c.name||c.code,pct,"",artKind(c.name||c.code),artHash(c.code)%4)+
           '<span class="tileveil"></span></span>'+
         '<span class="ctiletxt"><i>Floor '+floor+'</i><b>'+esc(c.code)+'</b>'+
-          '<u>'+M.order.length+' module'+(M.order.length===1?'':'s')+' · '+done+' of '+M.mine.length+' resolved</u></span>'+
+          '<u>'+(function(){const mods=new Set(M.order.map(u=>{const m=moduleOfUnit(c.code,u);return m?'m'+m.no:'u'+u;})).size;
+              return mods+' module'+(mods===1?'':'s')+(mods!==M.order.length?' · '+M.order.length+' topics':'');})()+' · '+done+' of '+M.mine.length+' resolved</u></span>'+
         '<span class="ctilecaret">'+(open?'⌃':'⌄')+'</span>'+
       '</button>';
     };
@@ -17712,8 +17715,10 @@ function viewFight(){
            thing you tapped */
         return '<div class="fclass'+(open?' open':'')+'" style="--cc:'+(c.color||'#0E7C70')+'">'+
           courseCard(c)+
-          (open?'<div class="mtiles">'+M.order.map(u=>
-              tile(c,u)+(FWING===u?'<div class="mdrop">'+wing(c,u,M.mine,M.units,true)+'</div>':'')
+          (open?'<div class="mtiles">'+M.order.map((u,i)=>{
+              const md=moduleOfUnit(c.code,u), prev=i?moduleOfUnit(c.code,M.order[i-1]):null;
+              const head=md&&(!prev||prev.no!==md.no)?'<div class="mgrouph"><i>Module '+md.no+'</i>'+esc(md.name)+'</div>':'';
+              return head+tile(c,u)+(FWING===u?'<div class="mdrop">'+wing(c,u,M.mine,M.units,true)+'</div>':'');}
             ).join("")+'</div>':'')+
         '</div>';}).join("");
   }
@@ -17907,6 +17912,21 @@ function studyWeak(){
    The exam title also says "content 1-4" while only 1 and 2 have questions, so
    the range is read off the title and the missing ones are listed as missing
    rather than left to look like an error. */
+/* 308 is taught in modules the way 314 is, but its questions are filed by
+   content, because the first module is three things at once (the older
+   adult, the eye, the ear) and one heap of 160 questions would be no use.
+   So the content units stay as they are, and this says which module each
+   belongs to, in her words from the weekly sheet. A course not listed here
+   has units that are already modules. */
+const COURSE_MODULES={
+ "NUR 308T":[
+  {no:1,name:"Functional ability & sensory perception",units:/^Content [123]\b/},
+  {no:2,name:"Neurologic & cognitive function",units:/^Content 4\b/}]
+};
+function moduleOfUnit(code,u){
+  const M=COURSE_MODULES[code];if(!M)return null;
+  return M.find(m=>m.units.test(u||""))||null;
+}
 function unitParts(u){
   const m=/^\s*(Content|Module|Week|Unit)\s*(\d+)\s*[\u2014\u2013:\-]\s*(.*)$/.exec(u||"");
   if(!m)return {key:u||"Unsorted",kind:"",no:null,head:u||"Unsorted",leaf:u||"Unsorted"};
@@ -17915,21 +17935,32 @@ function unitParts(u){
     head:(c.length>1?c[0]:rest).trim(),
     leaf:(c.length>1?c.slice(1).join(":"):rest).trim()};
 }
-function unitGroups(ex){
+function unitGroups(ex,code){
   const g={};
+  const cc=code||((courseById(courseFilter)||{}).code);
   Object.keys(ex.units).forEach(u=>{
-    const P=unitParts(u);
+    const P=unitParts(u), M=moduleOfUnit(cc,u);
+    if(M){
+      /* a module of contents: the module is the group, each content a tile */
+      const key="Module "+M.no;
+      g[key]=g[key]||{key:key,kind:"Module",no:M.no,heads:{},rows:[],mod:M};
+      g[key].heads[M.name]=1;
+      g[key].rows.push({unit:u,leaf:u,head:M.name,qs:ex.units[u]});
+      return;
+    }
     g[P.key]=g[P.key]||{key:P.key,kind:P.kind,no:P.no,heads:{},rows:[]};
     g[P.key].heads[P.head]=1;
     g[P.key].rows.push({unit:u,leaf:P.leaf,head:P.head,qs:ex.units[u]});
   });
   return Object.keys(g).map(k=>{
     const x=g[k], heads=Object.keys(x.heads);
-    x.rows.sort((a,b)=>a.leaf.localeCompare(b.leaf));
+    x.rows.sort((a,b)=>a.leaf.localeCompare(b.leaf,undefined,{numeric:true}));
     x.title=x.no!==null
       ? x.kind+" "+x.no+(heads.length===1?" \u2014 "+heads[0]:"")
       : k;
-    x.single=x.rows.length===1;
+    /* a module with one content still gets its header, so the course reads
+       the same way from module to module */
+    x.single=x.rows.length===1&&!x.mod;
     x.qs=[].concat.apply([],x.rows.map(r=>r.qs));
     return x;
   }).sort((a,b)=>(a.no===null||b.no===null)?String(a.key).localeCompare(String(b.key)):a.no-b.no);
@@ -22346,7 +22377,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 12, 2:49 PM":"This browser is not saving anything. Build Sep 12, 2:49 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 12, 4:46 PM":"This browser is not saving anything. Build Sep 12, 4:46 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22853,7 +22884,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 12, 2:49 PM":"This browser is not saving anything. Build Sep 12, 2:49 PM");
+    (LS_OK?"Saved in this browser. Build Sep 12, 4:46 PM":"This browser is not saving anything. Build Sep 12, 4:46 PM");
 })();
 </script>
 
