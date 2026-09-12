@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 11, 10:58 PM-->
+<!--TROPHOS-BUILD:Sep 12, 12:21 AM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -936,8 +936,12 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 @keyframes advwater{from{filter:hue-rotate(0deg) saturate(1.1)}to{filter:hue-rotate(50deg) saturate(1.4)}}
 .advsvg .advbf{animation:advbf 5s ease-in-out infinite alternate}
 @keyframes advbf{0%{transform:translate(var(--x,0),0)}50%{transform:translate(calc(var(--x,0) + 22px),-18px)}100%{transform:translate(calc(var(--x,0) + 8px),-34px)}}
-.advsvg #advNurse,.advsvg #advAngel{will-change:transform}
-.advsvg #advNurse.walking svg.nurse{animation:advstep .36s ease-in-out infinite alternate;transform-origin:50% 100%}
+.advworld{position:relative;width:max-content}
+.advwalklayer{position:absolute;left:0;top:0;width:4800px;height:1100px;transform-origin:0 0;pointer-events:none;z-index:2}
+.advwalker{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.advwalker svg{display:block}
+.advwalker .advshadow{position:absolute;left:-34px;top:-5px;width:68px;height:16px;border-radius:50%;background:rgba(0,0,0,.2)}
+#advNurse.walking svg.nurse{animation:advstep .36s ease-in-out infinite alternate;transform-origin:50% 100%}
 @keyframes advstep{from{transform:rotate(-2.5deg) translateY(0)}to{transform:rotate(2.5deg) translateY(-3px)}}
 .advsvg .advbob{animation:advbob 2.2s ease-in-out infinite alternate}
 .advsvg .advshoot{animation:advshoot 14s linear infinite;opacity:0}
@@ -5858,7 +5862,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 11, 10:58 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 12, 12:21 AM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -12869,16 +12873,25 @@ function advState(){const p=S.profile;if(!p.adv)p.adv={visited:{},healed:{},at:"
    winds through it and the doors are scattered off the path at different
    depths - far ones small, near ones big - so it reads as a place, not a row.
    Positions are the FEET of each door. */
-const ADV_W=4800, ADV_H=1100, ADV_HOME={x:150,y:1040};
+const ADV_W=7600, ADV_H=1100, ADV_HOME={x:150,y:1040};
+const ADV_SX=ADV_W/4800;                      /* the backdrop was painted 4,800 wide; it is stretched to fit */
 const ADV_NURSE_W=94;                         // the nurse's width in the wood (was 112)
-const ADV_PATH="M60 1030C200 1010 300 970 420 975S640 1030 760 990S980 900 1100 920S1400 990 1570 960S1780 900 1960 940S2200 1040 2370 990S2520 880 2600 860S2760 1000 2900 970S3120 880 3250 930S3360 990 3480 1000S3660 900 3800 940S3980 1030 4120 1000S4280 900 4340 960S4480 1020 4600 990S4700 940 4760 980";
+/* the path: a lazy wave the whole width of the wood, generated so it always
+   reaches the far edge whatever the width; it crosses the stream on the bridge */
+const ADV_PATH=(function(){const ys=[1000,1030,995,1040,1010,1035,1000,1040,1005,1030];let d="M60 1030C200 1020 300 1000 420 1005";let x=420,k=0;
+  while(x<ADV_W-200){const nx=Math.min(ADV_W-40,x+240);const y=(nx===2820)?962:ys[k%ys.length];d+="S"+(nx-110)+" "+(y+(k%2?22:-22))+" "+nx+" "+y;x=nx;k++;}return d;})();
+/* One row. Every tree and hut stands on a line above the street, 240 apart
+   so no two canopies touch, and the street runs along the front of the
+   picture with nothing on it - so the nurse can walk its whole length in
+   the open and step up to any door from it (12 Sep: the wood was stretched
+   from 4,800 to 7,600 for exactly that). */
 const ADV_PLACES={
-  "Content 1":[[260,850],[400,1050],[520,880]],
-  "Content 3":[[780,1045],[660,780],[1160,1050],[860,790],[1060,780],[1260,790],[1460,800]],
-  "Module 1":{hut:[2140,1000],label:"MEDICINE HUT"},
-  "Content 2":[[2560,835],[2670,850],[2780,835],[2890,850]],
-  "Module 2":{hut:[3420,1010],label:"APOTHECARY",floors:["ear","eye"]},
-  "Content 4":[[3940,860],[4060,775],[4160,1045],[4360,775],[4240,860],[4460,1045],[4560,860],[4680,780]]};
+  "Content 1":[[300,872],[540,900],[780,880]],
+  "Content 3":[[1120,868],[1360,900],[1600,876],[1840,904],[2080,870],[2320,896],[2560,880]],
+  "Module 1":{hut:[3150,905],label:"MEDICINE HUT"},
+  "Content 2":[[3720,900],[3960,870],[4200,896],[4440,876]],
+  "Module 2":{hut:[5000,905],label:"APOTHECARY",floors:["ear","eye"]},
+  "Content 4":[[5560,880],[5800,904],[6040,868],[6280,896],[6520,872],[6760,900],[7000,876],[7240,892]]};
 /* a hut's doors, from its left wall; two rows of name plates under them */
 const ADV_HUT_GAP=48, ADV_STORY_H=110, ADV_ROW_MAX=10, ADV_HUT_K=1.3;   /* the huts are drawn a third larger than the trees' scale */
 /* A hut is one story per row of doors. Doors are grouped by wing (the eye
@@ -12898,7 +12911,7 @@ function advHutLayout(key){
   });
   return {at:at,stories:stories,floors:floor,maxRow:Math.max(1,...stories.map(x=>x.n))};
 }
-const ADV_SIGNS=[[212,992,"Content 1"],[640,955,"Content 3"],[1615,1078,"Module 1"],[2500,960,"Content 2"],[2960,1085,"Module 2"],[3860,1080,"Content 4"]];
+const ADV_SIGNS=[[212,992,"Content 1"],[990,958,"Content 3"],[2690,958,"Module 1"],[3590,958,"Content 2"],[4570,958,"Module 2"],[5400,958,"Content 4"]];
 function advDepth(y){return 0.62+Math.max(0,Math.min(1,(y-700)/380))*0.5;}   // far .62, near 1.12
 function advStops(){
   const out=[];const n={};
@@ -12919,9 +12932,11 @@ function advStops(){
    from leaf clumps instead of one circle. Three silhouettes, seeded per
    disease so a grove is a grove. The door is in the trunk with a lit window
    above it; a healed tree flowers and glows. */
-function advTree(s,healed,visited,seed){
+function advTree(s,healed,visited,seed,plain){
   const r=artRnd(seed), k=seed;
-  const H=250+r()*70, T=22+r()*8;                         // height and trunk half-width
+  /* heights vary a good deal (220-350) so a row of them does not read as a
+     fence; a plain tree is scenery for the back rows - no door, no lantern */
+  const H=(plain?200:220)+r()*(plain?110:130), T=22+r()*8;   // height and trunk half-width
   const PAL=[["#2C6B4A","#3F8A5E","#86BD8A"],["#265C55","#3A8471","#7FBFA6"],["#3D6E33","#5E9A4A","#A6CB8A"],["#4B4478","#7A6CB0","#B6A6E0"]][k%4];
   const glow=["#E8C4D0","#B9A6E0","#9DBBE0","#E9D48A"][k%4];
   const bark="#5A3B22", bark2="#7A5433", bark3="#3E2715";
@@ -12969,7 +12984,7 @@ function advTree(s,healed,visited,seed){
   const win='<path d="M-8 '+(-H*0.3-14).toFixed(0)+'a8 8 0 0 1 16 0v10h-16z" fill="'+(visited?"#FFE39A":"#3A2A1E")+'" stroke="#2A1B10" stroke-width="1.2"/>'+(visited?'<circle cx="0" cy="'+(-H*0.3-10).toFixed(0)+'" r="16" fill="#FEE440" opacity=".28" class="advglow"/>':'');
   return '<g class="advtree'+(healed?' healed':'')+'" transform="translate('+s.x+' '+s.y+') scale('+s.s.toFixed(3)+')">'+
     '<ellipse cx="0" cy="6" rx="'+(T*3.2).toFixed(0)+'" ry="11" fill="#000" opacity=".2"/>'+
-    '<g class="advcanopy">'+canopy+spores+blossoms+'</g>'+trunk+win+
+    '<g class="advcanopy">'+canopy+spores+blossoms+'</g>'+trunk+(plain?'</g>':win+
     '<rect x="-52" y="-'+(H*0.62).toFixed(0)+'" width="104" height="'+(H*0.62+36).toFixed(0)+'" fill="transparent"/>'+
     '<circle cx="0" cy="-12" r="24" fill="'+glow+'" opacity=".22" class="advglow"/>'+
     '<path d="M-13 0V-22A13 13 0 0 1 13 -22V0Z" fill="'+door+'" stroke="#1A0F08" stroke-width="1.6"/>'+
@@ -12980,7 +12995,37 @@ function advTree(s,healed,visited,seed){
     '<line x1="-42" y1="0" x2="-42" y2="-40" stroke="#3B3B3B" stroke-width="2"/><rect x="-48" y="-52" width="12" height="14" rx="2" fill="#FFE39A" stroke="#3B3B3B" stroke-width="1"/><circle cx="-42" cy="-45" r="16" fill="#FEE440" opacity=".3" class="advglow"/>'+
     '<g transform="translate('+(T*1.9)+' 2)"><rect x="-2" y="-9" width="4" height="9" fill="#F3E6CF"/><ellipse cx="0" cy="-9" rx="8" ry="4.5" fill="'+glow+'"/><ellipse cx="0" cy="-9" rx="13" ry="7" fill="'+glow+'" opacity=".25" class="advglow"/><circle cx="-3" cy="-10" r="1.2" fill="#fff" opacity=".8"/><circle cx="3" cy="-9" r="1" fill="#fff" opacity=".8"/></g>'+
     '<g transform="translate('+(T*2.6)+' 4)"><rect x="-1.2" y="-6" width="2.4" height="6" fill="#F3E6CF"/><ellipse cx="0" cy="-6" rx="5" ry="3" fill="'+glow+'"/></g>'+
-  '</g>';
+  '</g>');
+}
+/* THE BACK ROWS
+   Depth without anything in the way: a second row of plain trees up the
+   hill in the gaps between the door trees, and a third, smaller and hazier,
+   behind that - so the wood is deep again while the street and every door
+   stay in the open. Nothing here can be walked to or tapped. */
+/* the northern lights, the whole width of the sky: three ribbons that
+   wander at their own pace, pink and violet and teal over the old cream */
+function advAuroraBands(){
+  const band=(y0,amp,w,grad,ph)=>{let d="M-100 "+y0;for(let x=0;x<=ADV_W+200;x+=400){const y=y0+Math.sin(x/700+ph)*amp;d+=" L"+x+" "+y.toFixed(0);}
+    return '<path d="'+d+'" fill="none" stroke="url(#'+grad+')" stroke-width="'+w+'" stroke-linejoin="round"/>';};
+  return band(250,70,70,"advaur1",0)+band(170,60,50,"advaur2",1.7)+band(330,50,60,"advaur3",3.1);
+}
+function advFarTrees(stops){
+  const line=stops.filter(s=>s.kind==="tree").sort((a,b)=>a.x-b.x);
+  const huts=stops.filter(s=>s.kind==="hut");
+  const xs=[];
+  for(let i=0;i<line.length-1;i++){const gap=line[i+1].x-line[i].x;if(gap<420)xs.push(line[i].x+gap/2);}
+  /* and a few behind each hut's roof line, and at the wood's two ends */
+  [...new Set(huts.map(h=>h.grove))].forEach(g=>{const h=huts.find(x=>x.grove===g);xs.push(h.x-200,h.x+200);});
+  xs.push(line[0].x-160,line[line.length-1].x+180);
+  let far="";
+  xs.sort((a,b)=>a-b).forEach((x,i)=>{
+    const y=776+((i*7)%4)*9, d=advDepth(y)*0.92;
+    far+='<g opacity=".9">'+advTree({x:Math.round(x),y:y,s:d},false,false,200+i,true)+'</g>';
+    if(i%2===0){const y2=748+((i*5)%3)*6, d2=advDepth(y2)*0.66;
+      far+='<g opacity=".7">'+advTree({x:Math.round(x+((i%4)-1.5)*70),y:y2,s:d2},false,false,300+i,true)+'</g>';}
+  });
+  /* haze between the rows, the colour of the far hills */
+  return '<g class="advfar">'+far+'<rect x="0" y="700" width="'+ADV_W+'" height="130" fill="url(#advhaze)"/></g>';
 }
 /* The plate under a door. Drawn after every tree, so a near crown can never
    cover the name of the house behind it. Sized to the name, not the slot. */
@@ -13115,13 +13160,13 @@ function advStones(){
     '<path d="M'+(-w*0.55)+' '+(-h*0.2)+'L'+(-w*0.45)+' '+(-h*0.85)+'" stroke="#A9B0BC" stroke-width="3" opacity=".6"/>'+
     '<path d="M-3 '+(-h*0.7)+'h6M0 '+(-h*0.7)+'v10M-4 '+(-h*0.45)+'l4 -5 4 5" fill="none" stroke="#3F4450" stroke-width="1.4" opacity=".7"/>'+
     '<ellipse cx="'+(w*0.3)+'" cy="'+(-h*0.15)+'" rx="5" ry="3" fill="#7FA98C" opacity=".6"/></g>';
-  return stone(300,1000,74,14,-6)+stone(345,1012,58,12,4)+stone(2440,880,64,13,-3);
+  return stone(300,1000,74,14,-6)+stone(345,1012,58,12,4)+stone(3420,875,64,13,-3);
 }
 /* Lanterns along the path, lit already: the wood knows you are coming. */
 function advLanterns(){
   const lamp=(x,y)=>'<g transform="translate('+x+' '+y+')"><line x1="0" y1="0" x2="0" y2="-48" stroke="#3F4450" stroke-width="2.6"/><path d="M0 -48q10 -2 12 -12" fill="none" stroke="#3F4450" stroke-width="2.2"/>'+
     '<rect x="6" y="-62" width="12" height="15" rx="2" fill="#F3E7A6" stroke="#3F4450" stroke-width="1.2"/><circle cx="12" cy="-54" r="18" fill="#EDD79A" opacity=".22" class="advglow"/></g>';
-  return lamp(560,1000)+lamp(1000,1050)+lamp(1440,985)+lamp(2100,1010)+lamp(2980,1010);
+  return lamp(900,1060)+lamp(1720,1065)+lamp(2440,1060)+lamp(3560,1065)+lamp(4560,1060)+lamp(5440,1065)+lamp(6160,1060)+lamp(6760,1065)+lamp(7360,1060);
 }
 function advFerns(extra){
   const R=artRnd(55);let g="";extra=extra||0;
@@ -13205,25 +13250,31 @@ function advScene(){
   const butterfly=(x,y,c,d)=>'<g transform="translate('+x+' '+y+')"><g class="advbf" style="animation-delay:'+d+'s"><ellipse cx="-5" cy="0" rx="5" ry="3.2" fill="'+c+'"/><ellipse cx="5" cy="0" rx="5" ry="3.2" fill="'+c+'"/><ellipse cx="-4" cy="3" rx="3" ry="2" fill="#fff" opacity=".6"/><ellipse cx="4" cy="3" rx="3" ry="2" fill="#fff" opacity=".6"/><line x1="0" y1="-4" x2="0" y2="4" stroke="#222" stroke-width="1.2"/></g></g>';
   const bird=(d,dur,y)=>'<path d="M-8 0q4-5 8 0q4-5 8 0" fill="none" stroke="#2B2B3B" stroke-width="1.8" stroke-linecap="round"><animateMotion dur="'+dur+'s" repeatCount="indefinite" path="M-40 '+y+'C1200 '+(y-60)+' 3200 '+(y+40)+' '+(ADV_W+60)+' '+(y-30)+'" begin="'+d+'s"/></path>';
   const firefly=(x,y,c,d)=>'<circle r="2.4" fill="'+c+'" class="advff" style="animation-delay:'+d+'s"><animateMotion dur="'+(9+d)+'s" repeatCount="indefinite" path="M'+x+' '+y+'q30 -40 70 -10t60 30t-40 40t-90 -20z"/></circle>';
-  let stars="";for(let i=0;i<90+tier*36;i++){stars+='<circle class="advstar" style="animation-delay:'+(R()*5).toFixed(1)+'s" cx="'+(R()*ADV_W).toFixed(0)+'" cy="'+(R()*300).toFixed(0)+'" r="'+(0.8+R()*1.6).toFixed(1)+'" fill="#fff"/>';}
+  let stars="";for(let i=0;i<150+tier*50;i++){stars+='<circle class="advstar" style="animation-delay:'+(R()*5).toFixed(1)+'s" cx="'+(R()*ADV_W).toFixed(0)+'" cy="'+(R()*300).toFixed(0)+'" r="'+(0.8+R()*1.6).toFixed(1)+'" fill="#fff"/>';}
   let ffs="";const FC=["#F3E7A6","#DDEBD5","#C9D8F0","#FFF6D6"];for(let i=0;i<22+tier*6;i++){ffs+=firefly((300+R()*(ADV_W-500)).toFixed(0),(720+R()*330).toFixed(0),FC[i%4],(R()*6).toFixed(1));}
 
   let shoot="";for(let i=0;i<1+tier;i++){const sx=(600+R()*(ADV_W-800)).toFixed(0), sy=(40+R()*220).toFixed(0);
     shoot+='<g class="advshoot" style="animation-delay:'+(R()*14).toFixed(1)+'s;animation-duration:'+(11+R()*9).toFixed(1)+'s" transform="translate('+sx+' '+sy+')"><line x1="0" y1="0" x2="150" y2="-62" stroke="url(#advstreak)" stroke-width="3" stroke-linecap="round"/><circle r="2.6" fill="#fff"/></g>';}
   /* a touch smaller than the huts and trees around them (11 Sep: at 112 they
      stood as tall as a door and hid behind every trunk) */
-  AV_ELF=true;const nurse=nurseAvatar(li.tier,ADV_NURSE_W,null,true).replace('<svg ','<svg x="'+(-ADV_NURSE_W/2)+'" y="'+(-ADV_NURSE_W*2)+'" ');AV_ELF=false;
+  AV_ELF=true;const nurse=nurseAvatar(li.tier,ADV_NURSE_W,null,true).replace('<svg ','<svg style="margin:'+(-ADV_NURSE_W*2)+'px 0 0 '+(-ADV_NURSE_W/2)+'px" ');AV_ELF=false;
   const ns=advDepth(ADV.y);
-  const items=stops.filter(s=>s.kind==="tree").map(s=>({y:s.y,html:'<g class="advdoor" data-adv="'+s.id+'" data-y="'+s.y+'">'+advTree(s,A.healed[s.id],A.visited[s.id],artHash(s.id))+'</g>'}));
+  const items=stops.filter(s=>s.kind==="tree").map(s=>({y:s.y,x:s.x,html:'<g class="advdoor" data-adv="'+s.id+'" data-y="'+s.y+'">'+advTree(s,A.healed[s.id],A.visited[s.id],artHash(s.id))+'</g>'}));
   [...new Set(stops.filter(s=>s.kind==="hut").map(s=>s.grove))].forEach(g=>{
     const h0=stops.find(s=>s.kind==="hut"&&s.grove===g), hy=h0.gy||h0.y;
-    items.push({y:hy,html:'<g data-y="'+hy+'">'+advHut(stops,g)+'</g>'});});
+    items.push({y:hy,x:h0.x,html:'<g data-y="'+hy+'">'+advHut(stops,g)+'</g>'});});
   ADV_SIGNS.forEach(g=>items.push({y:g[1],html:'<g data-y="'+g[1]+'">'+advSignpost(g[0],g[1],ADV_STORY.chapters[g[2]].sign,g[2])+'</g>'}));
-  items.push({y:980,html:'<g data-y="980">'+advMushroomHouse(980,1075)+'</g>'});
-  const walkers='<g id="advWalkers" data-y="'+Math.round(ADV.y)+'">'+
-   '<g id="advAngel" style="transform:translate('+(ADV.x+ADV_ANGEL_DX)+'px,'+(ADV.y+ADV_ANGEL_DY)+'px) scale('+(ns*ADV_ANGEL_K).toFixed(3)+')">'+advAngel()+'</g>'+
-   '<g id="advNurse" class="'+(ADV.walking?'walking':'')+'" style="transform:translate('+ADV.x+'px,'+ADV.y+'px) scale('+ns.toFixed(3)+')"><ellipse cx="0" cy="3" rx="34" ry="8" fill="#000" opacity=".2"/>'+nurse+'</g></g>';
-  items.push({y:ADV.y,html:walkers,walk:true});
+  items.push({y:980,html:'<g data-y="980">'+advMushroomHouse(6400,1080)+'</g>'});
+  /* The nurse and the angel are not drawn inside the big picture. They live
+     on a layer of their own over it, so a step is a transform on a small
+     composited box - not a repaint of a 4,800-px drawing on every frame,
+     which is what made a walk shake and lag on a phone. They are always in
+     front of the wood (a tap on a tree lands in front of it - advFront). */
+  const walkers='<div class="advwalklayer" id="advWalkers" style="transform:scale('+ADV_ZOOM+')">'+
+   '<div id="advAngel" class="advwalker" style="transform:translate('+(ADV.x+ADV_ANGEL_DX)+'px,'+(ADV.y+ADV_ANGEL_DY)+'px) scale('+(ns*ADV_ANGEL_K).toFixed(3)+')">'+
+     '<svg viewBox="-40 -40 80 90" width="80" height="90" style="margin:-40px 0 0 -40px">'+advAngel()+'</svg></div>'+
+   '<div id="advNurse" class="advwalker'+(ADV.walking?' walking':'')+'" style="transform:translate('+ADV.x+'px,'+ADV.y+'px) scale('+ns.toFixed(3)+')"><i class="advshadow"></i>'+nurse+'</div>'+
+  '</div>';
   /* what the healed doors have brought back */
   const bloom=(x,y,n,seed)=>{const r=artRnd(seed);let t="";const C=["#E8C4D0","#D6B25A","#B9A6E0","#E9D48A","#FFFFFF","#F7A8C4","#9DBBE0","#D6E8C2"];
     for(let i=0;i<n;i++){const cx=(x+(r()*2-1)*38).toFixed(0),cy=(y+(r()*2-1)*9).toFixed(0),c=C[Math.floor(r()*C.length)],rr=2.2+r()*2.6;
@@ -13242,11 +13293,11 @@ function advScene(){
     if(n%5===4){const ax=Math.max(80,Math.min(ADV_W-80,s.x+(r()*2-1)*(spread+120))), ay=Math.min(ADV_H-14,gy+6+r()*40), kind=ADV_MYTH[Math.floor(n/5)%ADV_MYTH.length];
       items.push({y:ay,html:'<g data-y="'+ay.toFixed(0)+'">'+advCritter(kind,Math.round(ax),Math.round(ay),advDepth(ay),r()>0.5)+'</g>'});}
   });
-  items.sort((a,b)=>a.y-b.y||(a.walk?1:-1));
+  items.sort((a,b)=>a.y-b.y||(a.x||0)-(b.x||0));
   const stage='<g id="advStage">'+items.map(i=>i.html).join("")+'</g>'+
     '<g id="advPlates">'+stops.map(s=>advPlate(s,A.healed[s.id])).join("")+'</g>';
   const dawn=advAllHealed();
-  return '<svg class="advsvg'+(dawn?' dawn':'')+'" viewBox="0 0 '+ADV_W+' '+ADV_H+'" style="width:'+Math.round(ADV_W*ADV_ZOOM)+'px;height:'+Math.round(ADV_H*ADV_ZOOM)+'px" role="img" aria-label="Vaelith, the wood">'+
+  return '<div class="advworld"><svg class="advsvg'+(dawn?' dawn':'')+'" viewBox="0 0 '+ADV_W+' '+ADV_H+'" style="width:'+Math.round(ADV_W*ADV_ZOOM)+'px;height:'+Math.round(ADV_H*ADV_ZOOM)+'px" role="img" aria-label="Vaelith, the wood">'+
    '<defs>'+
     '<linearGradient id="advsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1230"/><stop offset=".28" stop-color="#2A2D66"/><stop offset=".5" stop-color="#5A5C95"/><stop offset=".68" stop-color="#8A93B4"/><stop offset=".82" stop-color="#CBB985"/><stop offset="1" stop-color="#EBE1C2"/></linearGradient>'+
     '<linearGradient id="advday" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6F9BCB"/><stop offset=".5" stop-color="#B7D3E6"/><stop offset=".8" stop-color="#EFE6CB"/><stop offset="1" stop-color="#F7F1DF"/></linearGradient>'+
@@ -13257,49 +13308,57 @@ function advScene(){
     '<linearGradient id="advaur1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#DDEBD5" stop-opacity="0"/><stop offset=".3" stop-color="#DDEBD5" stop-opacity=".38"/><stop offset=".6" stop-color="#B9C4E0" stop-opacity=".34"/><stop offset="1" stop-color="#E8E1C8" stop-opacity="0"/></linearGradient>'+
     '<linearGradient id="advaur2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E8E1C8" stop-opacity="0"/><stop offset=".4" stop-color="#EDD79A" stop-opacity=".3"/><stop offset=".7" stop-color="#C5D2E6" stop-opacity=".36"/><stop offset="1" stop-color="#DDEBD5" stop-opacity="0"/></linearGradient>'+
     '<filter id="advsoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>'+
+    '<linearGradient id="advhaze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B9A6E0" stop-opacity="0"/><stop offset=".55" stop-color="#C9B8E8" stop-opacity=".32"/><stop offset="1" stop-color="#DDEBD5" stop-opacity="0"/></linearGradient>'+
+    '<linearGradient id="advaur3" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E8C4D0" stop-opacity="0"/><stop offset=".3" stop-color="#F7A8C4" stop-opacity=".34"/><stop offset=".65" stop-color="#B9A6E0" stop-opacity=".38"/><stop offset="1" stop-color="#8FD3C9" stop-opacity="0"/></linearGradient>'+
     '<linearGradient id="advstreak" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".35" stop-color="#F3E7A6" stop-opacity=".7"/><stop offset="1" stop-color="#F3E7A6" stop-opacity="0"/></linearGradient>'+
     '<path id="advPathEl" d="'+ADV_PATH+'"/>'+
    '</defs>'+
    /* sky: stars, aurora, sun and its rays */
    '<rect width="'+ADV_W+'" height="'+ADV_H+'" fill="url(#advsky)"/>'+stars+shoot+
-   '<g class="advaurora" filter="url(#advsoft)"><path d="M-100 250C400 140 800 330 1300 210S2100 120 2500 260" fill="none" stroke="url(#advaur1)" stroke-width="70"/><path d="M-100 170C500 260 900 90 1500 200S2200 260 2500 140" fill="none" stroke="url(#advaur2)" stroke-width="50"/></g>'+
+   '<g class="advaurora" filter="url(#advsoft)">'+advAuroraBands()+'</g>'+
    '<g class="advrays" style="transform-origin:520px 520px">'+[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>'<path d="M520 520L'+(520+Math.cos(i*Math.PI/6)*900).toFixed(0)+' '+(520+Math.sin(i*Math.PI/6)*900).toFixed(0)+'L'+(520+Math.cos(i*Math.PI/6+0.09)*900).toFixed(0)+' '+(520+Math.sin(i*Math.PI/6+0.09)*900).toFixed(0)+'Z" fill="#EDD79A" opacity=".06"/>').join("")+'</g>'+
    '<circle cx="520" cy="520" r="260" fill="url(#advsun)"/><circle cx="520" cy="520" r="40" fill="#FFF8E1"/>'+
    /* mountains and the far forest */
+   '<g transform="scale('+ADV_SX+' 1)">'+
    '<path d="M0 620L160 480L300 560L470 420L640 540L820 440L1000 560L1180 400L1360 520L1530 430L1700 560L1880 440L2060 540L2230 450L2400 560L2500 470L2660 570L2820 450L2980 560L3140 470L3320 560L3500 440L3680 550L3860 460L4040 560L4200 480L4400 560L4560 470L4720 560L4800 520V760H0Z" fill="#4A5478" opacity=".92"/>'+
    '<path d="M410 480L470 420L530 478ZM1120 458L1180 400L1240 456ZM1470 488L1530 430L1590 486ZM1820 498L1880 440L1940 496ZM2180 500L2230 450L2280 500ZM2450 520L2500 470L2550 520ZM3440 495L3500 440L3560 493ZM3810 512L3860 460L3910 512" fill="#EEF1F6"/>'+
    '<path d="M0 700L220 600L400 680L600 590L820 690L1000 610L1220 700L1420 620L1620 700L1820 610L2040 700L2240 620L2420 700L2620 630L2820 700L3040 620L3240 700L3440 630L3640 700L3840 620L4040 700L4240 630L4400 700L4560 620L4720 700L4800 660V820H0Z" fill="#2E3457" opacity=".95"/>'+
-   pines(0,730,120,90,"#1B3A33")+pines(11,752,120,66,"#23483C")+pines(2640,730,100,90,"#1B3A33")+pines(2651,752,100,66,"#23483C")+
+   '</g>'+
+   pines(0,730,Math.ceil(120*ADV_SX),90,"#1B3A33")+pines(11,752,Math.ceil(120*ADV_SX),66,"#23483C")+pines(2640*ADV_SX,730,Math.ceil(100*ADV_SX),90,"#1B3A33")+pines(2651*ADV_SX,752,Math.ceil(100*ADV_SX),66,"#23483C")+
+   '<g transform="scale('+ADV_SX+' 1)">'+
    /* the meadow, in three rolls, then the lake */
    '<path d="M0 780Q600 730 1200 770T2400 750T2900 765T3400 755T3800 760T4200 750T4400 758T4600 752T4800 760V'+ADV_H+'H0Z" fill="url(#advgrass)"/>'+
    '<ellipse cx="1100" cy="800" rx="760" ry="90" fill="#5E9A66"/><ellipse cx="300" cy="860" rx="520" ry="80" fill="#4E8459"/><ellipse cx="2150" cy="820" rx="700" ry="100" fill="#5E9A66"/>'+
    '<g class="advwater"><ellipse cx="1000" cy="748" rx="470" ry="34" fill="url(#advlake)"/><ellipse cx="1000" cy="748" rx="470" ry="34" fill="none" stroke="#3B6B4E" stroke-width="8" opacity=".55"/>'+
      '<path d="M640 742q60 6 120 0M820 752q70 8 140 0M1040 740q60 6 120 0M1240 750q50 5 100 0" fill="none" stroke="#FFF6D6" stroke-width="2.4" opacity=".75"/>'+
      '<ellipse cx="900" cy="746" rx="60" ry="8" fill="#EDD79A" opacity=".5" filter="url(#advsoft)"/></g>'+
+   '</g>'+
    /* mist on the water and over the meadow - the thing that makes a wood old */
-   '<g class="advaurora" opacity=".85">'+[[700,770,420,26],[1250,790,380,22],[300,830,300,20],[1900,800,420,24],[2600,790,360,22],[3100,800,300,20],[3700,795,380,22],[4150,805,300,20],[4550,800,320,22]].map(m=>'<ellipse cx="'+m[0]+'" cy="'+m[1]+'" rx="'+m[2]+'" ry="'+m[3]+'" fill="#E6EDE8" opacity=".32" filter="url(#advsoft)"/>').join("")+'</g>'+
+   '<g class="advaurora" opacity=".85">'+[[700,770,420,26],[1250,790,380,22],[300,830,300,20],[1900,800,420,24],[2600,790,360,22],[3100,800,300,20],[3700,795,380,22],[4150,805,300,20],[4550,800,320,22]].map(m=>'<ellipse cx="'+Math.round(m[0]*ADV_SX)+'" cy="'+m[1]+'" rx="'+Math.round(m[2]*ADV_SX)+'" ry="'+m[3]+'" fill="#E6EDE8" opacity=".32" filter="url(#advsoft)"/>').join("")+'</g>'+
    /* the cottage on the far hill */
-   '<g transform="translate(2280 560) scale(.9)"><ellipse cx="100" cy="98" rx="150" ry="14" fill="#000" opacity=".14"/>'+
+   '<g transform="translate('+Math.round(2280*ADV_SX)+' 560) scale(.9)"><ellipse cx="100" cy="98" rx="150" ry="14" fill="#000" opacity=".14"/>'+
      '<rect x="0" y="22" width="200" height="74" rx="4" fill="#9C7449" stroke="#4E3520" stroke-width="2.5"/>'+
      '<path d="M-18 24L100 -34L218 24Z" fill="#3E7A3C" stroke="#2E5A3A" stroke-width="2.5"/><path d="M-12 22L100 -28L212 22" fill="none" stroke="#9EE493" stroke-width="7" opacity=".7"/>'+
      [14,58,102,146].map(x=>'<rect x="'+x+'" y="40" width="28" height="34" rx="2" fill="#FFE39A" stroke="#4E3520"/><rect x="'+(x+3)+'" y="43" width="22" height="28" fill="#FFF6D6" opacity=".7"/><circle cx="'+(x+14)+'" cy="57" r="24" fill="#FEE440" opacity=".18" class="advglow"/>').join("")+
      '<path d="M-8 96h216" stroke="#4E3520" stroke-width="3"/><path d="M20 66q-34-34 0-68M180 66q34-34 0-68" fill="none" stroke="#9CC9A8" stroke-width="3.5"/></g>'+
    /* willow by the stream, the stream, the bridge, a rainbow over it */
-   advWillow(1700,770)+advGate(150,1030)+advMoon()+advCrystals(1600,1015)+advWisps()+advFerns(tier)+
-   '<g class="advwater"><path d="M1560 700Q1630 820 1580 958T1620 '+ADV_H+'" fill="none" stroke="#5E88A6" stroke-width="40" stroke-linecap="round" opacity=".9"/>'+
-     '<path d="M1560 700Q1630 820 1580 958T1620 '+ADV_H+'" fill="none" stroke="#D5E6EE" stroke-width="6" stroke-linecap="round" opacity=".6"/></g>'+
+   advWillow(2900,770)+advGate(150,1030)+advMoon()+advCrystals(2700,1015)+advWisps()+advFerns(tier)+
+   /* the stream runs between Content 3 and the medicine hut */
+   '<g class="advwater"><path d="M2790 700Q2860 820 2810 958T2850 '+ADV_H+'" fill="none" stroke="#5E88A6" stroke-width="40" stroke-linecap="round" opacity=".9"/>'+
+     '<path d="M2790 700Q2860 820 2810 958T2850 '+ADV_H+'" fill="none" stroke="#D5E6EE" stroke-width="6" stroke-linecap="round" opacity=".6"/></g>'+
+   advFarTrees(stops)+
    advStones()+advLanterns()+
    /* the path */
    '<use href="#advPathEl" fill="none" stroke="url(#advpath)" stroke-width="54" stroke-linecap="round"/>'+
    '<use href="#advPathEl" fill="none" stroke="#D7D2C2" stroke-width="18" stroke-linecap="round" stroke-dasharray="22 18" opacity=".45"/>'+
-   '<g transform="translate(1586 962)"><path d="M-70 8Q0 -56 70 8" fill="none" stroke="#5F6470" stroke-width="20"/><path d="M-70 8Q0 -56 70 8" fill="none" stroke="#A8ADB5" stroke-width="10"/>'+
+   '<g transform="translate(2820 962)"><path d="M-70 8Q0 -56 70 8" fill="none" stroke="#5F6470" stroke-width="20"/><path d="M-70 8Q0 -56 70 8" fill="none" stroke="#A8ADB5" stroke-width="10"/>'+
      [-56,-36,-16,4,24,44].map(x=>'<line x1="'+x+'" y1="'+(8-Math.max(0,28-Math.abs(x)*0.45)).toFixed(0)+'" x2="'+x+'" y2="'+(-24-Math.max(0,28-Math.abs(x)*0.45)).toFixed(0)+'" stroke="#6B4A2E" stroke-width="3.5"/>').join("")+
      '<path d="M-64 -26Q0 -80 64 -26" fill="none" stroke="#6B4A2E" stroke-width="3.5"/></g>'+
    /* frogs, lily pads, flowers, mushrooms */
-   '<g transform="translate(1550 1030)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#6BA043"/><circle cx="-5" cy="-8" r="3" fill="#FFF"/><circle cx="5" cy="-8" r="3" fill="#FFF"/><circle cx="-5" cy="-8" r="1.4"/><circle cx="5" cy="-8" r="1.4"/></g>'+
-   '<g transform="translate(1640 1070)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#5E9A48"/><circle cx="-5" cy="-8" r="3" fill="#FFF"/><circle cx="5" cy="-8" r="3" fill="#FFF"/><circle cx="-5" cy="-8" r="1.4"/><circle cx="5" cy="-8" r="1.4"/></g>'+
-   flowers(160,1080,34,3,1)+flowers(560,1075,36,5,1)+flowers(900,1080,32,7,1)+flowers(1300,1090,30,11)+flowers(2260,930,22,47)+flowers(1850,1085,34,13,1)+flowers(2280,1080,30,17,1)+flowers(2500,960,26,19)+
-   flowers(640,900,22,23)+flowers(960,900,22,29)+flowers(1900,880,24,31)+flowers(2500,860,20,37)+flowers(400,1010,22,41)+flowers(1520,860,18,43)+
+   '<g transform="translate(2780 1030)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#6BA043"/><circle cx="-5" cy="-8" r="3" fill="#FFF"/><circle cx="5" cy="-8" r="3" fill="#FFF"/><circle cx="-5" cy="-8" r="1.4"/><circle cx="5" cy="-8" r="1.4"/></g>'+
+   '<g transform="translate(2870 1070)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#5E9A48"/><circle cx="-5" cy="-8" r="3" fill="#FFF"/><circle cx="5" cy="-8" r="3" fill="#FFF"/><circle cx="-5" cy="-8" r="1.4"/><circle cx="5" cy="-8" r="1.4"/></g>'+
+   flowers(160,1085,34,3,1)+flowers(1240,1088,36,5,1)+flowers(1960,1090,32,7,1)+flowers(2600,1088,30,11)+flowers(3340,930,22,47)+flowers(3840,1090,34,13,1)+flowers(4320,1088,30,17,1)+flowers(4800,960,26,19)+
+   flowers(1000,935,22,23)+flowers(1720,935,22,29)+flowers(2440,935,24,31)+flowers(4080,935,20,37)+flowers(660,935,22,41)+flowers(5680,935,18,43)+flowers(5300,1088,34,53,1)+flowers(6160,1090,30,59,1)+flowers(6880,935,22,61)+flowers(7120,1088,32,67,1)+
    /* the welcome sign */
    '<g transform="translate(56 950)"><path d="M-30 6L-26 -70Q0 -96 26 -70L30 6Z" fill="#8E949C" stroke="#4B4A55" stroke-width="2"/><path d="M-22 0L-19 -66Q0 -86 19 -66L22 0" fill="none" stroke="#C9CFD4" stroke-width="1.2" opacity=".7"/>'+
      '<text x="0" y="-52" text-anchor="middle" font-size="15" font-family="Cormorant Garamond,Georgia,serif" font-weight="700" letter-spacing=".08em" fill="#1E2430">Vaelith</text><text x="0" y="-34" text-anchor="middle" font-size="10" font-family="Cormorant Garamond,Georgia,serif" font-style="italic" fill="#2E3457">the Wood</text>'+
@@ -13310,7 +13369,7 @@ function advScene(){
    '<g class="advbirds">'+bird(0,30,180)+bird(7,36,120)+bird(13,32,230)+bird(4,40,80)+bird(19,34,300)+[0,1,2,3,4,5].slice(0,tier).map(i=>bird(9+i*5,28+i*3,140+i*45)).join("")+'</g>'+
    ffs+lifeBf+
    butterfly(420,960,"#D6B25A",0)+butterfly(760,1030,"#7FA7C9",1.2)+butterfly(1200,960,"#C39BC4",0.6)+butterfly(960,900,"#E9D48A",2)+butterfly(1700,990,"#A5B8D9",1.6)+butterfly(2150,970,"#D6B25A",0.9)+butterfly(300,860,"#9FD1C4",2.4)+
-  '</svg>';
+  '</svg>'+walkers+'</div>';
 }
 /* ---- the view ---- */
 function viewAdventure(){
@@ -13597,9 +13656,6 @@ function advRoute(from,to){
 }
 function advPlace(N,G,x,y){
   const sc=advDepth(y);
-  const W=document.getElementById("advWalkers"), St=document.getElementById("advStage");
-  if(W&&St){let next=null;for(const c of St.children){if(c===W)continue;if(+c.dataset.y>y){next=c;break;}}
-    if(next?W.nextSibling!==next:W!==St.lastElementChild){St.insertBefore(W,next);}}
   if(N)N.style.transform="translate("+x+"px,"+y+"px) scale("+sc.toFixed(3)+")";
   if(G)G.style.transform="translate("+(x+ADV_ANGEL_DX)+"px,"+(y+ADV_ANGEL_DY)+"px) scale("+(sc*ADV_ANGEL_K).toFixed(3)+")";
 }
@@ -13617,7 +13673,7 @@ function advWalkTo(id){
    the nurse there - beside a tree, on the bridge, halfway down the path -
    with no door involved; the ground runs from the far edge of the path to the
    near edge of the picture. */
-const ADV_GROUND={top:740,bottom:1075,left:40};
+const ADV_GROUND={top:860,bottom:1080,left:40};
 /* A tap on a tree or a hut - its trunk, its canopy, its wall - means "over
    there", not "inside the tree": the spot moves to the ground just in front
    of it, where the nurse is drawn in front of it rather than lost behind. */
@@ -13731,7 +13787,8 @@ function advDrag(sc){
   const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
   const mid=t=>{const r=sc.getBoundingClientRect();return {x:(t[0].clientX+t[1].clientX)/2-r.left,y:(t[0].clientY+t[1].clientY)/2-r.top};};
   let raf=0;
-  const paint=()=>{raf=0;if(!pinch)return;const svg=sc.querySelector("svg.advsvg");if(!svg)return;
+  const world=()=>sc.querySelector(".advworld")||sc.querySelector("svg.advsvg");
+  const paint=()=>{raf=0;if(!pinch)return;const svg=world();if(!svg)return;
     const k=pinch.zTo/pinch.z;
     svg.style.transformOrigin=pinch.ox+"px "+pinch.oy+"px";
     svg.style.transform="translate("+(pinch.mx-pinch.m0.x)+"px,"+(pinch.my-pinch.m0.y)+"px) scale("+k.toFixed(4)+")";};
@@ -13741,7 +13798,7 @@ function advDrag(sc){
     const m=mid(e.touches);
     pinch={d:dist(e.touches),z:ADV_ZOOM,zTo:ADV_ZOOM,m0:m,mx:m.x,my:m.y,ox:sc.scrollLeft+m.x,oy:sc.scrollTop+m.y,l:sc.scrollLeft,t:sc.scrollTop};
     sc.style.overflow="hidden";sc.scrollLeft=pinch.l;sc.scrollTop=pinch.t;
-    const svg=sc.querySelector("svg.advsvg");if(svg)svg.style.willChange="transform";
+    const svg=world();if(svg)svg.style.willChange="transform";
   },{passive:false});
   sc.addEventListener("touchmove",e=>{
     if(!pinch||e.touches.length!==2)return;e.preventDefault();
@@ -13752,7 +13809,7 @@ function advDrag(sc){
   const endPinch=e=>{
     if(!pinch||e.touches.length>=2)return;
     const P=pinch;pinch=null;lastPinch=Date.now();if(raf){cancelAnimationFrame(raf);raf=0;}
-    const svg=sc.querySelector("svg.advsvg");
+    const svg=world();
     if(svg){svg.style.transform="";svg.style.transformOrigin="";svg.style.willChange="";}
     sc.style.overflow="";
     sc.scrollLeft=P.l;sc.scrollTop=P.t;
@@ -13816,7 +13873,7 @@ const ADV_ZMIN=0.45;
    picture more than about 16,000 device pixels wide, and past that iOS quietly
    leaves parts of it blank - which is what a flick at high zoom looked like on
    11 Sep. So the ceiling is set by the pixels, not by taste. */
-const ADV_ZMAX=Math.max(1,Math.min(2.6,16000/(ADV_W*(window.devicePixelRatio||1))));
+const ADV_ZMAX=Math.max(1.6,Math.min(2.6,16000/(ADV_W*(window.devicePixelRatio||1))));   /* never under 1.6: a phone still gets to lean in */
 /* zoom the wood about a point of the view (client coords inside the scene) */
 function advZoomTo(z,cx,cy){
   const sc=$(".advscene"), svg=sc&&sc.querySelector("svg.advsvg");if(!sc||!svg)return;
@@ -13824,6 +13881,7 @@ function advZoomTo(z,cx,cy){
   if(cx==null){cx=sc.clientWidth/2;cy=sc.clientHeight/2;}
   const kOld=ADV_ZOOM, sx=(sc.scrollLeft+cx)/kOld, sy=(sc.scrollTop+cy)/kOld;
   ADV_ZOOM=z;svg.style.width=Math.round(ADV_W*z)+"px";svg.style.height=Math.round(ADV_H*z)+"px";
+  {const L=sc.querySelector(".advwalklayer");if(L)L.style.transform="scale("+z+")";}
   sc.scrollLeft=sx*z-cx;sc.scrollTop=sy*z-cy;
 }
 function advSetFull(on){
@@ -18569,7 +18627,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 11, 10:58 PM":"This browser is not saving anything. Build Sep 11, 10:58 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 12, 12:21 AM":"This browser is not saving anything. Build Sep 12, 12:21 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -19070,7 +19128,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 11, 10:58 PM":"This browser is not saving anything. Build Sep 11, 10:58 PM");
+    (LS_OK?"Saved in this browser. Build Sep 12, 12:21 AM":"This browser is not saving anything. Build Sep 12, 12:21 AM");
 })();
 </script>
 
