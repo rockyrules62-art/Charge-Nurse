@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 12, 4:46 PM-->
+<!--TROPHOS-BUILD:Sep 12, 10:23 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -947,6 +947,16 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 /* inside a door the nurse is inside: the figure on the street steps aside, and the room sits above everything */
 .advwrap:has(.advsheet.inside) .advwalklayer{visibility:hidden}
 .advsheet{position:relative;z-index:4}
+/* 12 Sep: a healed house is a full-screen moment. The sheet covers the whole
+   screen, the wood dims behind it, and Onward is the only thing to do. */
+.advsheet.cheer,body.advfull .advwrap .advsheet.cheer{position:fixed;inset:0;z-index:90;max-height:none;height:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:calc(24px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom));border:0;border-radius:0;
+  background:radial-gradient(120% 90% at 50% 0%,rgba(14,124,112,.55),rgba(6,20,28,.86));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);overflow:auto}
+.advsheet.cheer .advtalk{width:min(560px,100%)}
+.advsheet.cheer .advnpc.angelcard{width:min(560px,100%)}
+.advsheet.cheer .advreveal b{font-size:clamp(26px,6vw,36px)}
+.advsheet.cheer .advbtns{justify-content:center;margin-top:10px}
+.advsheet.cheer .advbtns .btn.primary{font-size:18px;padding:14px 34px;border-radius:14px;box-shadow:0 12px 28px -12px #000}
 .advscene.advarrive .advworld{animation:advarrive .45s ease-out}
 @keyframes advarrive{from{opacity:0}to{opacity:1}}
 .advgatego:hover .advsign,.advgatego:hover path{filter:none}
@@ -1244,7 +1254,7 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 @keyframes foecast{from{transform:scale(1)}to{transform:scale(1.08) rotate(-3deg);filter:brightness(.7) saturate(1.4)}}
 /* Bedside monitors, one per side: dark glass, a live trace across the top,
    and the patient's condition in the words a hospital actually uses. */
-.fpanel{position:absolute;z-index:5;padding:9px 12px 10px;border-radius:13px;min-width:160px;
+.fpanel{position:absolute;z-index:5;padding:7px 12px 8px;border-radius:12px;min-width:0;width:224px;height:82px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;
   background:linear-gradient(180deg,#132623,#0C1A18);color:#DDF5EE;
   border:1px solid rgba(74,222,155,.28);
   box-shadow:0 10px 24px rgba(8,22,20,.35),inset 0 0 0 1px rgba(255,255,255,.04),0 0 0 3px rgba(12,26,24,.18)}
@@ -1277,7 +1287,9 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 .fpanel .fhp span{background:linear-gradient(90deg,#FF9A4D,#FF3B5C);transition:width .35s cubic-bezier(.2,.8,.3,1);
   box-shadow:0 0 8px rgba(255,59,92,.55)}
 .fpanel .fhpn{margin-top:3px;color:#9FC9BD}
-.fpanel .fhearts{margin-top:6px}
+.fpanel .fhearts{margin-top:5px}
+.fwho{display:flex;align-items:baseline;gap:7px;min-width:0}.fwho b{flex:none}
+.fwho .frank{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#9FC9BD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .fpanel .fheart{color:rgba(255,255,255,.22)}
 .fpanel .fheart.on{color:#FF5C78}
 .fheart.lost{animation:heartpop .4s ease forwards}
@@ -1333,7 +1345,7 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
   color:var(--faint);font-weight:700}
 .fmsg.pop{animation:msgpop .25s ease}
 @keyframes msgpop{from{transform:translateY(4px);opacity:.4}}
-@media (max-width:430px){
+@media (max-width:600px){
   .corridor{grid-template-columns:repeat(3,1fr);gap:12px 6px;padding:12px 8px 8px}
   .wingart{height:92px}.wingt b{font-size:17px}
   .hrframe{width:76px;height:106px}
@@ -1346,11 +1358,12 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
   .farena.onfloor .foe{width:112px;height:112px;right:6%;bottom:26px}
   .farena.onfloor .fground.gfoe{right:calc(6% - 16px);bottom:10px;width:146px}
   .farena.onfloor .fground.gme{left:calc(6% - 26px);width:150px}
-  /* two monitors over a 366px floor: split the width instead of overlapping */
-  .fpanel{min-width:0;padding:6px 9px 7px}
-  .fpanel.pme{max-width:33%}
-  .fpanel.pfoe{max-width:56%}
-  .fpanel b{max-width:100%;font-size:10.5px}
+  /* two monitors over a 366px floor: split the width instead of overlapping,
+     and let a long rank name wrap rather than push the box wider */
+  .fpanel{min-width:0;padding:6px 10px 7px;width:calc(50% - 12px);height:68px}
+  .fpanel.pme{left:8px;top:8px;max-width:none}
+  .fpanel.pfoe{right:8px;top:8px;max-width:none}
+  .fpanel b{max-width:100%;font-size:10.5px;white-space:normal;line-height:1.3;padding-right:2px}
   .fpanel .ecg{height:9px;margin:-1px 0 3px}
   .fpanel .fhearts{flex-wrap:wrap;gap:2px}
   .fpanel .fheart{font-size:16px}
@@ -2686,7 +2699,7 @@ body.gated{overflow:hidden}
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pwho .psub{display:block;font:600 11px "IBM Plex Mono",monospace;font-style:normal;
   color:var(--muted);margin-top:2px}
-.pme{display:inline-block;font:700 9.5px "IBM Plex Mono",monospace;font-style:normal;
+.pwho .pme{display:inline-block;font:700 9.5px "IBM Plex Mono",monospace;font-style:normal;
   letter-spacing:.1em;text-transform:uppercase;color:var(--accent-txt);
   border:1px solid var(--accent);border-radius:999px;padding:1px 5px;margin-left:6px;
   vertical-align:1px}
@@ -8922,7 +8935,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 12, 4:46 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 12, 10:23 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -10926,7 +10939,8 @@ function viewNurse(){
       '<div>'+
         '<div class="rankname">A nurse who ranks up with you</div>'+
         '<div class="note" style="margin-top:7px;max-width:46ch">Pick how your nurse looks and they appear here, carrying only what you have earned. They start in plain scrubs. Every rank hands them something new \u2014 a stethoscope, a clipboard, a scrub cap, eventually a student of their own. You will not know what is coming until you get there.</div>'+
-        '<div class="row" style="margin-top:14px"><button class="btn primary" id="avEdit">'+(av.set?'Show your nurse':'Make your nurse')+'</button></div>'+
+        '<div class="row" style="margin-top:14px"><button class="btn primary" id="avEdit">'+(av.set?'Show your nurse':'Make your nurse')+'</button>'+
+          '<button class="btn sm ghost" id="tourBtn">Tutorial</button></div>'+
       '</div>'+
     '</div>'+
     trophyDrawer()+shopSection()+accountSection()+usageSection()+settingsSection();
@@ -10934,7 +10948,7 @@ function viewNurse(){
   const got=GEAR.filter(g=>li.tier>=g.lv), nextUp=GEAR.find(g=>li.tier<g.lv);
   return ''+
   '<div class="vhead"><div><h1>Your nurse</h1><p>Level '+li.lvl+' of '+LEVEL_MAX+' &mdash; '+esc(li.rank)+'.</p></div>'+
-  '<div class="row"><button class="btn sm" id="avEdit">Change how they look</button><button class="btn sm lkbtn" id="lkOpen">The locker &middot; $'+dollars()+'</button><button class="btn sm ghost" id="avOff">Hide them</button></div></div>'+
+  '<div class="row"><button class="btn sm" id="avEdit">Change how they look</button><button class="btn sm lkbtn" id="lkOpen">The locker &middot; $'+dollars()+'</button><button class="btn sm ghost" id="avOff">Hide them</button><button class="btn sm ghost" id="tourBtn">Tutorial</button></div></div>'+
   '<div class="card pad" style="margin-bottom:16px"><span class="eyebrow">Where they turn up</span>'+
     '<div class="note" style="margin:5px 0 10px;max-width:60ch">They walk into the corner when you tick something off, say what you earned, and go. Pin them and they stay \u2014 though a figure that never leaves the corner does stop being a treat.</div>'+
     '<div class="row">'+
@@ -11902,7 +11916,7 @@ function settingsSection(){
       '<div class="row"><button class="btn sm" id="backupBtn2">Back it up to a file</button></div>'+
     '</div>'+
     '<div class="dwpad" style="border-top:1px solid var(--line-soft)"><span class="eyebrow">The walkthrough</span>'+
-      '<div class="note" style="margin:5px 0 10px">Four cards, one per tab. It runs once on a first open and then stays out of your way.</div>'+
+      '<div class="note" style="margin:5px 0 10px">Six cards, one per tab. It never opens on its own \u2014 run it from here or from the Tutorial button at the top of this tab.</div>'+
       '<div class="row"><button class="btn sm" id="tourAgain">Show it again</button></div>'+
     '</div>'+
     /* Which copy of the app is this? Without a stamp on the screen there is no
@@ -16386,7 +16400,8 @@ function advTree(s,healed,visited,seed,plain){
         '<circle cx="'+(cx-rr*0.3).toFixed(1)+'" cy="'+(cy-rr*0.35).toFixed(1)+'" r="'+(rr*0.32).toFixed(1)+'" fill="'+c[1]+'" opacity=".9"/>';}
     for(let i=0;i<5;i++){const cx=((r()*2-1)*T*3.6).toFixed(0),c=FR[i%4];
       blossoms+='<circle cx="'+cx+'" cy="'+(2+r()*6).toFixed(0)+'" r="'+(4+r()*2).toFixed(1)+'" fill="'+c[0]+'" stroke="#5A2A1A" stroke-width=".8"/>';}
-    blossoms+='<circle cx="0" cy="-'+(H*0.72).toFixed(0)+'" r="'+(T*5.4).toFixed(0)+'" fill="#FFD166" opacity=".16" class="advglow"/>';
+    /* 12 Sep: no halo round a healed tree - the fruit and the person on the
+       porch say it well enough */
   }
   /* the trunk: flared roots, a taper, bark lines, a knot */
   const trunk='<path d="M'+(-T*2.4)+' 4C'+(-T*1.6)+' -4 '+(-T*1.2)+' -18 '+(-T*1.05)+' -40C'+(-T*1.1)+' '+(-H*0.3).toFixed(0)+' '+(-T*0.7)+' '+(-H*0.5).toFixed(0)+' '+(-T*0.55)+' '+(-H*0.62).toFixed(0)+'L'+(T*0.55)+' '+(-H*0.62).toFixed(0)+'C'+(T*0.7)+' '+(-H*0.5).toFixed(0)+' '+(T*1.1)+' '+(-H*0.3).toFixed(0)+' '+(T*1.05)+' -40C'+(T*1.2)+' -18 '+(T*1.6)+' -4 '+(T*2.4)+' 4Z" fill="'+bark+'"/>'+
@@ -17742,7 +17757,7 @@ function viewFight(){
           '<circle class="val '+cond.c+'" id="fring" cx="22" cy="22" r="18" stroke-dasharray="'+(DH_C*hpShow/F.hpMax).toFixed(1)+' 999"/></svg>'+
           '<b id="fhpn">'+hpShow+'</b></div>'+
         '<div class="fmontxt"><b id="foeName"'+(known?'':' class="pending"')+'>'+(known?esc(b.name):'Dx pending')+'</b>'+
-          '<div class="fhpn"><span class="fdhl">DH</span><span id="fhpleft">'+hpShow+' right answer'+(hpShow===1?'':'s')+' to go</span></div>'+
+          /* 12 Sep: the ring already says how many are left; no line under the name */
           '<span id="fcond" class="fcond '+cond.c+'">'+cond.w+'</span></div>'+
       '</div></div>'+
     '<div class="fstage">'+
@@ -17752,7 +17767,7 @@ function viewFight(){
     '<div class="fnurse" id="nurseEl">'+nurseAvatar(li.tier,190,null,true)+'</div>'+
     '</div>'+
     '<div class="sfx"><i class="a"></i><i class="b"></i></div>'+
-    '<div class="fpanel pme">'+ECG+'<b>'+esc(li.rank)+'</b><div class="fhearts" id="fhearts">'+heartsRow(heartsShow)+'</div></div>'+
+    '<div class="fpanel pme">'+ECG+'<div class="fwho"><b>Nurse</b><span class="frank">'+esc(li.rank)+'</span></div><div class="fhearts" id="fhearts">'+heartsRow(heartsShow)+'</div></div>'+
     '<div class="fx" id="fx"></div>'+
   '</div>'+
   '<div class="fmsg" id="fmsg">'+(F.over?(F.over==="won"?esc(b.name)+' resolved. Patient discharged.':F.over==="lost"?'Out of hearts. Backup is taking over.':'End of shift. '+esc(b.name)+' is still on the floor.')
@@ -18247,7 +18262,7 @@ const TOUR=[
  {nav:"study",t:"Study",d:"Practice questions written only from your own slides and lectures. Pick a class, run a practice round, take the module quiz, try the Gauntlet, and open \u201cWhat you need to work on\u201d to see what you keep missing."},
  {nav:"fight",t:"Fight",d:"Every disease is a patient. Journey walks you through Vaelith, the wood, door to door with a nurse angel beside you; or choose Just fight instead for the plain corridor. Healing a patient means answering their questions right."},
  {nav:"trophies",t:"Progress",d:"Your rank, your accuracy, your strengths by topic and by kind of question, and the trophies. Tap a kind of question to see every one you have answered in it."},
- {nav:"nurse",t:"Nurse",d:"Build a nurse who ranks up as you work. The locker is in here, and so are Settings \u2014 backups, the theme, and this walkthrough if you want it again."}];
+ {nav:"nurse",t:"Nurse",d:"Build a nurse who ranks up as you work. The locker is in here, and so are Settings \u2014 backups and the theme. The Tutorial button at the top of this tab runs this walkthrough again whenever you want it."}];
 let tourAt=-1, tourFrom=null;
 function tourStep(n){
   $$(".navbtn").forEach(b=>b.classList.remove("lit"));
@@ -18293,15 +18308,22 @@ function tourStep(n){
    someone the same four cards forever is worse than their missing card three,
    so it is marked the moment it OPENS. Replaying it is a deliberate act now:
    Nurse -> Settings -> Show the walkthrough again. */
+/* 12 Sep: nothing opens by itself on a first visit any more. The walkthrough
+   is a button on the Nurse tab (and under Settings); the latch is still set
+   so an older copy of the profile cannot bring the old behaviour back. */
 function maybeTour(){
-  if(S.profile.toured)return false;
-  S.profile.toured=today();saveCore();
-  setTimeout(()=>tourStep(0),450);
-  return true;
+  if(!S.profile.toured){S.profile.toured=today();saveCore();}
+  return false;
 }
 function replayTour(){tourAt=-1;tourStep(0);}
+/* 12 Sep: the sheet is retired. Everyone is on Standard, ten a day, and the
+   tier can still be changed by hand on the Nurse page; nobody is asked. The
+   latch is still set so an older copy of the profile never brings it back. */
 async function maybeTierPrompt(){
   const p=S.profile;
+  if(!p.tierPrompted){p.tierPrompted=today();await saveCore();}
+  return;
+  /* eslint-disable-next-line no-unreachable */
   if(p.tierPrompted||onProbation()||!p.tierSeed)return;
   p.tierPrompted=today();await saveCore();
   const have=week1Have();
@@ -22377,7 +22399,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 12, 4:46 PM":"This browser is not saving anything. Build Sep 12, 4:46 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 12, 10:23 PM":"This browser is not saving anything. Build Sep 12, 10:23 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22572,6 +22594,7 @@ function wire(){
     avOff:()=>{S.profile.avatar=Object.assign({},S.profile.avatar,{on:false});saveCore();render();},
     calExpand:()=>{calFull=true;render();},calShrink:()=>{calFull=false;render();},
     tourAgain:()=>replayTour(),
+    tourBtn:()=>replayTour(),
     calMore:calMoreMenu,
     dayBar:dayByDay,
     bfDay:dayByDay,
@@ -22884,7 +22907,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 12, 4:46 PM":"This browser is not saving anything. Build Sep 12, 4:46 PM");
+    (LS_OK?"Saved in this browser. Build Sep 12, 10:23 PM":"This browser is not saving anything. Build Sep 12, 10:23 PM");
 })();
 </script>
 
