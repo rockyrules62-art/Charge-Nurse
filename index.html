@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 15, 9:59 AM-->
+<!--TROPHOS-BUILD:!Sep 15, 10:20 AM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -8380,7 +8380,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 15, 9:59 AM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 15, 10:20 AM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -8851,8 +8851,24 @@ function seedQuestions(){
          class at all and both cards said "no questions yet". */
       if(cur.gate!==wantGate||cur.unit!==q.unit||cur.courseId!==cid){cur.gate=wantGate;cur.unit=q.unit;cur.courseId=cid;added.push(cur);did=true;}
       const wantTier=q.tier||tierFromLevel(q.level||q.tier||1);
-      const wantCs=q.cs?JSON.stringify(q.cs):"";
-      if(cur.stem!==q.stem||cur.rationale!==q.rationale||(q.errs&&!cur.errs)||(q.drug&&cur.drug!==q.drug)||cur.tier!==wantTier||cur.k!==(q.k||"mc")||cur.qtype!==(q.type||"")||(cur.cs?JSON.stringify(cur.cs):"")!==wantCs){
+      /* Everything the seed decides, compared in one go.
+         This used to be a hand-written list of a few fields, and anything not
+         on that list could not be corrected after a question had shipped: put
+         a wing on an existing question and every saved bank kept wing:"", so
+         the eye/ear tiles stayed empty while a third tile held the whole
+         module. Stem and rationale are only two of the things a question is,
+         so the test is now every field the seed owns - change one and the
+         change lands. History (seen, wrong, lastSeen) is not in here and is
+         never touched. */
+      const sig=x=>JSON.stringify([x.stem,x.options,x.answer,x.answers||null,x.k,x.rationale,
+        x.unit,x.tier,x.level,x.errs||null,!!x.prime,!!x.extra,x.off||"",x.wing||"",!!x.ward,
+        x.cat||"",x.watch||"",x.struct||"",x.qtype||"",x.cs||null,x.drug||"",x.ang||""]);
+      const want={stem:q.stem,options:q.options,answer:q.answer,answers:q.answers||null,
+        k:q.k||"mc",rationale:q.rationale,unit:q.unit,tier:wantTier,level:q.level||q.tier||1,
+        errs:q.errs||null,prime:!!q.prime||!!q.extra||!!q.off||!!q.ward,extra:!!q.extra,
+        off:q.off||"",wing:q.wing||"",ward:!!q.ward,cat:q.cat||"",watch:q.watch||"",
+        struct:q.struct||"",qtype:q.type||"",cs:q.cs||null,drug:q.drug||"",ang:q.ang||""};
+      if(sig(cur)!==sig(want)){
         cur.stem=q.stem;cur.options=q.options;cur.answer=q.answer;cur.k=q.k||"mc";cur.answers=q.answers||null;cur.rationale=q.rationale;cur.unit=q.unit;cur.tier=wantTier;cur.level=q.level||q.tier||1;cur.errs=q.errs||null;cur.prime=!!q.prime||!!q.extra||!!q.off||!!q.ward;cur.extra=!!q.extra;cur.off=q.off||"";cur.wing=q.wing||"";cur.ward=!!q.ward;cur.cat=q.cat||"";cur.watch=q.watch||"";cur.struct=q.struct||"";cur.qtype=q.type||"";cur.cs=q.cs||null;cur.drug=q.drug||"";cur.ang=q.ang||"";cur.gate=q.prime?null:(q.gate||null);
         added.push(cur);did=true;
       }
@@ -22053,7 +22069,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 15, 9:59 AM":"This browser is not saving anything. Build Sep 15, 9:59 AM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 15, 10:20 AM":"This browser is not saving anything. Build Sep 15, 10:20 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22570,7 +22586,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 15, 9:59 AM":"This browser is not saving anything. Build Sep 15, 9:59 AM");
+    (LS_OK?"Saved in this browser. Build Sep 15, 10:20 AM":"This browser is not saving anything. Build Sep 15, 10:20 AM");
 })();
 </script>
 
