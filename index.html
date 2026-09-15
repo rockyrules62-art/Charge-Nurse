@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 14, 7:23 AM-->
+<!--TROPHOS-BUILD:Sep 15, 9:59 AM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3035,7 +3035,9 @@ body.ncheer #toasts{top:18px}
     <div class="railfoot">
       <button class="btn sm ghost" id="themeBtn">Switch theme</button>
       <button class="btn sm ghost" id="backupBtn">Backup</button>
+      <button class="btn sm ghost" id="updBtn">Check for updates</button>
       <div class="note" id="storeNote"></div>
+      <div class="note" id="buildNote"></div>
       
     </div>
   </nav>
@@ -8378,41 +8380,85 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 14, 7:23 AM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 15, 9:59 AM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
    the laptop does not, and nothing on screen says which you are looking at.
    The shipped file carries its build in its first bytes, so this asks the
    server for just those bytes and speaks up when they differ. */
-let UPD_AT=0, UPD_NEW=null;
+let UPD_AT=0, UPD_NEW=null, UPD_FORCE=false, UPD_WAIT=false;
 function updMark(t){const m=/<!--TROPHOS-BUILD:(.*?)-->/.exec(t||"");return m?m[1]:null;}
+/* A build stamped with a leading "!" is one everybody has to be on - a fixed
+   bank, a corrected answer. Those reload themselves. Everything else waits
+   politely behind the bar, because pulling someone out of a question to hand
+   them a nicer button is not worth it. */
+const updForced=b=>String(b||"").charAt(0)==="!";
+const updWhen=b=>String(b||"").replace(/^!/,"");
+/* Ask the server for the file's first bytes only. The unique query defeats
+   every cache between here and the host; the range keeps it to half a kilobyte
+   where it is honoured, and the reader is dropped after one chunk where it is
+   not, so a phone on cellular never pulls the whole file to read its date. */
+function updFetch(url){
+  const ac=("AbortController" in window)?new AbortController():null;
+  return fetch(url,{cache:"no-store",headers:{Range:"bytes=0-511"},signal:ac?ac.signal:undefined})
+    .then(r=>{
+      if(!r.ok&&r.status!==206)return null;
+      if(!r.body||!r.body.getReader)return r.text();
+      const rd=r.body.getReader();
+      return rd.read().then(({value})=>{
+        try{if(ac)ac.abort();}catch(e){}
+        return value?new TextDecoder().decode(value):"";
+      });
+    });
+}
 function updCheck(){
-  if(UPD_NEW||BUILD==="dev")return;
+  if(BUILD==="dev")return;
   if(location.protocol!=="http:"&&location.protocol!=="https:")return;
   const now=Date.now();
   if(now-UPD_AT<60000)return;                 /* never more than once a minute */
   UPD_AT=now;
-  /* the query defeats any cache between here and the file; the range keeps it
-     to half a kilobyte on a server that honours it */
-  fetch(location.pathname+"?_v="+now,{cache:"no-store",headers:{Range:"bytes=0-511"}})
-    .then(r=>(r.ok||r.status===206)?r.text():null)
+  updFetch(location.pathname+"?_v="+now)
     .then(t=>{const b=updMark(t);
-      if(b&&b!==BUILD){UPD_NEW=b;updBar();}})
+      if(!b||b===BUILD)return;
+      UPD_NEW=b;UPD_FORCE=updForced(b);
+      if(UPD_FORCE)updGo(); else updBar();})
     .catch(()=>{});
+}
+/* Reload onto a URL this browser has never seen, so no cache anywhere can hand
+   back the copy it already has. A forced build still waits for the end of a
+   question rather than yanking the screen away mid-answer. */
+function updGo(){
+  if(UPD_FORCE&&vitalsBusy()){
+    if(!UPD_WAIT){UPD_WAIT=true;setInterval(()=>{if(!vitalsBusy())updGo();},4000);}
+    updBar();return;
+  }
+  location.replace(location.pathname+"?v="+encodeURIComponent(UPD_NEW||Date.now()));
 }
 function updBar(){
   if(document.getElementById("updBar"))return;
   const d=document.createElement("div");
   d.id="updBar";d.className="updbar";
-  d.innerHTML='<span>A newer Trophos is ready. Your progress is saved.</span>'+
+  d.innerHTML='<span>'+(UPD_FORCE
+      ? 'A corrected Trophos is ready \u2014 loading it as soon as you finish this question.'
+      : 'A newer Trophos is ready. Your progress is saved.')+'</span>'+
     '<button type="button" id="updGo">Get it</button>';
   document.body.appendChild(d);
-  d.querySelector("#updGo").onclick=()=>{
-    /* a plain reload can hand back the same cached copy, so ask for a URL the
-       browser has never seen */
-    location.replace(location.pathname+"?v="+encodeURIComponent(UPD_NEW));
-  };
+  d.querySelector("#updGo").onclick=()=>{UPD_FORCE=false;updGo();};
+}
+/* The same check, on demand, with an answer either way - so "am I on the new
+   one?" is a question the app can settle instead of a guess. */
+function updNow(){
+  if(BUILD==="dev"){toast("Development copy","This build is not from the site, so there is nothing to compare it against.");return;}
+  if(location.protocol!=="http:"&&location.protocol!=="https:"){
+    toast("Opened from a file","Updates only work on the live site.");return;}
+  toast("Checking\u2026","Asking the site which build is up.");
+  updFetch(location.pathname+"?_v="+Date.now())
+    .then(t=>{const b=updMark(t);
+      if(!b){toast("Could not tell","The site did not answer with a build stamp. Try again in a moment.");return;}
+      if(b===BUILD){toast("You are up to date","This is the newest Trophos \u2014 built "+updWhen(BUILD)+".");return;}
+      UPD_NEW=b;UPD_FORCE=false;updGo();})
+    .catch(()=>{toast("Could not reach the site","Check the connection and try again.");});
 }
 const LIB_OWNER="trophosapp@gmail.com";             /* who may post to the library; _dist.py fills it */
 const SUPA={url:"https://ezvnzvvdpbrjtdifqjhk.supabase.co",key:"sb_publishable_jiiuzrdjTCiBFj2IV0-0Eg_1vVHIJAb"};
@@ -11438,7 +11484,8 @@ function settingsSection(){
        way to tell a stale upload from a fresh one, and the guessing wastes an
        afternoon. It is the build the file was made from, nothing more. */
     '<div class="dwpad" style="border-top:1px solid var(--line-soft)"><span class="eyebrow">This copy</span>'+
-      '<div class="note" style="margin:5px 0 0">Build <b>'+esc(BUILD)+'</b> \u00b7 '+((S.questions||[]).length)+' questions loaded</div>'+
+      '<div class="note" style="margin:5px 0 0">Build <b>'+esc(updWhen(BUILD))+'</b> \u00b7 '+((S.questions||[]).length)+' questions loaded</div>'+
+      '<div class="row" style="margin-top:10px"><button class="btn sm" id="updBtn2">Check for updates</button></div>'+
     '</div>',false);
 }
 function shopSection(){
@@ -22003,9 +22050,10 @@ function wire(){
     if(e){setRemind(e,null);toast("Reminder off",esc(shortTitle(e)||e.title)+" will not come up here again.");render();}});
 
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
+  {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 14, 7:23 AM":"This browser is not saving anything. Build Sep 14, 7:23 AM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 15, 9:59 AM":"This browser is not saving anything. Build Sep 15, 9:59 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22394,6 +22442,8 @@ async function backupModal(){
   };
 }
 $("#backupBtn").onclick=backupModal;
+{const ub=$("#updBtn");if(ub)ub.onclick=()=>updNow();
+ const bn=$("#buildNote");if(bn)bn.textContent=BUILD==="dev"?"":("Build "+updWhen(BUILD));}
 $("#themeBtn").onclick=()=>{
   const cur=document.documentElement.getAttribute("data-theme");
   const dark=cur?cur==="dark":window.matchMedia("(prefers-color-scheme:dark)").matches;
@@ -22520,7 +22570,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 14, 7:23 AM":"This browser is not saving anything. Build Sep 14, 7:23 AM");
+    (LS_OK?"Saved in this browser. Build Sep 15, 9:59 AM":"This browser is not saving anything. Build Sep 15, 9:59 AM");
 })();
 </script>
 
