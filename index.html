@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Sep 15, 10:20 AM-->
+<!--TROPHOS-BUILD:!Sep 15, 10:35 AM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -8380,7 +8380,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Sep 15, 10:20 AM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 15, 10:35 AM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -8616,7 +8616,7 @@ async function pullProgress(){
   applyMine(use);
   LS.set("cn_mine",use);
   /* the account may carry ids another device made before ids became canonical */
-  if(canonCourseIds()){seedQuestions();reapplyDone();}
+  if(canonCourseIds()){seedQuestions();dropRetiredQuestions();reapplyDone();}
   /* if this device held the newer copy, hand it up so the account catches up */
   if(use===local&&remote)pushProgress(true);
   return true;
@@ -8830,6 +8830,26 @@ function dropDeadQuestions(){
   if(hit){LS.set("cn_questions",all);
     if(DB&&sharedRW)DEAD_QUESTIONS.forEach(id=>{try{DB.doc("questions/"+id).delete();}catch(e){}});}
   return first||hit;
+}
+/* A question that no longer ships has to leave, and naming each one by hand in
+   DEAD_QUESTIONS only retires the ones somebody remembered to list. A saved
+   bank is the sum of every build it has ever seen, so questions dropped or
+   re-identified in an old release sat on in people's accounts - answered,
+   counted, and filling a tile of their own with material that is not on the
+   exam. Anything seeded that the shipped bank no longer knows about goes.
+   Only seeded questions: anything written from an uploaded lecture has its own
+   materialId and is the user's, not ours. */
+function dropRetiredQuestions(){
+  if(!SEED_QUESTIONS.length)return false;
+  const live={};SEED_QUESTIONS.forEach(q=>{live[q.qid]=1;});
+  const dead=S.questions.filter(q=>q.materialId==="seed"&&!live[q.id]).map(q=>q.id);
+  if(!dead.length)return false;
+  const all=LS.get("cn_questions",{});
+  dead.forEach(id=>{delete all[id];if(MINE.qstats)delete MINE.qstats[id];});
+  LS.set("cn_questions",all);
+  S.questions=S.questions.filter(q=>dead.indexOf(q.id)<0);
+  if(DB&&sharedRW)dead.forEach(id=>{try{DB.doc("questions/"+id).delete();}catch(e){}});
+  return true;
 }
 function seedQuestions(){
   if(!SEED_QUESTIONS.length||!S.courses.length)return false;
@@ -22069,7 +22089,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 15, 10:20 AM":"This browser is not saving anything. Build Sep 15, 10:20 AM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 15, 10:35 AM":"This browser is not saving anything. Build Sep 15, 10:35 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22526,7 +22546,7 @@ function firstRunAvatar(){
   dropCourses();
   resetSeeded();
   seedCourses();
-  seedQuestions();
+  seedQuestions();dropRetiredQuestions();
   reapplyDone();
   syncLatches();
   checkTrophies(true);
@@ -22569,7 +22589,7 @@ function firstRunAvatar(){
       catch(err){if(err&&(err.code==="invalid_argument"||err.code==="permission_denied"))sharedRW=false;}
       await loadAll();
       canonCourseIds();
-      if(sharedRW){dropCourses();resetSeeded();seedCourses();seedQuestions();}reapplyDone();if(sharedRW&&[migrateJoined(),migrateReplies(),migrateNotes(),migrateModules(),migrateLoginsToEvents(),recolourCourses(),migrateTiers(),repairEvents(),repairXp()].some(Boolean))saveCore();reapplyDone();focusMonth();
+      if(sharedRW){dropCourses();resetSeeded();seedCourses();seedQuestions();dropRetiredQuestions();}reapplyDone();if(sharedRW&&[migrateJoined(),migrateReplies(),migrateNotes(),migrateModules(),migrateLoginsToEvents(),recolourCourses(),migrateTiers(),repairEvents(),repairXp()].some(Boolean))saveCore();reapplyDone();focusMonth();
       const n=$("#storeNote");if(n)n.textContent="Saved to your account.";
       render();
     }).catch(()=>{});
@@ -22586,7 +22606,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 15, 10:20 AM":"This browser is not saving anything. Build Sep 15, 10:20 AM");
+    (LS_OK?"Saved in this browser. Build Sep 15, 10:35 AM":"This browser is not saving anything. Build Sep 15, 10:35 AM");
 })();
 </script>
 
