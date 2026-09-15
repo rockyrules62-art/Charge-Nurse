@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Sep 15, 12:05 PM-->
+<!--TROPHOS-BUILD:!Sep 15, 1:03 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -552,9 +552,15 @@ body.fightfull .ffull .fq{margin:6px 0 8px}
 .fmore i{display:inline-block;font-style:normal;transform:translateY(1px)}
 @keyframes fmorebob{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
 @media (prefers-reduced-motion:reduce){.fmore{animation:none}}
+/* The floor is 30vh tall in full screen, so the two of them have to scale
+   with it at every window height - not only under 760px. A laptop browser
+   sits just above that line, and the nurse stood 190px tall in a 231px room
+   with her face under the monitor. Their heads now clear the monitors
+   (bottom edge 94px) whatever the window: at 30vh the nurse's crown lands at
+   the 96px line and the foe's at 100px. */
+body.fightfull .ffull .farena.onfloor .fnurse svg{height:clamp(104px,calc(30vh - 118px),190px);height:clamp(104px,calc(30dvh - 118px),190px)}
+body.fightfull .ffull .farena.onfloor .foe{width:clamp(76px,calc(30vh - 130px),130px);height:clamp(76px,calc(30vh - 130px),130px);width:clamp(76px,calc(30dvh - 130px),130px);height:clamp(76px,calc(30dvh - 130px),130px)}
 @media (max-height:760px){
-  body.fightfull .ffull .farena.onfloor .fnurse svg{height:min(158px,22vh)}
-  body.fightfull .ffull .farena.onfloor .foe{width:min(112px,16vh);height:min(112px,16vh)}
   body.fightfull .ffull .fpanel{padding:5px 8px 6px}
   body.fightfull .ffull .fpanel .fhpn{display:none}
   body.fightfull .ffull .fopt{padding:9px 11px;font-size:14px}
@@ -601,6 +607,14 @@ body.fightfull .ffull .fq{margin:6px 0 8px}
 .fres.ok{background:color-mix(in srgb,#2FA36B 16%,transparent);color:#1E7A4E}
 .fres.no{background:color-mix(in srgb,#E5484D 15%,transparent);color:#B3373B}
 .fover{text-align:center}
+.recap{margin-top:14px;text-align:left}
+.rchead{display:flex;flex-direction:column;gap:2px;margin-bottom:12px}
+.rchead b{font-family:"Bricolage Grotesque",sans-serif;font-size:19px;font-weight:800;line-height:1.15}
+.rchead i{font-style:normal;font-size:12.5px;color:var(--muted)}
+.rcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 22px}
+.rcp b{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.rcp ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:5px}
+.rcp li{font-size:13.5px;line-height:1.4}
 .frev{text-align:left;margin-top:16px;display:flex;flex-direction:column;gap:10px}
 .frev.clean{padding:10px 13px;border-radius:10px;background:color-mix(in srgb,#2FA36B 14%,transparent);color:#1E7A4E;font-size:13.5px}
 .frevr{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface-2)}
@@ -894,7 +908,7 @@ body.advfull .advscene{position:absolute;inset:0;height:auto}
 /* room to scroll the ground floor out from under the bar - painted as more
    ground, not left as a bare strip of the backdrop */
 body.advfull .advscene .advworld{padding-bottom:150px;background:#25503F}
-body.advfull .advwrap > :not(.advscene):not(.advtool):not(.advtools):not(.advskysign){position:absolute;left:0;right:0;bottom:0;max-height:60vh;max-height:60dvh;overflow:auto;padding-bottom:calc(12px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+body.advfull .advwrap > :not(.advscene):not(.advtool):not(.advtools):not(.advskysign):not(.cheer){position:absolute;left:0;right:0;bottom:0;max-height:60vh;max-height:60dvh;overflow:auto;padding-bottom:calc(12px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 body.advfull .advwhere{background:linear-gradient(180deg,rgba(15,27,25,0) 0%,rgba(15,27,25,.55) 22%,rgba(15,27,25,.82) 100%);border-top:0;padding-top:26px;-webkit-backdrop-filter:none;backdrop-filter:none}
 /* inside a door the room takes the whole screen, and the page scrolls as one
    piece - a sheet that scrolled inside itself lost the story below the fold */
@@ -3538,7 +3552,7 @@ const QUIZZES=[
   * ------------------------------------------------------------------ */
  {id:"t314-e1",c:"NUR 314",kind:"exam",exam:"314-3997640035",
   unit:"Module 3 — Drugs for neurocognitive & neuromuscular disorders",
-  n:"Exam 1 practice paper",opens:"2026-09-20",
+  n:"Exam 1",opens:"2026-09-20",
   covers:"A full paper across modules 1, 2 and 3, written at the difficulty of the real exam: case studies, select-alls, priority questions and drugs from all three modules mixed the way an exam mixes them.",
   qs:[
   /* ---- Case 1: Mrs. Okafor — the older adult on a full list ---- */
@@ -8266,7 +8280,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Sep 15, 12:05 PM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 15, 1:03 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -11715,14 +11729,24 @@ function avatarSetup(seed){
     const hex=()=>{const l=+light.value/100, s_=sat/100, c=(1-Math.abs(2*l-1))*s_, x=c*(1-Math.abs((h/60)%2-1)), m=l-c/2;
       const [r,g,b]=h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];
       return "#"+[r,g,b].map(v=>Math.round((v+m)*255).toString(16).padStart(2,"0")).join("");};
-    const show=()=>{const c=hex();prev.style.background=c;dot.style.left=(50+Math.cos(h*Math.PI/180)*sat/2)+"%";dot.style.top=(50+Math.sin(h*Math.PI/180)*sat/2)+"%";pick.eyes=c;draw();};
+    /* paint() only draws the wheel; show() is paint plus the pick. Opening the
+       builder used to call show(), which wrote the wheel's default brown over
+       whatever eye color was saved - so a green chosen last time came back
+       brown every time the builder opened, and looked like the wheel failing. */
+    const paint=()=>{const c=hex();prev.style.background=c;dot.style.left=(50+Math.cos(h*Math.PI/180)*sat/2)+"%";dot.style.top=(50+Math.sin(h*Math.PI/180)*sat/2)+"%";return c;};
+    const show=()=>{pick.eyes=paint();draw();};
+    /* start the wheel on the saved custom color, if there is one */
+    if(/^#[0-9a-f]{6}$/i.test(pick.eyes||"")){const r=parseInt(pick.eyes.slice(1,3),16)/255,g=parseInt(pick.eyes.slice(3,5),16)/255,bl=parseInt(pick.eyes.slice(5,7),16)/255;
+      const mx=Math.max(r,g,bl),mn=Math.min(r,g,bl),l=(mx+mn)/2,d=mx-mn;
+      if(d>0){h=(mx===r?((g-bl)/d)%6:mx===g?(bl-r)/d+2:(r-g)/d+4)*60;if(h<0)h+=360;sat=Math.round(d/(1-Math.abs(2*l-1))*100);}else{sat=0;}
+      light.value=Math.round(Math.max(18,Math.min(70,l*100)));}
     const at=e=>{const r=pad.getBoundingClientRect(), dx=e.clientX-r.left-r.width/2, dy=e.clientY-r.top-r.height/2;
       h=(Math.atan2(dy,dx)*180/Math.PI+360)%360;sat=Math.min(100,Math.hypot(dx,dy)/(r.width/2)*100);show();};
     let on=false;pad.addEventListener("pointerdown",e=>{on=true;pad.setPointerCapture(e.pointerId);at(e);});
     pad.addEventListener("pointermove",e=>{if(on)at(e);});pad.addEventListener("pointerup",()=>{on=false;});pad.addEventListener("pointercancel",()=>{on=false;});
     light.oninput=show;
     use.onclick=()=>{pick.eyes=hex();$("#avEPick").hidden=true;sync();};
-    show();
+    paint();
   })();
   $$("#avS .swatch").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.skin=b.dataset.s;sync();});
   $$("#avES .chip").forEach(b=>b.onclick=()=>{if(b.classList.contains("locked"))return toLocker(b.dataset.lk);pick.eyeshape=b.dataset.es;sync();});
@@ -11797,16 +11821,25 @@ function avatarSetup(seed){
   };
   $("#avSkip").onclick=()=>{S.profile.avatar=Object.assign({},S.profile.avatar,pick,{on:false});saveCore();closeModal();render();};
   const pv=$("#avPrev"); if(pv)pv.onclick=()=>nurseStage(pick);
-  $("#avSave").onclick=()=>{
+  const save=(quiet)=>{
     if(AV_SEED&&!S.profile.avatarSeed)S.profile.avatarSeed=AV_SEED;
     AV_SEED=null;
     S.profile.avatar=Object.assign({on:true},pick);saveCore();closeModal();
     const before=Object.keys(S.profile.trophies||{}).length;
     checkTrophies();                                   // pays out the design trophies
     render();
-    if(Object.keys(S.profile.trophies||{}).length===before)
+    if(!quiet&&Object.keys(S.profile.trophies||{}).length===before)
       toast("Looking good","They gain something new at every rank.",true);
   };
+  $("#avSave").onclick=()=>save(false);
+  /* Closing the builder keeps what was changed. Picking a new eye color on the
+     wheel and then pressing Close used to throw the color away, which read as
+     the wheel "not working". Close now saves, quietly; only "No thanks" is the
+     way out that leaves the nurse as they were. */
+  {const done=()=>{const same=JSON.stringify(Object.assign({on:true},S.profile.avatar||{}))===JSON.stringify(Object.assign({on:true},pick));
+     if(same||!(S.profile.avatar&&S.profile.avatar.on!==false)&&!Object.keys(pick).length){closeModal();return;}save(true);};
+   const mc=$("#mClose");if(mc)mc.onclick=done;
+   const veil=$("#veil");if(veil)veil.addEventListener("mousedown",e=>{if(e.target.id==="veil"){e.stopImmediatePropagation();done();}},true);}
   sync();
 }
 
@@ -12818,9 +12851,122 @@ const UNIT_TAKEAWAYS={
     "Start low and adjust to the response, and include the family in the teaching in case the client cannot manage the regimen alone.",
     "Re-evaluate an oral drug in 30 to 60 minutes and an intravenous one in 15.",
     "Check the number before you give the drug: a glucose before insulin, a temperature before an antipyretic, a blood pressure before an antihypertensive.",
-    "Reconcile the medication list, and work out the total daily dose the client is actually taking — especially with more than one prescriber."]
+    "Reconcile the medication list, and work out the total daily dose the client is actually taking — especially with more than one prescriber."],
+  "Module 2 — Drugs for the eye, ear & balance: The eye":[
+    "Eye drugs go on the eye: topical drops, suspensions and ointments are the most common and preferred route, and even an injection into the eye is local delivery. A drug reaches deeper eye tissue better when it is fat soluble, poorly protein bound, and when the eye is inflamed.",
+    "Atropine is the anticholinergic prototype: it dilates the pupil (mydriasis) and paralyzes accommodation (cycloplegia) so the examiner can see the vessels and structures behind the eye. Onset is 5 to 10 minutes and the effect can last 7 to 14 days — and it is contraindicated in glaucoma or a tendency toward it.",
+    "Phenylephrine is the adrenergic agonist: mydriasis without cycloplegia, working in 15 to 30 minutes and lasting 1 to 3 hours. Use it no longer than 72 hours, keep it away from hypertension, ventricular tachycardia and narrow-angle glaucoma, and check blood pressure and heart rate — systemic effects are rare but include dysrhythmia and hypertension.",
+    "After a dilating drop, teach the patient to expect photophobia and stinging, to wear sunglasses, and not to drive while vision is impaired — blurring and light sensitivity are reversible and fade with time.",
+    "Lidocaine is the topical anesthetic for procedures — tonometry, gonioscopy, injections, cataract surgery — with onset in 20 seconds to 5 minutes and a duration of 5 to 30 minutes. Never use a solution that has crystallized, never touch the eye with the applicator tip, and know that prolonged use can cloud the lens and cost vision.",
+    "Glaucoma is a buildup of intraocular pressure that damages the optic nerve. Normal IOP is under 21 mm Hg (average 15 to 16) and glaucoma is often above 22 — though it can occur at normal pressure. Tonometry is a puff of air, painless and noninvasive, and belongs in every routine eye exam because early diagnosis saves vision.",
+    "Closed-angle is the emergency: the angle is completely obstructed and no aqueous passes at all. Open-angle is the slow narrowing that takes peripheral vision first, so the person sees only what is straight ahead as the field closes in. Both lead to blindness if not managed.",
+    "Two ways to lower the pressure: beta blockers, alpha-2 agonists and carbonic anhydrase inhibitors suppress aqueous inflow; prostaglandin analogs, cholinergic agonists and rho kinase inhibitors increase outflow.",
+    "Prostaglandin analogs — bimatoprost (Lumigan), latanoprost — are the most widely prescribed glaucoma drugs: once-daily drops for open-angle glaucoma and ocular hypertension. They darken the iris and lengthen and darken the lashes, and they raise the risk of miscarriage and birth defects in pregnancy.",
+    "Timolol is the beta-blocker prototype: it cuts aqueous production, but the drop can act on the whole body, so it is contraindicated in asthma, COPD, heart failure, bradycardia and heart block. Punctal occlusion limits the systemic effect; burning and stinging are the most common local complaints.",
+    "Brimonidine (alpha-2 agonist) is added when a beta blocker is not enough or is contraindicated. Do not start it within 14 days of an MAO inhibitor; watch blood pressure, heart rate, and drowsiness or diminished alertness, and expect allergic conjunctivitis, redness or itching in 10 to 20% of patients.",
+    "Pilocarpine is the cholinergic: it constricts the pupil (miosis) and increases outflow, and it is the drug used for both chronic and acute angle-closure as well as chronic simple glaucoma. Ciliary spasm brings headache, and the small pupil makes vision dim — warn the patient about seeing in low light.",
+    "Acetazolamide is the oral carbonic anhydrase inhibitor that reduces aqueous formation. Give it with food, never to a sulfa allergy or severe kidney disease, and watch the CBC for anemia, the electrolytes for metabolic acidosis, and the skin for the redness and blisters of Stevens-Johnson — older adults with diabetes or kidney impairment are the ones most at risk of acidosis.",
+    "Mannitol IV is the osmotic drug for an acute attack or to bring the pressure down before surgery — temporary, never maintenance. It works in 15 to 30 minutes and is given 60 to 90 minutes before surgery; it pulls fluid, so check fluids, electrolytes and vital signs, and it is contraindicated in severe kidney failure, severe dehydration and pulmonary edema. Report severe headache, chest pain, confusion or rapid respirations.",
+    "Everyday drugs can trigger acute angle closure in a narrow-angled eye: atropine and other anticholinergics, phenylephrine and the decongestants, diphenhydramine and other antihistamines, albuterol, diuretics including hydrochlorothiazide and acetazolamide itself, topiramate, tricyclics, SSRIs and SNRIs, and amphetamines. Reconcile the medication list with a critical eye.",
+    "Glaucoma is managed, not cured: the drops are every day for the rest of their life, and without them the vision goes. Find out what stands between the patient and the medication — cost, access — and connect them to resources. A person with glaucoma takes no new drug without the ophthalmologist knowing, and wears medical alert identification.",
+    "Age-related macular degeneration is degeneration of the photoreceptors of the macula, so central vision goes first — things look fuzzy, straight lines look wavy — and it is age-related but not normal aging. Dry is more common and has few drugs: glycemic control, stop smoking, limit alcohol. Wet is the one with medication, and it is for life.",
+    "Wet AMD is treated with intravitreal VEGF inhibitors: bevacizumab and ranibizumab are given monthly for 3 to 6 months and then as needed or on a treat-and-extend schedule; aflibercept and faricimab are given as needed. The risks are retinal detachment, stroke and local injection reactions.",
+    "Photodynamic therapy is the other option for wet AMD: a light-sensitive dye is injected and a laser activates it to close the abnormal vessels. The patient avoids sunlight and bright light for 5 days afterward so the dye is not activated in vessels near the skin.",
+    "Ciprofloxacin drops are the prototype antibacterial for a corneal ulcer or bacterial conjunctivitis. No contact lenses during treatment, do not contaminate the tip, and long use invites superinfection — you know it is working when the redness and drainage decrease.",
+    "Trifluridine is the antiviral prototype for herpes simplex keratitis and keratoconjunctivitis. It is a hazardous drug — gloves to give it, refrigerate it, biohazard disposal — and herpetic eye infections recur and damage the cornea if untreated.",
+    "Natamycin is the antifungal for fungal conjunctivitis, keratitis and blepharitis — no contacts while the infection is visible. Cromolyn sodium, a mast cell stabilizer, is the antiallergic: allergic conjunctivitis is not contagious, and itching takes a few days and up to 4 weeks to settle.",
+    "Dexamethasone drops calm inflammation but raise IOP, and they are contraindicated in herpes simplex, fungal or mycobacterial eye infection and in advanced glaucoma. Diclofenac is the NSAID for inflammation after cataract surgery, and cyclosporine emulsion increases tear production in dry eye.",
+    "Giving a drop: wash hands, tilt the head back, pull the lower lid down, drop into the pocket without touching the tip to anything, then close the eye and press the inner corner for 3 to 5 minutes — nasolacrimal occlusion keeps the drug in the eye and out of the body. Wait 5 to 10 minutes between different drops, and remember absorption goes up when the eye is inflamed.",
+    "Soft contact lenses soak up the benzalkonium chloride preservative, so lenses come out and stay out for 15 minutes after a drop. Eye medications are for one person only, expired or cloudy or discolored solutions are discarded, and an ointment blurs vision — save it for bedtime.",
+    "Nonprescription drops like Visine are for no more than 48 to 72 hours — persistent irritation or redness gets reported. Regular eye exams and glaucoma testing start at age 40.",
+    "Straining at stool, heavy lifting, bending over, coughing and vomiting all raise IOP, which can damage the eye in glaucoma and after eye surgery — stool softeners if needed.",
+    "The teaching is what prevents blindness: putting drops in your own eye is not easy for everyone, so have the patient demonstrate it back to you and send written material home — chronic eye disease is managed one drop at a time for years."
+  ],
+  "Module 2 — Drugs for the eye, ear & balance: The ear & balance":[
+    "A drop in hearing needs a cause before it needs a treatment: impacted wax, a medication, occupational noise, tinnitus, infection, or normal age-related presbycusis. Persistent ringing in the ears is never normal — ask what drugs they are on and rule out an acoustic neuroma, a tumor of cranial nerve VIII.",
+    "External otitis (swimmer's ear) is inflammation of the outer ear, most often bacterial: pain and tenderness, discharge, edema, redness, itching, fullness and hearing loss. Therapy aims at the discomfort, the edema and the infection — and hearing-aid wearers and people with wet ears are the ones who get it.",
+    "Acute otitis externa is treated with drops, not pills — a topical drug puts a higher concentration on the infected tissue with fewer adverse effects. Pseudomonas or Staphylococcus gets ciprofloxacin otic solution; a systemic antibiotic is reserved for infection that spreads beyond the canal, reaches the pinna, or a patient who is immunocompromised.",
+    "Malignant (necrotizing) external otitis is the rare, progressive infection that eats into the canal, the surrounding tissue and the skull — pain worse at night and with chewing, then osteomyelitis and cranial nerve palsies, typically in an older adult with diabetes. Systemic ciprofloxacin is the drug of choice for adults, IV first and then oral, with about a 90% cure rate; cephalexin is preferred for children.",
+    "Systemic ciprofloxacin carries an FDA warning for disabling tendinitis and tendon rupture — highest over age 60, with a transplant, or on corticosteroids — plus peripheral neuropathy, QT prolongation and photosensitivity, and it can worsen weakness in myasthenia gravis. Report tendon pain, stay hydrated, use sunscreen, and keep it 2 hours away from dairy, calcium-fortified juice, antacids, zinc and iron.",
+    "Acute otitis media is the middle ear infection seen most in children: otalgia, fever and hearing loss, usually after an upper respiratory infection or allergic rhinitis. If the eardrum ruptures the pain suddenly eases. Treatment is antibiotics, with myringotomy or tympanotomy to drain the fluid.",
+    "Amoxicillin is the drug of choice for acute otitis media, and amoxicillin-clavulanate is first line — in most adults amoxicillin 875 mg with clavulanate 125 mg orally twice daily. The clavulanate restores activity against beta-lactamase producers like Haemophilus influenzae.",
+    "Penicillins are number one for an ear infection unless the patient cannot take them — then a cephalosporin such as cephalexin, cefuroxime, cefdinir or ceftriaxone. Amoxicillin itself is contraindicated with a known hypersensitivity to penicillin or cephalosporin.",
+    "Amoxicillin is taken in divided doses around the clock, within 1 hour of a meal, and the full course is finished even when the ear feels better. Hypersensitivity is the most common adverse effect — a rash up to anaphylaxis — so assess for wheezing, rash and trouble breathing, plus GI upset and superinfection. Probenecid raises its level, and it strengthens warfarin.",
+    "Amoxicillin is working when the otalgia and otorrhea fade, hearing returns as the drum's fullness resolves, and the tympanic membrane goes from bulging red to shiny gray with a visible cone of light. Persistent ear pain or diminished hearing gets reported.",
+    "Giving ear drops: shake the suspension, clear cerumen with a cotton swab, tilt the head toward the opposite shoulder, pull the top of the auricle up, instill, then lie on the opposite side for 20 minutes with a cotton ball in the canal. Nothing else goes in the ear, water stays out (ear plugs, blow dryer on low 12 inches away), the drops stop after 10 days, and follow-up is in 1 to 2 weeks.",
+    "Look at the eardrum with an otoscope before neomycin–polymyxin B–hydrocortisone drops: if the membrane is torn the drug should not go in, because it is absorbed straight into the inner ear and causes hearing loss. Ofloxacin otic contains no neomycin and is the drop suitable for a perforated drum.",
+    "Ototoxicity is drug damage to hearing or balance. Every aminoglycoside is ototoxic — gentamicin, then tobramycin, amikacin and neomycin in order of cochlear toxicity — and erythromycin and tetracycline can be too, worse when the kidneys are impaired. Cisplatin, fluorouracil and bleomycin are the chemotherapy drugs with the worst ototoxicity.",
+    "Some ototoxicity reverses when the drug stops: high-dose aspirin (6 to 8 g a day) and other salicylates, and the antimalarials quinine and chloroquine. Loop diuretics cause temporary hearing loss and tinnitus, sildenafil and the other PDE-5 inhibitors have been linked to hearing loss, and cocaine, heavy metals and aromatic solvents round out the list.",
+    "Drugs that cause or worsen tinnitus include aminoglycosides, loop diuretics, salicylates and NSAIDs, cisplatin, fluoroquinolones, antimalarials, ACE inhibitors, calcium channel blockers, benzodiazepines, tricyclics, proton pump inhibitors and lidocaine — when a patient reports ringing, read the medication list first.",
+    "Assess for ototoxicity by asking about hearing loss and ringing in the ears, and know the kidneys: erythromycin and tetracycline are more ototoxic when kidney function is impaired, and kidney function is followed during a course of ciprofloxacin. With ototopical drops the nurse assesses for signs of hearing loss; with aspirin at toxic levels the ringing is the toxicity, not a hearing problem — do the digging before you call it hearing loss.",
+    "Ménière's disease is an abnormal inner ear fluid balance — malabsorption in the endolymphatic sac or blockage of the endolymphatic duct — and it presents as fluctuating, progressive hearing loss, tinnitus, pressure or fullness, and episodic, incapacitating vertigo that can come with nausea and vomiting, and comes without warning.",
+    "Ménière's is managed before it is operated on: a low-sodium diet at 2,000 mg a day — that is the maximum — meclizine (Antivert) for the vertigo, antiemetics as needed for the nausea, and a diuretic, which is furosemide. Tranquilizers may also be used.",
+    "Meclizine is an antihistamine (H1 antagonist) that controls the dizziness, and it is notorious for drowsiness, plus dry mouth and blurred vision — so teach the patient not to drive or do anything that needs a clear head until they know how it affects them. Alcohol and other CNS depressants add to it, it is used with caution in glaucoma, asthma and an enlarged prostate, and older adults are dosed cautiously.",
+    "Furosemide is a loop diuretic that pulls fluid fast and wastes potassium, so monitor the potassium and the other electrolytes, and check blood pressure and vital signs more often than usual while the patient is on it.",
+    "When management fails and the vertigo is a safety problem, surgery is done to eliminate the attacks: endolymphatic sac decompression, middle and inner ear perfusion, or vestibular nerve sectioning.",
+    "Vertigo is a safety issue because an attack can start while the person is driving or on the stairs — no driving, and keep them safe from injury. After any ear surgery keep water out of the ear, limit pressure to the head — no heavy lifting, bend at the knees not the waist, sneeze and cough with the mouth open — and know that constant throbbing pain is a sign of infection.",
+    "For the pain and fever of an ear infection use acetaminophen or ibuprofen — aspirin is not given to children."
+  ],
+  "Module 3 — Drugs for neurocognitive & neuromuscular disorders":[
+    "Nearly every drug for a neurocognitive or neuromuscular disease is symptomatic, not curative: the goal is to slow the decline, manage the symptoms and protect function and quality of life. Say that plainly to the patient and the family before they expect a cure.",
+    "Donepezil is the cholinesterase inhibitor prototype: it inhibits acetylcholinesterase so more acetylcholine is available in the brain, and it is used for mild-to-moderate dementia to slow the rate of cognitive decline.",
+    "Donepezil causes GI upset and bradycardia, so monitor the heart rate, track the patient's weight, and assess and mitigate fall risk.",
+    "Memantine is the NMDA receptor antagonist: it blocks NMDA receptors to decrease glutamate excitotoxicity, and it is used for moderate-to-severe Alzheimer's to slow the progression of symptoms. Expect dizziness, confusion and headache; perform serial cognitive assessments to track its effect, and monitor renal function because the dose may need adjusting.",
+    "For any dementia drug the nurse monitors for common and adverse effects, assesses patient and caregiver adherence, evaluates effectiveness over time, and teaches the caregiver the administration, the goal and the side effects. Someone must supervise the medications — correct dose, correct timing, no missed or doubled doses — and the regimen is simplified wherever possible.",
+    "Antipsychotics in Lewy body dementia are the high-risk decision: up to 50% of these patients have an extreme sensitivity, which can bring neuroleptic malignant syndrome (fever, rigidity, autonomic dysfunction), irreversible worsening of parkinsonism, and sedation with cognitive decline. Typical antipsychotics are avoided; quetiapine is a last resort for severe, distressing hallucinations or agitation that nothing else has touched — start low, go slow, and monitor meticulously for sedation and orthostatic hypotension.",
+    "In Lewy body dementia the drugs that are used are cholinesterase inhibitors for cognitive and behavioral symptoms and, cautiously, levodopa for the motor symptoms — it can worsen hallucinations. REM sleep behavior disorder is treated with melatonin or clonazepam, and the nurse documents the response to every new medication, especially a psychotropic, because an adverse reaction to an antipsychotic is itself a diagnostic clue.",
+    "Levodopa/carbidopa is the most effective drug for Parkinson's: levodopa crosses the blood-brain barrier and is converted to dopamine, replacing what is missing, while carbidopa prevents peripheral conversion so more reaches the brain and side effects are fewer. The intended effect is improved motor control — less tremor, rigidity and bradykinesia.",
+    "Levodopa's key risks are dyskinesias with on-off phenomena, hallucinations and orthostatic hypotension. Check the blood pressure for a drop on standing, watch for involuntary erratic movements after long-term use, and put comprehensive fall precautions in place.",
+    "Timing is the intervention with levodopa: doses are given on a strict schedule to avoid 'off' periods when the symptoms return, and the nurse documents the 'on' and 'off' periods relative to the doses to help titrate. Teach the why behind the schedule and what a missed dose costs.",
+    "The other Parkinson's classes work around dopamine: dopamine agonists mimic it (often used in younger patients or early disease), MAO-B inhibitors block the enzyme that breaks it down, and COMT inhibitors are paired with levodopa to prolong its effect.",
+    "Pyridostigmine is the myasthenia gravis prototype: it reversibly inhibits acetylcholinesterase, raising acetylcholine at the neuromuscular junction, and it is first-line therapy for improved muscle strength and function.",
+    "Pyridostigmine timing is absolutely critical to maintain the strength for swallowing and breathing: give it exactly as prescribed — even a slight delay drops muscle strength — and 30 to 60 minutes before meals so the patient can chew and swallow safely.",
+    "Pyridostigmine's side effects are cholinergic: diarrhea, bradycardia and excessive salivation. Cramps and increased salivation are the early signs of over-medication.",
+    "Myasthenic crisis is under-medication — often after infection or missed doses — and shows as worsening ptosis, dysphagia and weakness. Cholinergic crisis is over-medication: profound weakness plus SLUDGE (salivation, lacrimation, urination, defecation, GI distress, emesis), fasciculations and pallor. Both bring severe weakness and risk respiratory failure, and the treatments are opposite, so the assessment has to tell them apart.",
+    "In myasthenia gravis the airway is the priority: suction and emergency airway equipment stay at the bedside, aspiration precautions are in place, care is clustered with rest before meals, and infections are prevented with deep breathing, coughing and vaccinations. Teach the family the two crises, the triggers to avoid — stress, extreme temperatures, some antibiotics and beta-blockers — and to wear a medical alert bracelet.",
+    "Interferon beta is the immunomodulator for relapsing-remitting multiple sclerosis: antiviral, antiproliferative and immunomodulatory, it decreases the frequency and severity of relapses. It is injected, so teach self-injection technique and site rotation.",
+    "Interferon beta brings flu-like symptoms after the injection — fever, chills, myalgia — and depression, so the nurse monitors mood routinely and screens for depression.",
+    "Disease-modifying therapies for MS suppress the immune system, so monitor for signs of infection; certain oral and injectable agents also need regular liver function labs. Adherence and education are what make long-term therapy succeed.",
+    "Methylprednisolone is the high-dose corticosteroid for an acute MS relapse that causes significant functional decline: it suppresses inflammation and the immune response and reduces edema in the areas of demyelination, giving faster recovery and a shorter relapse. It does nothing for the long-term course of the disease.",
+    "Methylprednisolone raises blood glucose — monitor it even in a patient without diabetes — increases infection risk, and can bring mood changes and insomnia.",
+    "Tetrabenazine, a VMAT2 inhibitor, suppresses the chorea of Huntington's by depleting presynaptic dopamine. It carries a black box warning for depression that can be severe and for suicidality — actively screen — and it sedates, so assess how the sedation affects function and safety.",
+    "Riluzole for ALS inhibits glutamate release and blocks postsynaptic glutamate receptors, slowing progression and extending survival by several months. It is hepatotoxic, so liver function tests are monitored on a schedule, nausea is common, and the patient and family are taught that the goal is slowing, not cure. Edaravone is the IV antioxidant alternative.",
+    "The nurse is the key educator who turns a complex regimen into manageable actions for the patient and the caregiver, and the nurse's assessment is the safety net: continuously monitor cognition, mood, mobility and respiratory status. Master the clock — with levodopa and pyridostigmine, timing is not a task, it is the intervention."
+  ],
+  "Content 4 — Neurologic & cognitive function":[
+    "Dementia is a syndrome, not a single disease: chronic and progressive, severe enough to interfere with daily functioning, caused by multiple disease processes, and not a normal part of aging — normal aging forgets and recalls later; dementia does not recall. Before calling it dementia, rule out the reversible: vitamin B12 deficiency, thyroid disorders, medication side effects and polypharmacy, depression (pseudodementia), infection — a UTI can present as total confusion — electrolytes and hypoxia, because a sudden change in mental status is never assumed to be normal aging.",
+    "Dementia has three faces: cognitive (short-term memory, disorientation, aphasia, impaired judgment), behavioral and psychological (agitation, aggression, anxiety, depression, hallucinations, sleep disturbance, sundowning), and functional (ADLs and IADLs, incontinence, poor nutrition and hydration, mobility decline). The instrumental ADLs go first, then the basics — and incontinence is not normal aging either: an older bladder holds less and goes more often, but the signals still work, so an incontinent older adult has something else going on.",
+    "Safety is the utmost concern in every disease in this unit: fall prevention (assess mobility, remove hazards, proper footwear, assistive devices), wandering precautions (secure environment, ID bracelet, door alarms, monitoring), medication supervision (correct dose and timing, simplified regimen), and environmental safety (dangerous items locked up, safe water temperature). A person who cannot care for themselves needs supervision 24 hours a day, not 8.",
+    "Communicating with dementia: simple clear language, short sentences, one-step directions, a calm reassuring tone and non-verbal cues, and validation therapy — acknowledge the person's reality and feelings rather than correcting them. Never confront or argue over facts or memories, do not ask complex questions or offer too many choices, and do not quiz on names or recent events.",
+    "Consistent routines give predictability; orientation cues — clocks, calendars, familiar photos — are offered even when they may not stick; and redirection gently steers the person away from agitation or an unsafe act. For eating, assist as needed, offer finger foods for independence, monitor hydration, and let them do what they still can.",
+    "The caregiver is a partner in care and needs care too: education on how the disease progresses, respite care, support groups, community resources and stress management. Advance directives and healthcare power of attorney are discussed while the patient still has capacity, and palliative care is introduced early, not only at the end.",
+    "Alzheimer's is the most common cause of dementia — progressive and irreversible. Beta-amyloid plaques disrupt neuron-to-neuron communication, tau tangles wreck the neuron's transport system, neurons die and the brain shrinks, and acetylcholine, the neurotransmitter of memory and learning, falls. Advanced age is the single greatest risk factor; family history, cardiovascular disease, diabetes, hypertension and traumatic brain injury add to it.",
+    "Alzheimer's stages: early is forgetfulness and word-finding trouble (anomia); middle is increasing confusion and disorientation, impaired ADLs and real behavior change; late is total dependence, profound loss of speech and dysphagia. Sundowning — more confusion in the late afternoon and evening — and wandering are the behaviors to plan for. The diagnosis is clinical; only a postmortem brain exam confirms it.",
+    "Parkinson's is a loss of dopamine-producing neurons in the substantia nigra, so the basal ganglia run short of dopamine and motor control fails. The cardinal signs: a pill-rolling resting tremor that usually starts in one limb, bradykinesia with a shuffling gait and micrographia, cogwheel rigidity that stoops and hurts, and postural instability that comes later and puts the patient at high risk for falls.",
+    "Parkinson's is more than a tremor: depression and anxiety can precede the motor signs, cognition slides toward dementia in advanced disease, fatigue is profound, autonomic dysfunction brings orthostatic hypotension, constipation and urinary trouble, and sleep is broken by insomnia and REM sleep behavior disorder. There is no definitive test — the diagnosis rests on at least two cardinal signs and a clear response to levodopa, with imaging only to rule out stroke or tumor.",
+    "Assessing Parkinson's: watch the gait for shuffling and freezing and rate the fall risk, note the tremor at rest and the stiffness on passive movement, listen for hypophonia, screen for dysphagia (coughing, choking, drooling), and time the symptoms against the doses to catch 'on/off' swings. Then keep them mobile and upright: a clutter-free home, good lighting at night, non-skid footwear, grab bars in bathrooms and hallways, walking, stretching or Tai Chi, walkers or canes as physical therapy prescribes — and, to break a freezing episode, teach them to consciously step over imaginary lines.",
+    "Dysphagia in Parkinson's means aspiration pneumonia and malnutrition: sit the patient upright for meals, use a semisolid diet with thick liquids and avoid thin ones, have them think through the swallow, give small frequent meals against fatigue, push high fiber and fluids for the constipation, and get a formal swallow evaluation from speech therapy.",
+    "Soft speech (hypophonia) and slurred speech (dysarthria) isolate the Parkinson's patient: give them ample time to answer without interrupting, encourage slow deliberate speech, cut the background noise, and refer to speech therapy for programs like LSVT LOUD. Medications go on a strict schedule to avoid 'off' periods, long-term levodopa brings dyskinesias, and the blood pressure is checked standing because orthostatic hypotension is a common effect that adds to fall risk.",
+    "Lewy body dementia is the second most common progressive dementia and looks like dementia plus parkinsonism. The four cardinal signs: cognition that fluctuates hour to hour or day to day, recurrent well-formed visual hallucinations — often people or animals — spontaneous parkinsonian motor signs, and REM sleep behavior disorder, where the person acts out dreams.",
+    "The defining danger in Lewy body dementia is antipsychotic sensitivity: up to 50% react severely, with neuroleptic malignant syndrome, irreversible worsening of parkinsonism, or sedation and cognitive decline. Typical antipsychotics are avoided, an adverse reaction to one is itself a diagnostic clue, and the nurse documents the response to every new medication, especially a psychotropic.",
+    "Nursing Lewy body dementia: do not argue about whether the hallucination is real — reassure and redirect, and look for a trigger such as infection or a new drug. Keep the environment calm and structured with consistent routines, chart the lucid intervals and the confused ones, ask the bed partner about dream enactment, and teach the family that good days and bad days are the disease. Capacity fluctuates, so it is reassessed.",
+    "Huntington's is inherited — autosomal dominant, a CAG trinucleotide repeat expansion, a 50% chance for every child of an affected parent, and anticipation, where each generation can start earlier and progress faster. Onset is 30 to 50, the triad is movement, cognition and behavior, and genetic testing is the definitive diagnosis.",
+    "Chorea — involuntary, jerky, dance-like movement — is the hallmark of Huntington's, with dysphagia that risks aspiration and malnutrition, dysarthria, and poor coordination that makes falls likely. Cognition declines, depression, anxiety, irritability and impulsivity strain the family, and the suicide risk is high — screen for depression and suicidal ideation at every assessment.",
+    "There is no cure for Huntington's, so nursing is the treatment: fall and injury prevention, aspiration precautions — modified diet consistency, safe swallowing technique, proper positioning at meals, small bites, waiting for each swallow — and high-calorie, nutrient-dense food and between-meal feedings because the constant movement burns weight off. Genetic counseling for the family, and advance care planning early.",
+    "ALS is a progressive motor neuron disease: the nerve cells that drive voluntary muscle die, so walking, talking, eating and finally breathing are lost while cognition is preserved — the patient stays fully aware of their condition, their dependence and their prognosis. Onset is typically 40 to 70, more often in men, and some cases run rapidly.",
+    "ALS starts as weakness in a single limb with fasciculations, cramps and trouble with fine motor tasks like buttoning a shirt, then spreads to the other limbs and the trunk with spasticity and hyperreflexia, and reaches the bulbar muscles — dysarthria, then dysphagia with choking and aspiration. Assess muscle strength and tone, respiratory rate and effort and cough effectiveness, swallowing, speech and coping at every visit.",
+    "Nursing the progressive stage of ALS: range-of-motion exercises and energy conservation, aspiration precautions with thickened liquids and proper positioning, a high-calorie high-protein diet against hypermetabolism, an early conversation about a PEG tube — placed before the forced vital capacity drops below 50% — a pressure injury prevention plan, physical therapy for walkers and wheelchairs, and speech therapy with assistive communication such as alphabet boards and eye-gaze technology.",
+    "Advanced ALS is respiratory failure: the diaphragm and intercostals fail, the cough cannot clear secretions, and pneumonia follows. Monitor rate, effort, oxygen saturation and vital capacity, promote clearance with assisted coughing and suctioning, position to ease the work of breathing, and support with noninvasive ventilation such as BiPAP. Decisions about ventilation, a feeding tube and hospice are made early through advance directives, because the disease can move fast. Riluzole and edaravone slow it; nothing cures it.",
+    "Multiple sclerosis is a chronic autoimmune attack on the myelin of the central nervous system — inflammation, plaques, slowed or blocked signals, and eventually permanent axonal damage — with an unpredictable course of relapse and remission that hits young adults, mostly women, between 20 and 40. Early signs are fatigue out of proportion to activity, optic neuritis (blurred vision, pain with eye movement), paresthesias, and unexplained weakness in a limb.",
+    "The four courses of MS: relapsing-remitting (attacks, then partial or complete recovery), secondary progressive (relapsing-remitting that turns steadily progressive), primary progressive (worsening from the start with no relapses), and progressive-relapsing (progressive from the start with clear relapses on top). Later comes spasticity, ataxia, bowel and bladder dysfunction and cognitive change, then severe mobility loss, chronic pain, dysarthria and dysphagia. MRI showing plaques is the cornerstone of diagnosis; evoked potentials are slowed and the spinal fluid shows oligoclonal bands.",
+    "Nursing MS: energy conservation and scheduled rest, exercise as tolerated but short of fatigue, and heat avoidance — a hot bath or a hot day worsens the symptoms (Uhthoff's phenomenon), so air conditioning in at least one room. Fall prevention, canes and walkers, PT and OT referrals, bladder training and intermittent catheterization, a bowel program, and diligent skin checks with pressure injury prevention once mobility is limited.",
+    "MS drugs: disease-modifying therapies — injectable interferon beta and glatiramer, infused natalizumab and ocrelizumab, oral fingolimod and dimethyl fumarate — cut the number and severity of relapses but do not cure; monitor for infection, check liver function on the ones that need it, and rotate injection sites. High-dose methylprednisolone treats an acute relapse and shortens it, with no effect on the long-term course.",
+    "Myasthenia gravis is autoimmune: antibodies block the acetylcholine receptors at the neuromuscular junction, so the muscle gets a weaker signal — fatigable weakness that worsens with activity through the day and improves with rest, while sensation and reflexes stay normal. Ptosis and diplopia are usually first, then a snarling smile, trouble chewing, swallowing and speaking, and proximal weakness in the neck, shoulders and hips. Diagnosis is acetylcholine receptor antibodies, EMG showing a fatiguing response, and a chest CT or MRI for the thymus; pyridostigmine is first-line, corticosteroids suppress the immune attack, and thymectomy can bring remission.",
+    "Myasthenia's golden rule is medication on time, every time — even a slight delay drops strength — given 30 to 60 minutes before meals so the patient can chew and swallow safely, while watching for cramps and increased salivation as signs of too much. Myasthenic crisis (too little, often after infection or a missed dose) shows as more ptosis, dysphagia and weakness; cholinergic crisis (too much) is profound weakness plus SLUDGE, fasciculations and pallor — and both can end in respiratory failure.",
+    "In myasthenia the airway comes first: suction and emergency airway equipment at the bedside, aspiration precautions, meals timed to the medication with the patient upright and the neck slightly flexed for soft foods, rest before meals and clustered care to conserve energy, and deep breathing, coughing and vaccinations against the infections that trigger a crisis. Teach the family both crises and when to get emergency help, the triggers to avoid — stress, extreme temperatures, some antibiotics and beta-blockers — and a medical alert bracelet."
+  ]
 };
-const unitTakeaways=u=>UNIT_TAKEAWAYS[u]||[];
+const unitTakeaways=u=>UNIT_TAKEAWAYS[u]||UNIT_TAKEAWAYS[baseUnit(u)]||[];   /* a wing of a module falls back to the module */
 /* the units a set of questions actually touched, in the order met */
 function unitsOf(qs){
   const seen={},out=[];
@@ -12840,6 +12986,24 @@ function takeawayReady(unit){
   const pool=S.questions.filter(q=>!q.prime&&(q.unit||"")===unit);
   if(!pool.length)return true;
   return newQs(pool).length===0;
+}
+/* What this room taught, in its own words: the true half of each of the
+   four rounds, laid out as the four things a nurse carries out of the door -
+   what it looked like, why, what we did, what they take home. It is built from
+   the room itself, so every room has one, and it is the material the fight
+   just tested rather than a summary of the whole unit. A ward round has no
+   rounds of its own and gets nothing here. */
+function roomRecap(b){
+  if(!b||b.ward||!b.sym)return '';
+  const say=KEEP_SAY[b.id];
+  const H=[["sym","What it looked like"],["cause","Why"],["fight","What we did"],["keep",say&&say.who==="nurse"?"What the nurse carries out":"What they take home"]];
+  const cols=H.map(([k,t])=>{const L=(k==="keep"&&say)?say.yes:(b[k]&&b[k].yes)||[];if(!L.length)return '';
+    return '<div class="rcp"><b>'+t+'</b><ul>'+L.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></div>';}).join("");
+  if(!cols)return '';
+  const dx=pharmDx(b);
+  return '<div class="card pad recap"><div class="rchead"><span class="eyebrow">What you learned</span>'+
+    '<b>'+esc(b.name)+'</b>'+(dx?'<i>'+esc(dx[0])+(b.tag?' \u00b7 '+esc(b.tag):'')+'</i>':(b.tag?'<i>'+esc(b.tag)+'</i>':''))+'</div>'+
+    '<div class="rcgrid">'+cols+'</div></div>';
 }
 function takeawayCard(units,label,open,gated){
   const us=(units||[]).filter(u=>unitTakeaways(u).length);
@@ -13669,8 +13833,8 @@ function studyClass(){
   (function(){
     const mine=QUIZZES.filter(q=>q.c===(c.code||"")&&q.kind==="exam");
     if(!mine.length)return '';
-    return '<span class="eyebrow" style="display:block;margin:4px 0 8px">Practice exam</span>'+
-      '<p class="qzlede">A full paper, the length and difficulty of the real one. Opens the Sunday before the exam.</p>'+
+    return '<span class="eyebrow" style="display:block;margin:4px 0 8px">Exam</span>'+
+      '<p class="qzlede">One full paper per exam, across every module it covers. Opens the Sunday before.</p>'+
       '<div class="qzcards" style="margin-bottom:18px">'+mine.map(q=>{
         const open=quizOpen(q), st=quizState(q.id);
         const cases=new Set(q.qs.filter(x=>x.cs).map(x=>x.cs.title||x.cs)).size;
@@ -13679,8 +13843,8 @@ function studyClass(){
           '<span class="qzcarda">'+coverArt(q.n,st.best!==null?st.best/100:0,"",artKind(q.unit||q.n),artHash(q.id)%4)+
             '<span class="tileveil"></span><span class="qzcardn">'+q.qs.length+' Q</span>'+
             (st.trophy?'<span class="qzcardtr">'+trophyArt()+'</span>':'')+'</span>'+
-          '<span class="qzcardt"><i>Practice exam</i><b>'+esc(q.n)+'</b>'+
-            '<u>'+(cases?cases+' case stud'+(cases===1?'y':'ies')+' \u00b7 ':'')+'hard</u>'+
+          '<span class="qzcardt"><i>Exam</i><b>'+esc(q.n)+'</b>'+
+            '<u>'+q.qs.length+' questions'+(cases?' \u00b7 '+cases+' case stud'+(cases===1?'y':'ies'):'')+'</u>'+
             '<em>'+(open
                 ? (st.taken?'Best '+st.best+'% \u00b7 '+quizGrade(st.best)+' \u00b7 taken '+st.taken+(st.taken===1?' time':' times'):'Ready \u2014 not taken yet')
                 : 'Opens '+prettyDay(quizOpens(q)))+'</em></span>'+
@@ -14794,7 +14958,66 @@ function bossMax(b){return 1+FIGHT_ROUNDS.slice(1).reduce((n,r)=>n+b[r.k].yes.le
 function bossHp(b){return Math.max(1,Math.ceil(bossMax(b)*(b.boss?DH_MARGIN_CRIT:DH_MARGIN)));}
 /* Three other diseases to name it against: the same class and the same kind
    first, so the distractors are the ones the exam would actually use. */
+/* What a drug room's chart points to. Some charts describe a condition -
+   the slow side-vision loss of glaucoma, the sudden central loss of wet AMD -
+   and the first round names the condition, the way it would on a unit. Some
+   charts are a drug's own fingerprint - a resting pulse in the fifties and
+   a new wheeze on an eye drop - and the first round names the drug. The room
+   title is never an answer; that would be naming the chapter, not the client. */
+const PHARM_DX={
+  poly:     ["Polypharmacy","pk"],
+  warf:     ["Reduced protein binding","pk"],
+  apap:     ["Slowed absorption","pk"],
+  benzo:    ["Accumulation of a long half-life drug","pk"],
+  calcarb:  ["Reduced gastric acidity","pk"],
+  lasix:    ["An incomplete medication review","pk"],
+  anticho:  ["Anticholinergic burden","pk"],
+  renal:    ["Reduced renal clearance","pk"],
+  firstpass:["Reduced first-pass metabolism","pk"],
+  iop:      ["Open-angle glaucoma","cond"],
+  avegf:    ["Wet age-related macular degeneration","cond"],
+  pdt:      ["Wet age-related macular degeneration","cond"],
+  hsv:      ["Herpes simplex keratitis","cond"],
+  ocuinf:   ["Eye infection and inflammation","cond"],
+  ocular:   ["Systemic absorption of an eye drop","cond"],
+  timolol:  ["Timolol","drug"],
+  brimo:    ["Brimonidine","drug"],
+  pilo:     ["Pilocarpine","drug"],
+  diamox:   ["Acetazolamide","drug"],
+  mann:     ["Mannitol","drug"],
+  dilate:   ["Mydriatic and cycloplegic drops","drug"],
+  steroid:  ["Corticosteroid eye drops","drug"],
+  raise:    ["Drugs that raise intraocular pressure","drug"],
+  otitisrx: ["Otitis media and otitis externa","cond"],
+  ototox:   ["Ototoxic drugs","drug"],
+  otoenv:   ["Ototoxic exposures","drug"],
+  necrot:   ["Necrotizing otitis externa","cond"],
+  menrx:    ["Meniere's disease","cond"],
+  donep:    ["Donepezil","drug"],
+  memant:   ["Memantine","drug"],
+  sertra:   ["Sertraline","drug"],
+  quetia:   ["Quetiapine","drug"],
+  cjdrx:    ["Creutzfeldt-Jakob disease","cond"],
+  ldopa:    ["Levodopa/carbidopa","drug"],
+  tetrab:   ["Tetrabenazine","drug"],
+  riluz:    ["Riluzole","drug"],
+  pyrido:   ["Pyridostigmine","drug"],
+  ifnb:     ["Interferon beta","drug"],
+  mpred:    ["High-dose methylprednisolone","drug"]};
+const pharmDx=b=>(b&&PHARM_DX[b.id])||null;
+const DX_ASK={cond:"Which condition do these findings point to?",drug:"Which drug explains this picture?",pk:"Which pharmacology problem do these findings point to?"};
 function dxOptions(b){
+  const me=pharmDx(b);
+  if(me){
+    /* three other labels of the same kind from the same course, never the
+       same label twice (five glaucoma rooms share one condition) */
+    const label=x=>(pharmDx(x)||[])[0], kind=x=>(pharmDx(x)||[])[1];
+    const pick=(pred)=>{const seen={[me[0]]:1};return BOSSES_ALL.filter(x=>x.id!==b.id&&pharmDx(x)&&pred(x)&&!seen[label(x)]&&(seen[label(x)]=1));};
+    let pool=pick(x=>bossCourse(x)===bossCourse(b)&&kind(x)===me[1]);
+    if(pool.length<3)pool=pool.concat(pick(x=>bossCourse(x)===bossCourse(b)&&kind(x)!==me[1]).filter(x=>!pool.some(y=>label(y)===label(x))));
+    if(pool.length<3)pool=pool.concat(pick(x=>bossCourse(x)!==bossCourse(b)).filter(x=>!pool.some(y=>label(y)===label(x))));
+    return shuffle(pool).slice(0,3).map(x=>({t:label(x),ok:false})).concat([{t:me[0],ok:true}]);
+  }
   const same=x=>x.id!==b.id;
   let pool=BOSSES.filter(x=>same(x)&&bossCourse(x)===bossCourse(b)&&x.kind===b.kind);
   if(pool.length<3)pool=pool.concat(BOSSES.filter(x=>same(x)&&bossCourse(x)===bossCourse(b)&&x.kind!==b.kind));
@@ -14819,11 +15042,17 @@ const roomOf=b=>{const c=bossCourse(b), list=BOSSES.filter(x=>bossCourse(x)===c)
    answer goes back into the bank. Get one wrong in here and it lands in your
    misses and comes back tomorrow, exactly as it would in Study. */
 const WARD_N=8;
+/* what the name plate says before the room is named: a disease room is
+   waiting on a diagnosis, a drug room on an order */
+const pendLabel=b=>(b&&b.kind==="pharm")?"Rx pending":"Dx pending";
 function bossRounds(b){
   /* Round one: you do not know what it is. The chart gives the presentation;
      you name it. Then the three rounds after ask about it by name. */
+  /* A disease room asks you to name the condition. A drug room's answers are
+     groups of drugs, so it asks which group the chart is calling for. */
+  const chart='A client is admitted. The chart reads: <b>'+esc(b.sym.yes.map(x=>x.charAt(0).toLowerCase()+x.slice(1)).join(" \u00b7 "))+'</b>. ';
   const dx={title:FIGHT_ROUNDS[0].t, dx:true, single:true,
-    ask:'A client is admitted. The chart reads: <b>'+esc(b.sym.yes.map(x=>x.charAt(0).toLowerCase()+x.slice(1)).join(" \u00b7 "))+'</b>. Which condition do these findings point to?',
+    ask:(b.ask&&b.ask.sym)?b.ask.sym:chart+(pharmDx(b)?DX_ASK[pharmDx(b)[1]]:'Which condition do these findings point to?'),
     why:b.tag?b.name+" \u2014 "+b.tag+".":"",
     opts:shuffle(dxOptions(b))};
   return [dx].concat(FIGHT_ROUNDS.slice(1).map(R=>{
@@ -17173,7 +17402,7 @@ function viewFight(){
       '<span class="hrframe"><span class="hrpanel"><span class="hrwin"><span class="hrpeek">'+foeArt(b,false)+'</span></span><span class="hrhandle"></span></span>'+
         '<span class="hrplate">'+roomOf(b)+'</span>'+
         (b.boss?'<span class="hrtag">CRITICAL</span>':'')+'</span>'+
-      '<span class="hrname'+(known[b.id]?'':' pend')+'">'+(known[b.id]?esc(b.name):'Dx pending')+'</span>'+
+      '<span class="hrname'+(known[b.id]?'':' pend')+'">'+(known[b.id]?esc(b.name):pendLabel(b))+'</span>'+
       '<span class="hrstat">'+(beaten[b.id]?'resolved \u00d7'+beaten[b.id]
         :bossHp(b)+' of '+bossMax(b)+' to stabilize')+'</span></button>';
     /* Two classes, kept apart the way Study keeps them apart: a fight is always
@@ -17321,7 +17550,7 @@ function viewFight(){
         '<div class="dhring" title="Disease Health"><svg viewBox="0 0 44 44"><circle class="trk" cx="22" cy="22" r="18"/>'+
           '<circle class="val '+cond.c+'" id="fring" cx="22" cy="22" r="18" stroke-dasharray="'+(DH_C*hpShow/F.hpMax).toFixed(1)+' 999"/></svg>'+
           '<b id="fhpn">'+hpShow+'</b></div>'+
-        '<div class="fmontxt"><b id="foeName"'+(known?'':' class="pending"')+'>'+(known?esc(b.name):'Dx pending')+'</b>'+
+        '<div class="fmontxt"><b id="foeName"'+(known?'':' class="pending"')+'>'+(known?esc(b.name):pendLabel(b))+'</b>'+
           /* 12 Sep: the ring already says how many are left; no line under the name */
           '<span id="fcond" class="fcond '+cond.c+'">'+cond.w+'</span></div>'+
       '</div></div>'+
@@ -17337,8 +17566,8 @@ function viewFight(){
   '</div>'+
   '<div class="fmsg" id="fmsg">'+(F.over?(F.over==="won"?esc(b.name)+' resolved. Patient discharged.':F.over==="lost"?'Out of hearts. Backup is taking over.':'End of shift. '+esc(b.name)+' is still on the floor.')
      :F.result?'':F.r===0?(b.ward?'Ward round \u2014 '+esc(b.name)+'. Eight of the hard ones.'
-                          :b.boss?'Rapid response \u2014 Room '+room+'. Dx pending. Read the chart and name it.'
-                          :'Handoff \u2014 Room '+room+'. Dx pending. Read the chart and name it.')
+                          :b.boss?'Rapid response \u2014 Room '+room+'. '+pendLabel(b)+'. Read the chart and name '+(b.kind==="pharm"?'what it calls for.':'it.')
+                          :'Handoff \u2014 Room '+room+'. '+pendLabel(b)+'. Read the chart and name '+(b.kind==="pharm"?'what it calls for.':'it.'))
        :esc(F.rounds[F.r].title)+' — go.')+'</div>';
   if(F.over){
     const won=F.over==="won";
@@ -17355,7 +17584,8 @@ function viewFight(){
           (F.adv?'<button class="btn" id="fForest">Back to the forest</button>':'<button class="btn" id="fDone">Next patient</button>')+'</div>'+
         fightReview(F)+
       '</div>'+
-      takeawayCard(b.unit?[b.unit]:[],"What this was about",true)+'</div>';
+      roomRecap(b)+
+      takeawayCard(b.unit?[bossUnit(b)]:[],"What this unit is about",true)+'</div>';
   }
   const left=Math.max(0,F.ends-Date.now());
   return '<div class="ffull" id="ffull">'+head+arena+
@@ -21992,7 +22222,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 15, 12:05 PM":"This browser is not saving anything. Build Sep 15, 12:05 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 15, 1:03 PM":"This browser is not saving anything. Build Sep 15, 1:03 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22509,7 +22739,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 15, 12:05 PM":"This browser is not saving anything. Build Sep 15, 12:05 PM");
+    (LS_OK?"Saved in this browser. Build Sep 15, 1:03 PM":"This browser is not saving anything. Build Sep 15, 1:03 PM");
 })();
 </script>
 
