@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:Sep 13, 8:06 PM-->
+<!--TROPHOS-BUILD:Sep 14, 7:23 AM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -1903,6 +1903,16 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 .stg{flex:none;text-align:right;font-family:"IBM Plex Mono",monospace}
 .stg .pc{display:block;font-size:17px;font-weight:700;line-height:1.1}
 .stg .lt{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+.clspick{border:1px solid var(--line-soft);border-radius:10px;overflow:hidden}
+.clsrow{display:flex;align-items:center;gap:13px;padding:12px 14px;border-top:1px solid var(--line-soft);cursor:pointer;opacity:.55}
+.clsrow:first-child{border-top:0}
+.clsrow.on{opacity:1}
+.clsrow:hover{background:var(--surface-2)}
+.clsrow input{flex:none;width:auto}
+.clsb{flex:1;min-width:0}
+.clsb b{display:block;font-size:13.5px;font-weight:650}
+.clsb i{font-style:normal;display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+.clsb i.clsn{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--faint)}
 .stpill{display:inline-block;margin-top:5px;padding:2px 7px;border-radius:99px;font-size:10.5px;font-weight:700;
   font-family:"IBM Plex Mono",monospace;letter-spacing:.02em}
 .stpill.ok{background:var(--accent-soft);color:var(--accent)}
@@ -8231,7 +8241,7 @@ const PASS_MARK=0.8, HONOURS=0.9;     // practice test: pass, and first-try dist
 /* ============================ state ============================ */
 const BLANK={xp:0,streak:0,longest:0,lastDay:null,lastHit:null,tier:"standard",tierNext:null,
   startDay:null,rollDay:null,days:{},weekPaid:{},swaps:0,swapSpent:0,todayDate:null,todayCount:0,goalHits:0,
-  answered:0,correct:0,curRun:0,bestRun:0,gaBest:0,gaRuns:0,weakCleared:false,earlyDone:false,trophies:{}};
+  answered:0,correct:0,curRun:0,bestRun:0,gaBest:0,gaRuns:0,weakCleared:false,earlyDone:false,clsPicked:false,trophies:{}};
 const freshProfile=src=>{const p=Object.assign({},BLANK,src||{});p.trophies=Object.assign({},(src&&src.trophies)||{});return p;};
 const S={profile:freshProfile(),courses:[],events:[],materials:[],questions:[],logins:{},deleted:{}};
 let sharedRW=true;              // can this viewer edit the shared schedule?
@@ -8368,7 +8378,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="Sep 13, 8:06 PM";              /* _dist.py stamps the shipped one */
+const BUILD="Sep 14, 7:23 AM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -9042,7 +9052,7 @@ function weeksDone(code){
   return n;
 }
 function totalWeeks(){
-  return WEEKLY.reduce((a,cfg)=>a+(S.courses.some(c=>(c.code||"")===cfg.code)?cfg.weeks.length:0),0);
+  return WEEKLY.reduce((a,cfg)=>a+(myCourses().some(c=>(c.code||"")===cfg.code)?cfg.weeks.length:0),0);
 }
 
 function focusTarget(){
@@ -9116,7 +9126,7 @@ function gateState(ex){
   return st;
 }
 function allGates(){
-  return S.events.filter(e=>e.type==="Exam").sort((a,b)=>a.date.localeCompare(b.date)).map(gateState);
+  return myEvents().filter(e=>e.type==="Exam").sort((a,b)=>a.date.localeCompare(b.date)).map(gateState);
 }
 function tierLeft(tier){
   const q=S.questions.filter(x=>x.gate&&(x.tier||1)===tier);
@@ -9190,7 +9200,7 @@ function termWeeks(){
   const t=termBounds();
   if(!t)return null;
   const wk=d=>Math.floor((parseD(d)-t.start)/604800000);
-  const exams=S.events.filter(e=>e.type==="Exam"||/final exam/i.test(e.title||"")).map(e=>e.date).sort();
+  const exams=myEvents().filter(e=>e.type==="Exam"||/final exam/i.test(e.title||"")).map(e=>e.date).sort();
   const fin=exams.length?exams[exams.length-1]:dkey(t.end);
   const top=Math.max(RANK_STEPS,wk(fin)-FINALS_LEAD);   // never squeeze the ladder shorter than its steps
   return {t:t,wk:wk,now:wk(today()),top:top,finals:fin};
@@ -9236,6 +9246,15 @@ const WEEK_Q=80;                  // a week of practice
 const LV_FROM_Q=3;                // three of the week's five levels
 const LV_FROM_TASKS=2;            // and two from the week's tasks
 const Q_PER_LEVEL=WEEK_Q/LV_FROM_Q;
+/* XP IS THE LEVEL BAR, AND NOTHING ELSE IS
+   One number, and it only moves for work that counts: a question you have
+   never answered, a boss round you have never played, and the week's tasks.
+   A repeat pays nothing, so a long streak on questions you already know is
+   a good time and not a shortcut. XP is derived from that record rather than
+   banked, so it cannot be lost in a sync or inflated by replaying a round. */
+const XP_PER_Q=12;
+const XP_PER_LEVEL=Math.round(Q_PER_LEVEL*XP_PER_Q);   // 320
+
 
 /* every distinct question this person has ever answered, plus the boss rounds
    they have played, which are content of their own */
@@ -9269,6 +9288,12 @@ function caughtUp(){
           week:weekWork(wa,dshift(wa,6))};
 }
 const tierOfLevel=l=>Math.min(TIER_COUNT,Math.floor((l-1)/TIER_SIZE)+1);
+function xpNow(){
+  const c=caughtUp();
+  const raw=c.unique*XP_PER_Q+c.levels*XP_PER_LEVEL;
+  const floorLv=Math.max(1,S.profile.rankMax||1);
+  return Math.round(Math.max(raw,(floorLv-1)*XP_PER_LEVEL));
+}
 function levelInfo(xp){
   const T=termWeeks(), c=caughtUp();
   const qLv=c.unique/Q_PER_LEVEL;
@@ -9276,7 +9301,10 @@ function levelInfo(xp){
   const lvl=Math.max(S.profile.rankMax||1,Math.min(LEVEL_MAX,1+Math.floor(earned+1e-9)));
   const into=Math.max(0,Math.min(1,earned-(lvl-1)));
   const tier=tierOfLevel(lvl);
+  const xpTotal=xpNow();
+  const xpInto=Math.max(0,Math.min(XP_PER_LEVEL,Math.round(xpTotal-(lvl-1)*XP_PER_LEVEL)));
   return {lvl:lvl,tier:tier,into:into,need:1,pct:lvl>=LEVEL_MAX?1:into,
+          xp:xpTotal,xpInto:xpInto,xpNeed:XP_PER_LEVEL,
           rank:rankName(tier),named:tierNamed(tier),paced:!!T,earned:earned,qLevels:qLv,taskLevels:c.levels,
           heldBy:lvl>=LEVEL_MAX?"top":"open",caught:c,
           week:T?T.now+1:1,weeks:T?T.top+1:1,finals:T?T.finals:null,
@@ -9292,7 +9320,8 @@ function rankWhy(li){
   const qs=Math.ceil(left*Q_PER_LEVEL);
   const w=li.caught.week||{due:0,done:0};
   const owed=Math.max(0,w.due-w.done);
-  const bits=["Level "+(li.lvl+1)+": "+qs+" new question"+(qs===1?"":"s")];
+  const xpLeft=Math.max(0,li.xpNeed-li.xpInto);
+  const bits=["Level "+(li.lvl+1)+": "+xpLeft+" XP \u2014 "+qs+" new question"+(qs===1?"":"s")];
   if(owed)bits.push("or clear "+owed+" task"+(owed===1?"":"s"));
   return bits.join(" ");
 }
@@ -9393,7 +9422,7 @@ function awardMilestones(silent){
   const p=S.profile;p.awarded=p.awarded||{};
   let got=0;
   if(syncLatches())got++;
-  const give=(key,xp,name,detail)=>{if(p.awarded[key])return;p.awarded[key]=today();earnXp(xp);got++;
+  const give=(key,xp,name,detail)=>{if(p.awarded[key])return;p.awarded[key]=today();got++;
     if(!silent)toast(name,detail,true);};
   allGates().forEach(g=>{
     /* Keyed by the exam, never by its position. The old key was "gate"+index
@@ -9425,8 +9454,7 @@ function checkTrophies(silent){
   TROPHIES.forEach(tr=>{
     if(!S.profile.trophies[tr.id]&&tr.t(S.profile,S)){
       S.profile.trophies[tr.id]=today();got=true;
-      earnXp(tr.xp||100);
-      if(!silent){toast("Trophy \u2014 "+tr.n,"+"+(tr.xp||100)+" XP \u00b7 "+tr.d,true);confetti(70);}
+      if(!silent){toast("Trophy \u2014 "+tr.n,tr.d,true);confetti(70);}
     }
   });
   if(got)saveCore();
@@ -9630,16 +9658,15 @@ function bumpToday(n){
     p.streak=(p.lastHit===dshift(t,-1)?(p.streak||0)+1:1);
     p.lastHit=t;
     p.longest=Math.max(p.longest||0,p.streak);
-    const tr=tierOf(),bonus=Math.round(DAY_XP*tr.m);
-    earnXp(bonus);
-    toast("Shift complete","+"+bonus+" XP — "+rec.g+" on "+tr.n+
+    const tr=tierOf();
+    toast("Shift complete",rec.g+" on "+tr.n+
       (tr.m>1?" ("+tr.m+"×)":"")+". Streak: "+p.streak+" day"+(p.streak===1?"":"s")+".",true);
   }
   /* weekPaid is the guard, not the crossing - a week that is already over
      target when we look should still pay, once. */
   if(weekN(t)>=wt&&!p.weekPaid[wk]){
-    p.weekPaid[wk]=true;earnXp(WEEK_XP);
-    toast("Week cleared","+"+WEEK_XP+" XP — "+wt+" questions this week. A heavy day covers a light one.",true);
+    p.weekPaid[wk]=true;
+    toast("Week cleared",wt+" questions this week. A heavy day covers a light one.",true);
   }
 }
 
@@ -9695,7 +9722,7 @@ function renderVitals(){
    '<div class="vital"><div class="rank">'+esc(li.rank)+'</div><div class="l">Level '+li.lvl+'</div></div>'+
    '<div class="xpwrap">'+
      '<div class="mono" style="font-size:11px;color:var(--faint);display:flex;justify-content:flex-end;gap:10px">'+
-       '<span>'+p.xp+' XP</span></div>'+
+       '<span>'+li.xpInto+' / '+li.xpNeed+' XP</span></div>'+
      '<div class="xpbar'+(li.heldBy==="assignments"?' behind':'')+'"><i style="width:'+(li.pct*100).toFixed(1)+'%"></i></div></div>'+
    '<div class="goalbox"><svg class="ring" viewBox="0 0 38 38"><circle class="trk" cx="19" cy="19" r="15"/><circle class="val" cx="19" cy="19" r="15" stroke-dasharray="'+(C*pct).toFixed(1)+' 999"/></svg>'+
      '<div class="vital"><div class="n">'+cnt+'<span style="font-size:12px;color:var(--faint)">/'+g+'</span></div><div class="l">Today</div></div></div>'+
@@ -9708,7 +9735,16 @@ function renderVitals(){
 const evKey=e=>e.sid?("sid:"+e.sid):(e.courseId+"|"+e.title+"|"+e.date);
 const courseById=id=>S.courses.find(c=>c.id===id);
 const isStudy=c=>c&&c.study!==false;
-const studyCourses=()=>S.courses.filter(isStudy);
+/* Not everyone takes every class on the board. Ticking one off sets off:true on
+   that person's own copy of the course, so it leaves their calendar, their
+   study side and their counts without touching anyone else's, and without
+   deleting a single date - ticking it back on brings all of it home. */
+const isOn=c=>!!c&&c.off!==true;
+const myCourses=()=>S.courses.filter(isOn);
+const courseOff=id=>{const c=courseById(id);return !!(c&&c.off===true);};
+const onEv=e=>!!e&&!courseOff(e.courseId);
+const myEvents=()=>S.events.filter(onEv);
+const studyCourses=()=>S.courses.filter(c=>isStudy(c)&&isOn(c));
 const courseColor=id=>{const c=courseById(id);return c?c.color:"var(--faint)";};
 const courseName=id=>{const c=courseById(id);return c?(c.code||c.name):"General";};
 /* Attendance, not a to-do: a class or a scheduled clinical day is somewhere you
@@ -9745,7 +9781,7 @@ function avatarDepth(a){
   });
   return n;
 }
-const todoOf=list=>list.filter(e=>!isFyi(e));
+const todoOf=list=>list.filter(e=>!isFyi(e)&&onEv(e));
 function pillSub(e){
   const n=String(e.notes||"").split(/(?<=\.)\s|\u2014/)[0].trim();
   if(n.length<=64)return n;
@@ -9773,7 +9809,7 @@ function shortTitle(e){
     .trim()||String(e.title||"");
 }
 function laneOrder(){
-  const list=calCourse==="all"?S.courses.slice():S.courses.filter(c=>c.id===calCourse);
+  const list=calCourse==="all"?myCourses().slice():S.courses.filter(c=>c.id===calCourse&&isOn(c));
   return list.sort((a,b)=>String(a.code||a.name).localeCompare(String(b.code||b.name),undefined,{numeric:true}));
 }
 function laneItem(e,detail){
@@ -9845,7 +9881,7 @@ function dueChip(ev){
 }
 /* follows the course tab, so the month summary, Next up and the study plan
    all narrow to the class you picked */
-function calEvents(){return calCourse==="all"?S.events:S.events.filter(e=>e.courseId===calCourse);}
+function calEvents(){return calCourse==="all"?myEvents():S.events.filter(e=>e.courseId===calCourse&&onEv(e));}
 function upcoming(limit){
   return todoOf(calEvents().slice()).filter(e=>!e.done||dayDiff(e.date)>=0)
     .sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title))
@@ -9922,14 +9958,48 @@ function calMoreMenu(){
       '<button class="mrow" id="mmDetail"><b>'+(calDetail?"Show counts":"Show details")+'</b><i>'+
         (calDetail?"Just a tally in each day":"Name what is due in each day")+'</i></button>'+
       '<button class="mrow" id="mmExpand"><b>Expand the grid</b><i>Fill the window with the month</i></button>'+
+      '<button class="mrow" id="mmMine"><b>My classes</b><i>Tick only the ones you are taking</i></button>'+
       '<button class="mrow" id="mmCourses"><b>Courses</b><i>Add a class, or change a color</i></button>'+
       '<button class="mrow" id="mmPlan"><b>Study blocks</b><i>What to study before each exam</i></button>'+
     '</div>','<button class="btn primary" id="mmClose">Close</button>');
   $("#mmClose").onclick=closeModal;
   $("#mmDetail").onclick=()=>{closeModal();calDetail=!calDetail;try{localStorage.setItem("cn_detail2",calDetail?"1":"0");}catch(e){}render();};
   $("#mmExpand").onclick=()=>{closeModal();calFull=true;render();};
+  $("#mmMine").onclick=()=>{closeModal();myClassesModal();};
   $("#mmCourses").onclick=()=>{closeModal();courseForm(null);};
   $("#mmPlan").onclick=()=>{closeModal();studyPlanModal();};
+}
+/* Which of these classes are yours. Unticking one hides its dates, its
+   questions and its grade card for this account only - nothing is deleted, and
+   ticking it back brings every date and every tick back with it. */
+function myClassesModal(){
+  const draw=()=>{
+    const rows=S.courses.slice().sort((a,b)=>String(a.code||a.name).localeCompare(String(b.code||b.name),undefined,{numeric:true}));
+    const body=(rows.length?'<div class="clspick">'+rows.map(c=>{
+      const on=isOn(c);
+      const n=S.events.filter(e=>e.courseId===c.id).length;
+      const qn=S.questions.filter(q=>q.courseId===c.id).length;
+      return '<label class="clsrow'+(on?" on":"")+'">'+
+        '<input type="checkbox" class="bigbox" data-cls="'+c.id+'"'+(on?" checked":"")+' aria-label="'+esc(c.code||c.name)+'">'+
+        '<span class="stdot" style="background:'+c.color+'"></span>'+
+        '<span class="clsb"><b>'+esc(c.code||c.name)+'</b><i>'+esc(c.name||"")+'</i>'+
+        '<i class="clsn">'+n+' date'+(n===1?"":"s")+(qn?' · '+qn+' questions':' · calendar only')+'</i></span></label>';
+    }).join("")+'</div>'
+     :'<div class="empty"><b>No classes yet</b>Add one from Courses and it appears here.</div>')+
+     '<div class="note" style="margin-top:10px">Untick a class you are not taking and it leaves your calendar, your study side and your grade cards. Nothing is deleted — tick it again and every date and every tick comes back.</div>';
+    const host=modal("My classes",body,'<button type="button" class="btn primary" id="mcDone">Done</button>');
+    host.querySelectorAll("[data-cls]").forEach(b=>{
+      b.onchange=()=>{
+        const c=courseById(b.dataset.cls);if(!c)return;
+        if(b.checked)delete c.off; else c.off=true;
+        if(!isOn(c)&&calCourse===c.id){calCourse="all";try{localStorage.setItem("cn_ctab","all");}catch(e){}}
+        if(!isOn(c)&&courseFilter===c.id)courseFilter="all";
+        saveCore();draw();
+      };
+    });
+    host.querySelector("#mcDone").onclick=()=>{S.profile.clsPicked=true;saveCore();closeModal();render();};
+  };
+  draw();
 }
 function studyPlanModal(){
   const plan=studyPlan();
@@ -9998,7 +10068,7 @@ function setRemind(e,days){
 /* what is inside its own window right now, soonest first */
 function remindNow(){
   if(!MINE.remind)return [];
-  return S.events.filter(e=>{
+  return myEvents().filter(e=>{
     if(e.done)return false;
     const d=remindOf(e);
     if(d===null)return false;
@@ -10038,8 +10108,8 @@ function remindPicker(e,id){
     '</select></label>';
 }
 function eventForm(ev){
-  const e=ev||{id:"",courseId:S.courses[0]?S.courses[0].id:"",title:"",type:"Assignment",date:today(),notes:""};
-  const opts=S.courses.map(c=>'<option value="'+c.id+'"'+(c.id===e.courseId?" selected":"")+'>'+esc(c.code||c.name)+'</option>').join("");
+  const e=ev||{id:"",courseId:(myCourses()[0]||S.courses[0]||{}).id||"",title:"",type:"Assignment",date:today(),notes:""};
+  const opts=myCourses().map(c=>'<option value="'+c.id+'"'+(c.id===e.courseId?" selected":"")+'>'+esc(c.code||c.name)+'</option>').join("");
   modal(ev?"Edit item":"Add to calendar",
     '<label class="f">Title<input type="text" id="fTitle" value="'+esc(e.title)+'" placeholder="Exam 1 — Cardiac"></label>'+
     '<div class="row" style="gap:13px"><label class="f" style="flex:1;min-width:130px">Course<select id="fCourse">'+(opts||'<option value="">No courses yet</option>')+'</select></label>'+
@@ -10096,7 +10166,7 @@ function buildIcs(){
       "SUMMARY:"+summary.replace(/[,;]/g," "),"DESCRIPTION:"+String(desc||"").replace(/[,;]/g," ").replace(/\n/g," "),
       "BEGIN:VALARM","TRIGGER:-P"+alarmDays+"D","ACTION:DISPLAY","DESCRIPTION:"+summary.replace(/[,;]/g," "),"END:VALARM","END:VEVENT");
   };
-  S.events.forEach(e=>push(e.id,e.date,"["+courseName(e.courseId)+"] "+e.type+": "+e.title,e.notes,1));
+  myEvents().forEach(e=>push(e.id,e.date,"["+courseName(e.courseId)+"] "+e.type+": "+e.title,e.notes,1));
   studyPlan().forEach((b,i)=>push("plan"+i+b.date,b.date,"Study block — "+courseName(b.ev.courseId)+" ("+b.off+"d to "+b.ev.title+")","Suggested study session",0));
   L.push("END:VCALENDAR");
   return L.join("\r\n");
@@ -10326,19 +10396,19 @@ function render(){
 
 function courseTabs(){
   const mk=(id,label,color)=>{
-    const n=(id==="all"?S.events:S.events.filter(e=>e.courseId===id)).filter(e=>!e.done&&dayDiff(e.date)>=0).length;
+    const n=(id==="all"?myEvents():S.events.filter(e=>e.courseId===id)).filter(e=>!e.done&&dayDiff(e.date)>=0).length;
     return '<button class="ctab" data-ctab="'+id+'" aria-current="'+(calCourse===id)+'" style="--tc:'+color+'">'+
       (id==="all"?'':'<span class="dot" style="background:'+color+'"></span>')+esc(label)+'<span class="ct">'+n+'</span></button>';
   };
   return '<div class="ctabs">'+mk("all","All courses","var(--accent)")+
-    S.courses.map(c=>mk(c.id,c.code||c.name,c.color)).join("")+'</div>';
+    myCourses().map(c=>mk(c.id,c.code||c.name,c.color)).join("")+'</div>';
 }
 function monthNav(){
   const prev=new Date(calYear,calMonth-1,1),next=new Date(calYear,calMonth+1,1);
   const t=focusTarget();
   // every month that holds something, plus the one being viewed
   const keys={};
-  S.events.forEach(e=>{const d=parseD(e.date);keys[d.getFullYear()+"-"+d.getMonth()]=true;});
+  myEvents().forEach(e=>{const d=parseD(e.date);keys[d.getFullYear()+"-"+d.getMonth()]=true;});
   keys[calYear+"-"+calMonth]=true;keys[t.y+"-"+t.m]=true;
   const list=Object.keys(keys).map(k=>{const p=k.split("-");return {y:+p[0],m:+p[1]};})
     .sort((x,y)=>x.y-y.y||x.m-y.m);
@@ -10405,7 +10475,7 @@ function viewNurse(){
     '<div class="herotext">'+
       '<span class="eyebrow">Level '+li.lvl+'</span>'+
       '<div class="rankname" style="font-size:28px">'+esc(li.rank)+'</div>'+
-      '<div class="note" style="margin-top:4px">'+(p.streak?p.streak+'-day streak &middot; ':'')+p.xp+' XP</div>'+
+      '<div class="note" style="margin-top:4px">'+(p.streak?p.streak+'-day streak &middot; ':'')+li.xp+' XP</div>'+
       '<div class="xpbar'+(li.heldBy==="assignments"?' behind':'')+'" style="margin-top:12px;max-width:300px"><i style="width:'+(li.pct*100).toFixed(1)+'%"></i></div>'+
       '<div class="mono" style="font-size:11px;color:var(--faint);margin-top:5px">'+esc(rankWhy(li))+'</div>'+
     '</div>'+
@@ -11783,7 +11853,7 @@ function avatarSetup(seed){
    Both are built from the same week grid, so the columns line up top to bottom.
 --------------------------------------------------------------------------- */
 function termBounds(){
-  const ds=S.events.map(e=>e.date).filter(Boolean).sort();
+  const ds=myEvents().map(e=>e.date).filter(Boolean).sort();
   if(!ds.length)return null;
   const a=parseD(ds[0]),b=parseD(ds[ds.length-1]);
   a.setDate(a.getDate()-a.getDay());            // back to the Sunday
@@ -11824,7 +11894,7 @@ function semLanes(t){
   }
   courses.forEach(c=>{
     const mine={};
-    S.events.forEach(x=>{if(x.courseId===c.id)(mine[x.date]=mine[x.date]||[]).push(x);});
+    myEvents().forEach(x=>{if(x.courseId===c.id)(mine[x.date]=mine[x.date]||[]).push(x);});
     const all=S.events.filter(x=>x.courseId===c.id);
     const left=todoOf(all).filter(x=>!x.done).length;
     h+='<div class="tlc lab" style="--lc:'+c.color+'"><b>'+esc(String(c.code||c.name).replace(/^NUR\s*/,""))+'</b>'+
@@ -11888,7 +11958,7 @@ function semWeeks(t){
     const seg=courses.map(c=>({c:c,n:todoOf(S.events.filter(x=>x.courseId===c.id&&x.date>=a&&x.date<=b)).length}))
                      .filter(x=>x.n);
     const n=seg.reduce((q,x)=>q+x.n,0);
-    const hot=S.events.filter(x=>x.date>=a&&x.date<=b)
+    const hot=myEvents().filter(x=>x.date>=a&&x.date<=b)
       .filter(x=>x.type==="Exam"||x.type==="Med Math");
     if(n>max)max=n;
     wks.push({a:a,b:b,sd:sd,seg:seg,n:n,hot:hot,now:today()>=a&&today()<=b});
@@ -11922,9 +11992,9 @@ function semesterMap(){
     '<button class="btn sm primary" id="semClose">Close</button></div>'+
     '<div class="empty"><b>Nothing on the board yet</b>Add some dates and the whole term appears here.</div></div>';
   const all=todoOf(S.events), left=all.filter(e=>!e.done).length;
-  const fin=S.events.filter(isFinal).length;
-  const ex=S.events.filter(e=>e.type==="Exam").length-fin;
-  const mm=S.events.filter(e=>e.type==="Med Math").length;
+  const fin=myEvents().filter(isFinal).length;
+  const ex=myEvents().filter(e=>e.type==="Exam").length-fin;
+  const mm=myEvents().filter(e=>e.type==="Med Math").length;
   return '<div class="semwrap" id="semwrap">'+
     '<div class="semhead"><h2>Semester map</h2>'+
       '<span class="semsum"><b>'+t.weeks+'</b> weeks &middot; <b>'+all.length+'</b> to-dos &middot; <b>'+left+'</b> left &middot; <b>'+ex+'</b> exams'+(fin?' &middot; <b>'+fin+'</b> finals':'')+(mm?' &middot; <b>'+mm+'</b> med math':'')+'</span>'+
@@ -11949,7 +12019,7 @@ function viewCalendar(){
     let cls="cell";
     if(d.getMonth()!==calMonth)cls+=" out";
     if(iso===today())cls+=" today";
-    const evs=S.events.filter(e=>e.date===iso&&(calCourse==="all"||e.courseId===calCourse));
+    const evs=myEvents().filter(e=>e.date===iso&&(calCourse==="all"||e.courseId===calCourse));
     if(evs.some(e=>e.type==="Exam"))cls+=" hasexam";
     else if(evs.some(e=>e.type==="Med Math"))cls+=" hasmm";
     else if(evs.some(e=>e.type==="Quiz"))cls+=" hasquiz";
@@ -11975,13 +12045,14 @@ function viewCalendar(){
   '<button class="btn sm mapbtn" id="semBtn"><span class="mapico"><i></i><i></i><i></i><i></i></span>Semester map</button>'+
   (sharedRW?'<button class="btn primary sm" id="addEv">Add item</button>':'<span class="chip">Shared schedule &middot; view only</span>')+
   '<button class="btn sm dots" id="calMore" aria-label="More">\u2026</button></div></div>'+
-  (S.courses.length?'':'<div class="card pad" style="margin-bottom:14px;border-left:3px solid var(--amber)"><b>Start with your courses.</b><div class="note" style="margin-top:4px">Add each class once, then everything you enter gets its color and its own question bank.</div><div class="row" style="margin-top:11px"><button class="btn primary sm" id="addCourse2">Add a course</button></div></div>')+
+  (myCourses().length&&!S.profile.clsPicked?'<div class="card pad" style="margin-bottom:14px;border-left:3px solid var(--accent)"><b>Are all of these yours?</b><div class="note" style="margin-top:4px">The board ships with every class in the cohort. Tick off the ones you are actually taking and the rest leave your calendar, your study side and your grade cards \u2014 nothing is deleted either way.</div><div class="row" style="margin-top:11px"><button class="btn primary sm" id="clsPick">Pick my classes</button><button class="btn sm" id="clsAll">I take them all</button></div></div>':'')+
+  (myCourses().length?'':'<div class="card pad" style="margin-bottom:14px;border-left:3px solid var(--amber)"><b>Start with your courses.</b><div class="note" style="margin-top:4px">Add each class once, then everything you enter gets its color and its own question bank.</div><div class="row" style="margin-top:11px"><button class="btn primary sm" id="addCourse2">Add a course</button></div></div>')+
     (calCourse!=="all"&&!calEvents().length?'<div class="card pad" style="margin-bottom:14px;border-left:3px solid '+((courseById(calCourse)||{}).color||"var(--accent)")+'"><b>Nothing on the board for '+esc((courseById(calCourse)||{}).code||"this course")+' yet.</b><div class="note" style="margin-top:4px">Use Add item to put a date on the board.</div></div>':'')+
   '<div class="calwrap'+(calFull?" full":"")+'" id="calwrap">'+
    (calFull?courseTabs()+'<div class="fullhead"><h2>'+MON[calMonth]+' '+calYear+'</h2>'+
      monthNav()+
      '<div class="legend"><b><s>\u25B2</s>Exam</b><b><s>\u25C6</s>Quiz</b><b><s>\u2605</s>Clinical</b><b><s>\u25CF</s>Due</b><b><s>\u25CB</s>Turn up</b>'+
-     (calCourse==="all"?S.courses:S.courses.filter(c=>c.id===calCourse)).map(c=>'<b><i style="background:'+c.color+'"></i>'+esc(c.code||c.name)+'</b>').join("")+'</div>'+
+     (calCourse==="all"?myCourses():S.courses.filter(c=>c.id===calCourse)).map(c=>'<b><i style="background:'+c.color+'"></i>'+esc(c.code||c.name)+'</b>').join("")+'</div>'+
      '<button class="btn sm primary" id="calShrink">Close</button></div>':'')+
    '<div class="card calcard scroll" style="margin-bottom:'+(calFull?'0':'16px')+'"><div class="cal">'+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>'<div class="dow">'+d+'</div>').join("")+cells+'</div></div></div>'+
   semesterMap()+
@@ -12317,7 +12388,7 @@ function clearLate(){
   const stamp=today();
   L.forEach(e=>{e.done=true;e.doneOn=stamp;e.xp=0;});   // xp 0: unticking gives nothing back
   saveCore();closeModal();render();window.scrollTo(0,0);
-  toast("Caught up","+"+0+" XP — "+L.length+" late item"+(L.length===1?"":"s")+" checked off. From here, ticking things off pays as normal.",true);
+  toast("Caught up",L.length+" late item"+(L.length===1?"":"s")+" checked off. From here, ticking things off pays as normal.",true);
 }
 function clearLateAsk(){
   const n=lateItems().length;
@@ -12354,7 +12425,7 @@ function lateBoard(){
 }
 function standBoard(){
   const books=gradebooks();
-  const rows=S.courses.filter(c=>books[c.id]&&books[c.id].items.length).map(c=>{
+  const rows=myCourses().filter(c=>books[c.id]&&books[c.id].items.length).map(c=>{
     const n=gradeNeed(c.id),cc=n.calc;
     let pill='<span class="stpill none">no scores yet</span>';
     if(cc.gate){
@@ -13878,7 +13949,7 @@ function studyGame(){
        '<div class="gadial">'+gaRing()+'<div class="hsscore">'+g.best+'</div></div>'+
        '<div class="hslabel">'+(g.best===1?'question deep':'in a row')+'</div>'+
        '<div class="hsunder">'+g.correct+' right of '+g.answered+' answered'+
-         (g.xp?' · +'+g.xp+' XP':'')+
+         (g.xp?' · '+g.xp+' points':'')+
          (newBest?'':' · your best is '+best)+'</div>'+
        '<div class="row" style="margin-top:20px;justify-content:center">'+
          '<button class="btn primary hsbtn" id="gaAgain">Run it again</button>'+
@@ -13892,7 +13963,7 @@ function studyGame(){
     '<div class="hspot"><b>'+g.streak+'</b><i>in a row</i></div>'+
     '<div class="hsmid">'+
       '<div class="hsx">×'+gaMult(g.streak)+'</div>'+
-      '<div class="hsst">'+g.xp+' XP</div></div>'+
+      '<div class="hsst">'+g.xp+' pts</div></div>'+
     '<div class="hsright">'+
       '<div class="galvl">'+[1,2,3,4,5].map(n=>
         '<i class="'+(n<=rg.hi?(n>=rg.lo?"on":"past"):"")+'"></i>').join("")+'</div>'+
@@ -13948,7 +14019,7 @@ function gaAnswer(idx){
     g.streak++;g.best=Math.max(g.best,g.streak);
     g.xp+=gain;
     q.wrong=Math.max(0,(q.wrong||0)-1);
-    g.flash={ok:true,text:"+"+gain+" XP · "+g.streak+" in a row"};
+    g.flash={ok:true,text:"+"+gain+" pts · "+g.streak+" in a row"};
   }else{
     g.dead=true;
     q.wrong=(q.wrong||0)+1;
@@ -13982,7 +14053,7 @@ function gaEnd(){
   if(g.answered){
     logStudyDay();
     if(g.best>(S.profile.gaBest||0))g.xp+=50;      // a new furthest is worth something
-    earnXp(g.xp);bumpToday(g.answered);
+    bumpToday(g.answered);
   }
   S.profile.gaBest=Math.max(S.profile.gaBest||0,g.best);
   S.profile.gaRuns=(S.profile.gaRuns||0)+1;
@@ -14854,7 +14925,7 @@ function wardStart(courseId,unit){
 function fightBegin(b,rounds,hp,secs){
   if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);
   FIGHT={b:b,rounds:rounds,r:0,hp:hp,hpMax:hp,hearts:fightHearts(),secs:secs,picked:{},locked:false,
-         hits:0,ouch:0,missed:0,answered:0,over:null,ends:0,timer:null,log:[],
+         hits:0,ouch:0,missed:0,answered:0,over:null,ends:0,timer:null,log:[],xpAt:xpNow(),
          known:!!b.ward||!rounds[0].dx};          // a ward round has no diagnosis to hide
   fightRoundStart();
   tab="fight";render();window.scrollTo(0,0);
@@ -15158,10 +15229,11 @@ function fightEnd(how){
     if(F.ouch===0&&F.missed===0){xp+=40;cash+=first?15:5;}
     F.first=first;
     p.fightDollars=(p.fightDollars||0)+cash;}
-  F.xp=xp;F.cash=cash;
-  if(F.hits||F.ouch){logStudyDay();earnXp(xp);bumpToday(F.b.ward?(F.answered||0):F.rounds.length);}
-  if(how==="won"){confetti(70);toast("+"+xp+" XP \u00b7 +$"+cash,F.first?"Spend it in the locker \u2014 bay 109 has new energy, bay 110 has kit.":"A repeat pays less. New diseases pay full.",true);}
-  else if(xp)toast("+"+xp+" XP","Every hit counts, even in a loss.");
+  if(F.hits||F.ouch){logStudyDay();bumpToday(F.b.ward?(F.answered||0):F.rounds.length);}
+  const xpGot=Math.max(0,xpNow()-(F.xpAt||xpNow()));
+  F.xp=xpGot;F.cash=cash;
+  if(how==="won"){confetti(70);toast((xpGot?"+"+xpGot+" XP \u00b7 ":"")+"+$"+cash,F.first?"Spend it in the locker \u2014 bay 109 has new energy, bay 110 has kit.":"A repeat pays less. New ground pays full.",true);}
+  else if(xpGot)toast("+"+xpGot+" XP","New ground counts, even in a loss.");
   saveCore();checkTrophies();render();
 }
 /* The end of a fight says how many you missed. This says WHICH: each round
@@ -18191,7 +18263,7 @@ function viewLibrary(){
   S.materials.forEach(m=>{(byCourse[m.courseId]=byCourse[m.courseId]||[]).push(m);});
   return ''+
   '<div class="vhead"><div><h1>Library</h1><p>PowerPoints, lecture transcripts, and pasted notes. Everything you add becomes a question bank.</p></div>'+
-  '<div class="row">'+(SAMPLE?'<button class="btn sm" id="syllBtn">Paste a syllabus</button>':'')+'<button class="btn sm" id="addCourse">Add course</button><button class="btn primary sm" id="pasteBtn">Paste notes</button></div></div>'+
+  '<div class="row">'+(SAMPLE?'<button class="btn sm" id="syllBtn">Paste a syllabus</button>':'')+'<button class="btn sm" id="myCls">My classes</button><button class="btn sm" id="addCourse">Add course</button><button class="btn primary sm" id="pasteBtn">Paste notes</button></div></div>'+
   (SAMPLE
     ? '<div class="drop" id="drop" style="margin-bottom:18px"><div style="font-family:\'Bricolage Grotesque\',sans-serif;font-weight:700;font-size:16px">Drop lecture files here</div>'+
       '<div class="note" style="margin-top:5px;max-width:52ch;margin-left:auto;margin-right:auto">PowerPoint (.pptx, notes pages included), Word (.docx), transcripts (.vtt, .srt, .txt, .md). For a PDF, copy the text and use Paste notes. You pick which exam the questions count toward, and you get all five levels, from naming terms to prioritizing care, out of the same file.</div>'+
@@ -18212,7 +18284,7 @@ function viewLibrary(){
         '<button class="btn sm ghost" data-delm="'+m.id+'">Remove</button></div>').join("")+'</div>'
        :'<div class="empty" style="padding:18px"><b>Nothing here yet</b>Drop a lecture file above, or use Paste notes.</div>')+'</div>';
   }).join(""):'<div class="card"><div class="empty"><b>No study courses yet</b>Add a course, or edit one and turn on its question bank.</div></div>')+
-  (S.courses.filter(c=>!isStudy(c)).length?'<div class="note" style="margin-top:6px">Calendar only: '+S.courses.filter(c=>!isStudy(c)).map(c=>esc(c.code||c.name)).join(", ")+'. Dates and reminders, no quizzing \u2014 turn one on from Edit on the calendar if that changes.</div>':'');
+  (myCourses().filter(c=>!isStudy(c)).length?'<div class="note" style="margin-top:6px">Calendar only: '+myCourses().filter(c=>!isStudy(c)).map(c=>esc(c.code||c.name)).join(", ")+'. Dates and reminders, no quizzing \u2014 turn one on from Edit on the calendar if that changes.</div>':'');
 }
 
 /* ---------- the nurse, drawn anime-style ----------
@@ -20546,19 +20618,17 @@ function rankLadder(){
   /* show what you have climbed, the next tier up, then say plainly how far the
      rest goes - the unnamed stretch is meant to look like a long way off */
   const upto=Math.min(TIER_COUNT,Math.max(topTier,li.tier)+1);
-  const left=TIER_COUNT-upto;
   const rows=[];for(let t=1;t<=upto;t++)rows.push(row(t));
   return '<div class="card" style="margin-bottom:10px"><div class="pad" style="padding-bottom:8px">'+
     '<div class="rankhead">'+
       '<div><span class="eyebrow">Level '+li.lvl+' of '+LEVEL_MAX+' \u00b7 week '+li.week+' \u00b7 '+rankPace(li)+'</span>'+
       '<div class="rankname">'+esc(li.rank)+'</div>'+
-      '<div class="note" style="margin-top:5px;max-width:42ch">A hundred levels, and the name changes every fifth. A full week is five: eighty questions you have not seen before earns three, and that week\u2019s tasks earn two. '+esc(rankWhy(li))+'</div>'+
+      '<div class="note" style="margin-top:5px;max-width:42ch">A hundred levels, and the name changes every fifth. A level is '+XP_PER_LEVEL+' XP: '+XP_PER_Q+' for every question you have not answered before, and the rest from the week\u2019s tasks. Answering one again pays nothing \u2014 a long streak is a good time, not a shortcut. '+esc(rankWhy(li))+'</div>'+
       '</div>'+
       '<div class="rankside"><b>'+li.inTier+'/'+TIER_SIZE+'</b><i>in this tier</i></div>'+
     '</div></div>'+
     rows.join("")+
-    (left?'<div class="rankrow"><span class="lv mono">'+(upto*TIER_SIZE+1)+'\u2013'+LEVEL_MAX+'</span>'+
-      '<span class="nm hidden-rank">'+left+' more tiers \u2014 still to come</span></div>':'')+
+
   '</div>';
 }
 function gateSection(){
@@ -20710,12 +20780,12 @@ function progressReport(){
   const acc=p.answered?Math.round(p.correct/p.answered*100):0;
   const L=[];
   L.push("Trophos — progress, "+MON[new Date().getMonth()].slice(0,3)+" "+new Date().getDate());
-  L.push("XP "+(p.xp||0)+" · level "+li.lvl+"/"+LEVEL_MAX+" ("+li.rank+") · streak "+(p.longest||0)+
+  L.push("XP "+li.xp+" · level "+li.lvl+"/"+LEVEL_MAX+" ("+li.rank+") · streak "+(p.longest||0)+
          " · accuracy "+(p.answered?acc+"% of "+p.answered:"—"));
   const all=todoOf(S.events), done=all.filter(e=>e.done).length;
   L.push("");
   L.push("TICKED  "+done+" / "+all.length);
-  S.courses.slice().sort((a,b)=>String(a.code).localeCompare(String(b.code))).forEach(c=>{
+  myCourses().slice().sort((a,b)=>String(a.code).localeCompare(String(b.code))).forEach(c=>{
     const mine=todoOf(S.events.filter(e=>e.courseId===c.id));
     if(!mine.length)return;
     const d=mine.filter(e=>e.done);
@@ -20734,7 +20804,7 @@ function progressReport(){
   const dq=S.questions.filter(q=>q.drug).length;
   const prime=S.questions.filter(q=>q.prime).length-dq;
   L.push("BANK    "+(S.questions.length-prime-dq)+" practice · "+prime+" before-class · "+dq+" on single drugs · "+S.materials.length+" materials");
-  S.courses.filter(isStudy).forEach(c=>{
+  studyCourses().forEach(c=>{
     const n=S.questions.filter(q=>q.courseId===c.id).length;
     L.push("  "+String(c.code||c.name).padEnd(9)+n);
   });
@@ -20816,7 +20886,7 @@ function trophyShelf(list,won){
     return '<div class="shelfi'+(on?' on':'')+'" title="'+esc(on?t.d:'Locked')+'">'+
       trophyCup(t,on)+
       '<b>'+(on?esc(t.n):'?????')+'</b>'+
-      '<i>'+(on?'+'+(t.xp||100)+' XP':(pr?pr.have+' / '+pr.need:'locked'))+'</i>'+
+      '<i>'+(on?'earned':(pr?pr.have+' / '+pr.need:'locked'))+'</i>'+
       (pr?'<span class="trbar"><span style="width:'+Math.round(pr.pct*100)+'%"></span></span>':'')+
     '</div>';}).join("")+'</div>';
 }
@@ -20827,7 +20897,7 @@ function trophyRow(t,on){
     '<span class="trb"><b>'+(on?esc(t.n):'?????')+'</b><i>'+(on?esc(t.d):'Locked')+'</i>'+
       (pr?'<span class="trbar"><span style="width:'+Math.round(pr.pct*100)+'%"></span></span>':'')+
     '</span>'+
-    '<span class="trx">'+(on?'+'+(t.xp||100):(pr?pr.have+' / '+pr.need:''))+'</span>'+
+    '<span class="trx">'+(on?'\u2713':(pr?pr.have+' / '+pr.need:''))+'</span>'+
   '</div>';
 }
 /* ---------------------------------------------------------------------------
@@ -20987,7 +21057,7 @@ function viewTrophies(){
   '<div class="vhead"><div><h1>Progress</h1><p>Level '+li.lvl+' of '+LEVEL_MAX+' &mdash; '+esc(li.rank)+'. '+won+' of '+TROPHIES.length+' trophies.</p></div>'+
     '<div class="row"><button class="btn sm" id="progBtn">Copy my progress</button></div></div>'+
   '<div class="stats" style="margin-bottom:14px">'+
-    ['<div class="stat"><div class="n">'+p.xp+'</div><div class="l">Total XP</div></div>',
+    ['<div class="stat"><div class="n">'+li.xp+'</div><div class="l">Total XP</div></div>',
      '<div class="stat"><div class="n">'+p.answered+'</div><div class="l">Answered</div></div>',
      '<div class="stat"><div class="n">'+acc+'%</div><div class="l">Accuracy</div></div>',
      '<div class="stat"><div class="n">'+(p.longest||0)+'</div><div class="l">Longest streak</div></div>',
@@ -21219,7 +21289,7 @@ function startSession(mode,key,ids){
   }
   const size=(ids&&ids.length)||mode==="prime"||mode==="extras"||mode==="offset"?pool.length:Math.min(15,pool.length);
   session={mode:mode,key:key,qs:pool.slice(0,size),i:0,picked:null,multi:[],correct:0,answers:[],xp:0,run:0,
-    endsAt:null,done:false,
+    xpAt:xpNow(),endsAt:null,done:false,
     ids:(ids&&ids.length)?pool.map(q=>q.id):null};
   saveRound();
   if(session.endsAt){
@@ -21243,7 +21313,7 @@ function saveRound(){
   const s=session;
   if(!s||s.done||timed(s.mode)){clearRound();return;}
   LS.set(ROUND_KEY,{mode:s.mode,key:s.key||null,ids:s.qs.map(q=>q.id),i:s.i,
-    picked:s.picked,multi:s.multi||[],correct:s.correct,xp:s.xp,run:s.run,explicit:!!s.ids,perm:s.perm||{},
+    picked:s.picked,multi:s.multi||[],correct:s.correct,xp:s.xp,xpAt:s.xpAt,run:s.run,explicit:!!s.ids,perm:s.perm||{},
     answers:s.answers.map(a=>({id:a.q.id,pick:a.pick,ok:a.ok})),at:Date.now()});
 }
 function clearRound(){LS.del(ROUND_KEY);}
@@ -21259,7 +21329,7 @@ function resumeRound(){
   const p=parkedRound();if(!p)return false;
   const {r,qs}=p, by={};qs.forEach(q=>{by[q.id]=q;});
   session={mode:r.mode,key:r.key,qs:qs,i:Math.min(r.i,qs.length-1),picked:r.picked,multi:r.multi||[],
-    correct:r.correct||0,xp:r.xp||0,run:r.run||0,endsAt:null,done:false,
+    correct:r.correct||0,xp:r.xp||0,run:r.run||0,xpAt:(r.xpAt==null?xpNow():r.xpAt),endsAt:null,done:false,
     ids:r.explicit?qs.map(q=>q.id):null,perm:r.perm||{},
     answers:(r.answers||[]).map(a=>({q:by[a.id],pick:a.pick,ok:a.ok})).filter(a=>a.q)};
   tab="study";render();return true;
@@ -21464,8 +21534,8 @@ function finishSession(){
       const p=S.profile;p.awarded=p.awarded||{};
       const k="prime:"+s.key;
       if(!p.awarded[k]){                       // paid once per set, not per run
-        p.awarded[k]=today();earnXp(PRIME_XP);
-        toast("Ready for class","+"+PRIME_XP+" XP \u2014 you know what to listen for now.",true);
+        p.awarded[k]=today();
+        toast("Ready for class","You know what to listen for now.",true);
       }
       saveCore();checkTrophies();
     }
@@ -21473,8 +21543,8 @@ function finishSession(){
   }
   if(total){
     logStudyDay();
-    earnXp(s.xp+20);
     bumpToday(total);
+    s.xpGot=Math.max(0,xpNow()-(s.xpAt||xpNow()));
     const pct=s.correct/total;
     if(total>=5&&s.correct===total)confetti(50);      // a perfect round
     if(s.mode==="weak"&&total>=5&&s.correct===total)S.profile.weakCleared=true;
@@ -21534,7 +21604,7 @@ function renderSummary(){
    '<div class="stats" style="margin-bottom:18px">'+
      '<div class="stat"><div class="n">'+s.correct+'/'+total+'</div><div class="l">Correct</div></div>'+
      '<div class="stat"><div class="n">'+pct+'%</div><div class="l">Accuracy</div></div>'+
-     '<div class="stat"><div class="n">+'+(total?s.xp+15:0)+'</div><div class="l">XP earned</div></div>'+
+     '<div class="stat"><div class="n">+'+(s.xpGot||0)+'</div><div class="l">XP earned</div></div>'+
      '<div class="stat"><div class="n">'+(S.profile.streak||0)+'</div><div class="l">Day streak</div></div></div>'+
    (missed.length?'<div class="card" style="margin-bottom:16px"><div class="pad" style="padding-bottom:8px"><span class="eyebrow">Review the misses</span></div>'+
      missed.map(a=>'<div style="padding:14px 18px;border-top:1px solid var(--line-soft)"><div style="font-weight:600;font-size:14px;margin-bottom:6px">'+esc(a.q.stem)+'</div>'+
@@ -21711,7 +21781,7 @@ async function generate(materialId,count,gateSid){
 
 function genPrompt(materialId){
   const m=S.materials.find(x=>x.id===materialId);
-  const exams=S.events.filter(e=>e.type==="Exam"&&(!m||e.courseId===m.courseId))
+  const exams=myEvents().filter(e=>e.type==="Exam"&&(!m||e.courseId===m.courseId))
     .sort((a,b)=>a.date.localeCompare(b.date));
   modal("Write questions from this lecture",
     '<div class="note">Written only from that file. Every question gets a rationale on all four options.</div>'+
@@ -21730,7 +21800,7 @@ function genPrompt(materialId){
 function syllabusModal(){
   if(!S.courses.length){toast("Add a course first","Dates get filed under a course.");courseForm();return;}
   modal("Paste a syllabus",
-    '<label class="f">Course<select id="sCourse">'+S.courses.map(c=>'<option value="'+c.id+'">'+esc(c.code||c.name)+'</option>').join("")+'</select></label>'+
+    '<label class="f">Course<select id="sCourse">'+myCourses().map(c=>'<option value="'+c.id+'">'+esc(c.code||c.name)+'</option>').join("")+'</select></label>'+
     '<label class="f">Paste the schedule section<textarea id="sText" placeholder="Week 1 (9/2) — Ch. 12 Fluid &amp; Electrolytes… Exam 1: Sept 23…"></textarea></label>'+
     '<div class="note">Exams, quizzes, assignments and clinical dates get pulled out, and you see the whole list before anything is added.</div>',
     '<button class="btn" id="sCancel">Cancel</button><button class="btn primary" id="sGo">Find the dates</button>');
@@ -21807,9 +21877,9 @@ function toggleDone(id,silent,key){
     if(sameDay.length>1&&sameDay.every(x=>x.done)&&!bon[e.date]){
       bon[e.date]=true;addXp(10);
       if(!nurseCheer("Day cleared","+20 XP \u2014 everything on "+e.date+" is done."))
-        toast("Day cleared","+10 XP \u2014 everything on "+e.date+" is done.",true);
+        toast("Day cleared","Everything on "+e.date+" is done.",true);
     }
-    else if(!silent&&!nurseCheer("+10 XP",e.title))toast("Checked off","+10 XP \u2014 "+e.title);
+    else if(!silent&&!nurseCheer("Checked off",e.title))toast("Checked off",e.title);
   }
   render();
   checkTrophies();
@@ -21828,7 +21898,7 @@ function dayModal(iso,allCourses){
   const WD=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   // Follows the course tab: pick a class and the day sheet shows only that class.
   const cc=allCourses?"all":calCourse;
-  const evs=S.events.filter(e=>e.date===iso&&(cc==="all"||e.courseId===cc)).sort((a,b)=>
+  const evs=myEvents().filter(e=>e.date===iso&&(cc==="all"||e.courseId===cc)).sort((a,b)=>
     ((cc!=="all"&&b.courseId===cc?1:0)-(cc!=="all"&&a.courseId===cc?1:0))||
     (TYPES.indexOf(a.type)-TYPES.indexOf(b.type))||a.title.localeCompare(b.title));
   const tdy=todoOf(evs), left=tdy.filter(e=>!e.done).length;
@@ -21856,7 +21926,7 @@ function dayModal(iso,allCourses){
     (evs.length&&left?'<button class="btn" id="dayAll">Check off all</button>':'')+
     '<button class="btn primary" id="dayClose">Done</button>');
   $("#dayClose").onclick=closeModal;
-  $("#dayAdd").onclick=()=>{closeModal();eventForm({id:"",courseId:calCourse!=="all"?calCourse:((S.courses[0]||{}).id||""),title:"",type:"Assignment",date:iso,notes:""});};
+  $("#dayAdd").onclick=()=>{closeModal();eventForm({id:"",courseId:calCourse!=="all"?calCourse:((myCourses()[0]||{}).id||""),title:"",type:"Assignment",date:iso,notes:""});};
   const allBtn=$("#dayAll");
   if(allBtn)allBtn.onclick=()=>{
     for(const e of evs)if(!e.done)toggleDone(e.id,true);
@@ -21935,7 +22005,7 @@ function wire(){
   {const b2=$("#backupBtn2");if(b2)b2.onclick=backupModal;}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 13, 8:06 PM":"This browser is not saving anything. Build Sep 13, 8:06 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 14, 7:23 AM":"This browser is not saving anything. Build Sep 14, 7:23 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22139,7 +22209,9 @@ function wire(){
     calMore:calMoreMenu,
     dayBar:dayByDay,
     bfDay:dayByDay,
-    semBtn:()=>{semOpen=true;semZoom=fitZoom();render();},lkOpen:()=>lockerModal(),semClose:()=>{semOpen=false;render();},addEv:()=>eventForm(null),addCourse:()=>courseForm(null),addCourse2:()=>courseForm(null),
+    semBtn:()=>{semOpen=true;semZoom=fitZoom();render();},lkOpen:()=>lockerModal(),semClose:()=>{semOpen=false;render();},addEv:()=>eventForm(null),addCourse:()=>courseForm(null),addCourse2:()=>courseForm(null),myCls:()=>myClassesModal(),
+    clsPick:()=>{S.profile.clsPicked=true;saveCore();myClassesModal();},
+    clsAll:()=>{S.profile.clsPicked=true;S.courses.forEach(c=>{delete c.off;});saveCore();render();},
     icsBtn:exportIcs,syllBtn:syllabusModal,syllBtn2:syllabusModal,pasteBtn:pasteModal,progBtn:progressModal,
     pickBtn:()=>$("#fileIn").click()};
   Object.keys(ids).forEach(k=>{const el=$("#"+k);if(el)el.onclick=ids[k];});
@@ -22448,7 +22520,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 13, 8:06 PM":"This browser is not saving anything. Build Sep 13, 8:06 PM");
+    (LS_OK?"Saved in this browser. Build Sep 14, 7:23 AM":"This browser is not saving anything. Build Sep 14, 7:23 AM");
 })();
 </script>
 
