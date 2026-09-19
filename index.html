@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Sep 18, 9:47 PM-->
+<!--TROPHOS-BUILD:!Sep 19, 4:37 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -8352,7 +8352,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Sep 18, 9:47 PM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 19, 4:37 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -13646,6 +13646,23 @@ function libRow(row){
 /* Every module in a course, in order, each with the exam it counts toward.
    Straight off the binder, so the shelf and the questions can never disagree
    about which exam a module belongs to. */
+/* Every exam gets one shelf of its own, above its modules.
+
+   Plenty of what you study is not module-shaped. A study guide that merges
+   three modules, a practice paper, the instructor's review sheet, a recording
+   of the review session - filing those under Module 2 because they mention the
+   eye is how a thing gets lost. So each exam carries a whole-exam shelf, named
+   for the exam, and it sorts above the modules because that is where you look
+   first in the week before.
+
+   The name comes off the exam's own calendar entry, so a course with three
+   exams and a final gets four of them without anyone listing them here. */
+function examShelf(title){
+  const t=String(title||"");
+  const m=/\bexam\s*(\d+)\b/i.exec(t);
+  const head=m?"Exam "+m[1]:(/\bfinal\b/i.test(t)?"Final exam":"");
+  return head?head+" — anything across the modules":"";
+}
 function libShelfMap(course){
   const keep=courseFilter;
   courseFilter=course.id;
@@ -13655,6 +13672,11 @@ function libShelfMap(course){
   order.forEach(k=>{
     const ex=t[k];
     const name=ex.ev?ex.ev.title:"Not yet tied to an exam";
+    const whole=ex.ev?examShelf(name):"";
+    if(whole&&!seen[whole]){
+      seen[whole]=1;
+      out.push({unit:whole,exam:k,examName:name,date:ex.ev.date,whole:true});
+    }
     Object.keys(ex.units).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}))
       .forEach(u=>{if(seen[u])return;seen[u]=1;out.push({unit:u,exam:k,examName:name,date:ex.ev?ex.ev.date:null});});
   });
@@ -13763,6 +13785,8 @@ function libForm(course){
         '<div class="f" id="lbMOtherWrap" hidden><input id="lbMOther" type="text" maxlength="40" '+
         'placeholder="Module 6"></div>'+
         '<div class="note" style="margin-top:-4px">It files itself under the right exam. '+
+        'Pick the exam itself — the first choice in each group — for a study guide, a '+
+        'practice paper or anything else that spans the modules. '+
         'A module with no questions yet sits under Anything else and moves across on its own '+
         'once its questions arrive.</div>';
     })()+
@@ -17927,7 +17951,11 @@ function moduleOfUnit(code,u){
   return M.find(m=>m.units.test(u||""))||null;
 }
 function unitParts(u){
-  const m=/^\s*(Content|Module|Week|Unit)\s*(\d+)\s*[\u2014\u2013:\-]\s*(.*)$/.exec(u||"");
+  /* "Final exam \u2014 ..." has no number, so it is read before the numbered forms.
+     It is one of the whole-exam shelves, not a module. */
+  const f=/^\s*(Final exam)\s*[\u2014\u2013:\-]\s*(.*)$/.exec(u||"");
+  if(f)return {key:f[1],kind:"Exam",no:99,head:f[2].trim(),leaf:f[2].trim()};
+  const m=/^\s*(Content|Module|Week|Unit|Exam)\s*(\d+)\s*[\u2014\u2013:\-]\s*(.*)$/.exec(u||"");
   if(!m)return {key:u||"Unsorted",kind:"",no:null,head:u||"Unsorted",leaf:u||"Unsorted"};
   const rest=m[3], c=rest.split(":");
   return {key:m[1]+" "+m[2], kind:m[1], no:+m[2],
@@ -22425,7 +22453,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 18, 9:47 PM":"This browser is not saving anything. Build Sep 18, 9:47 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 19, 4:37 PM":"This browser is not saving anything. Build Sep 19, 4:37 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22945,7 +22973,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 18, 9:47 PM":"This browser is not saving anything. Build Sep 18, 9:47 PM");
+    (LS_OK?"Saved in this browser. Build Sep 19, 4:37 PM":"This browser is not saving anything. Build Sep 19, 4:37 PM");
 })();
 </script>
 
