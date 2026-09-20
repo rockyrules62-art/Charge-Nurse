@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Sep 19, 4:37 PM-->
+<!--TROPHOS-BUILD:!Sep 19, 7:09 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -1652,6 +1652,7 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 .tkblock+.tkblock{margin-top:14px;padding-top:14px;border-top:1px solid var(--line-soft)}
 .tkh{font-family:"Bricolage Grotesque",sans-serif;font-size:14.5px;font-weight:800;
   padding:0 16px;margin-bottom:6px;color:#0E7C70}
+.tkall{padding:9px 2px 2px;font-size:11.5px;color:var(--muted);font-style:italic}
 .tklist{list-style:none;margin:0;padding:0}
 .tklist li{position:relative;padding:9px 16px 9px 38px;font-size:13.5px;line-height:1.5;
   border-top:1px solid var(--line-soft)}
@@ -2114,6 +2115,7 @@ body.advfull .advback{top:calc(10px + env(safe-area-inset-top))}body.advfull .ad
 .btn.cant:hover{border-color:var(--gold);color:var(--gold)}
 .avxp{display:flex;flex-direction:column;gap:5px;padding:9px 10px;border-radius:10px;
   background:var(--surface-2);border:1px solid var(--line-soft)}
+.avxp[hidden]{display:none}
 .avxpn{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
 .avxpn b{color:var(--ink);font-weight:700}
 .avxpb{height:6px;border-radius:99px;background:var(--line-soft);overflow:hidden}
@@ -2576,6 +2578,11 @@ button.tsrow{width:100%;background:none;border:0;border-bottom:1px solid var(--l
 .dtbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px}
 .dtsearch{flex:1 1 220px;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:14px}
 .dtsearch:focus{outline:2px solid var(--accent);outline-offset:1px}
+.dtrand{flex:none;display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:12px;
+  border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;
+  font:inherit;font-size:13.5px;font-weight:700}
+.dtrand:hover{filter:brightness(1.06)}
+.dtrand i{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;opacity:.8}
 .dtunit{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);margin:0 0 8px}
 .dtwrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 .drugtab{border-collapse:collapse;width:100%;min-width:960px;font-size:13px;line-height:1.45}
@@ -2806,9 +2813,19 @@ body.gated{overflow:hidden}
   transition:transform .16s ease}
 .libex.open .libexc{transform:rotate(90deg)}
 .libexn{flex:none;font:700 11px "IBM Plex Mono",monospace;color:var(--muted);font-variant-numeric:tabular-nums}
+/* A module inside an exam is a button too, and only one stands open at a time.
+   A term's worth of uploads under four modules is a page you have to scroll
+   past to reach anything; folded, the whole shelf is a dozen lines. */
+.libmod{display:flex;align-items:center;gap:9px;width:100%;padding:10px 16px 10px 27px;
+  cursor:pointer;border:0;border-top:1px solid var(--line-soft);background:transparent;
+  text-align:left}
+.libmod:hover{background:var(--surface-2)}
+.libmod .eyebrow{flex:1;min-width:0;font-size:10px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .libmod .eyebrow s{text-decoration:none;color:var(--faint);font-weight:600}
-.libmod{padding:11px 16px 3px}
-.libmod .eyebrow{font-size:10px}
+.libmod .libexc{font-size:13px}
+.libmod.open .libexc{transform:rotate(90deg)}
+.libmod.open{background:var(--surface-2)}
 .librow{display:grid;grid-template-columns:auto 1fr auto;gap:11px 11px;align-items:center;
   padding:9px 16px;border-top:1px solid var(--line-soft)}
 .libmod + .librow{border-top:0}
@@ -3864,7 +3881,7 @@ const QUIZZES=[
   {k:"mc",stem:"A client with open-angle glaucoma asks the nurse why timolol drops help when the eye doctor said the problem is that the fluid does not drain well. Which explanation is accurate?",
    options:["\"Timolol opens the meshwork the fluid drains through, so the fluid leaves the eye faster than it did.\"","\"Timolol slows the making of fluid at the ciliary body, so less builds up behind a slow drain.\"","\"Timolol thins the fluid so that it slips more easily through the narrow channels of the drain.\"","\"Timolol shrinks the pupil so that the iris is pulled away from the drain and the channel opens up.\""],
    answer:1,
-   why:"Aqueous humor is produced by the ciliary body, flows through the pupil into the anterior chamber and drains through the trabecular meshwork into Schlemm's canal and the veins; pressure is a balance between what is made and what drains. The glaucoma drugs work on one side or the other, and timolol, the beta blocker, is an inflow drug: it reduces the production of aqueous humor at the ciliary body, so a slow drain has less to cope with. Opening the drain is the work of the outflow drugs: bimatoprost by increasing uveoscleral outflow, and pilocarpine, the cholinergic, by constricting the pupil and increasing outflow. No drug thins the aqueous humor. Constricting the pupil is pilocarpine's action, not timolol's. The concept is that every glaucoma drug is either turning down the faucet or opening the drain, and knowing which is which is knowing the drug.",
+   why:"Aqueous humor is produced by the ciliary body, flows through the pupil into the anterior chamber and drains through the trabecular meshwork into Schlemm's canal and the veins; pressure is a balance between what is made and what drains. The glaucoma drugs work on one side or the other, and timolol, the beta blocker, is an inflow drug: it reduces the production of aqueous humor at the ciliary body, so a slow drain has less to cope with. Opening the drain is the work of the outflow drugs, and the one to know here is pilocarpine, the cholinergic, which constricts the pupil and pulls the iris clear of the meshwork. No drug thins the aqueous humor. Constricting the pupil is pilocarpine's action, not timolol's. The concept is that every glaucoma drug is either turning down the faucet or opening the drain, and knowing which is which is knowing the drug.",
    up:{stem:"The client also uses pilocarpine drops. On which side of the balance does it act?",
        options:["It decreases the production of fluid in the eye.","It increases the outflow of fluid from the eye.","It pulls water out of the eye into the blood.","It numbs the ciliary body so it rests."],
        answer:1,
@@ -3989,7 +4006,16 @@ const QUIZZES=[
        options:["A daily note that the client is 'stable on levodopa' with no change in the tablets","The client's mood at each visit and how the family thinks the drug is working","The number of tablets left in the bottle compared with the number dispensed","The times the client is mobile and the times the symptoms return, against the dose times"],
        answer:3,
        why:"Assessing and documenting 'on/off' phenomena, periods of good mobility against periods of symptom return, is what helps titrate the medication; the record that helps is the one that lines the client's function up against the dose times. A summary word, a mood note and a pill count do not show the provider when the drug wears off."}}
- ]}
+ ]},
+ /* ------------------------------------------------------------------ *
+  * The second paper. Her practice quiz is about SUBJECT MATTER, not
+  * about how she writes questions - she said so to the class - so this
+  * takes the drugs that quiz put on the table and are NOT named on the
+  * summary of weeks 1-3, and asks them at the same difficulty as the
+  * first paper. The first paper stays inside her sheet; this one covers
+  * the risk that the exam goes past it.
+  * ------------------------------------------------------------------ */
+ {"id":"t314-e1b","c":"NUR 314","kind":"exam","exam":"314-3997640035","unit":"Module 3 — Drugs for neurocognitive & neuromuscular disorders","n":"Exam 1 — the second paper","opens":"2026-09-20","covers":"The drugs her practice quiz put on the table that are not named on the summary of weeks 1-3: riluzole, tetrabenazine, quetiapine, sertraline, natalizumab, melatonin and neostigmine, plus serotonin syndrome and the SSRI combined with a monoamine oxidase inhibitor. Written at the same difficulty as the first paper.","qs":[{"k":"mc","cs":{"title":"Mr. Ellery, 61 — amyotrophic lateral sclerosis","n":1,"of":3,"chart":[["History","Diagnosed fourteen months ago; riluzole twice a day since then"],["Today","Clinic visit. His wife says he tires more easily and has lost nine pounds since the last visit",true],["Labs","Liver enzymes about three times the upper limit of normal; they were normal at the last check",true],["Assessment","Speech slower and harder to follow; he coughs after thin liquids",true]]},"stem":"Which finding is most directly related to the riluzole and should be reported before the next dose is given?","options":["The liver enzymes, which have risen to about three times the upper limit","The nine pounds he has lost over the weeks since his last visit to the clinic","The cough that follows thin liquids","The speech that has become slower and harder to follow"],"answer":0,"why":"Damage to the liver is riluzole's serious risk, which is why liver function is checked before it is started and on a schedule afterward; enzymes that have gone from normal to three times the upper limit are the reason that schedule exists, and the provider decides about the next dose. The weight loss, the cough after thin liquids and the slower speech are all the disease moving forward: amyotrophic lateral sclerosis takes voluntary muscle, and the muscles of chewing, swallowing and speech go with it, so each of those findings is reported and acted on as a swallowing and nutrition problem rather than as a drug effect. The concept is that a drug with a known organ risk has a monitoring schedule attached to it, and a result off that schedule is the finding that changes what happens next.","up":{"stem":"Which test is followed on a schedule for a client taking riluzole?","options":["Liver function","Hearing","Serum potassium","Bone density"],"answer":0,"why":"Riluzole can damage the liver, so liver function is checked before it starts and at intervals while it continues. Hearing is followed for the drugs that are toxic to the ear, and potassium for the drugs that waste it, neither of which describes riluzole. Bone density belongs to long-term corticosteroid therapy. Learn the drug with its test attached: riluzole and the liver."}},{"k":"mc","cs":{"title":"Mr. Ellery, 61 — amyotrophic lateral sclerosis","n":2,"of":3,"chart":[["History","Diagnosed fourteen months ago; riluzole twice a day since then"],["Today","Clinic visit. His wife says he tires more easily and has lost nine pounds since the last visit",true],["Labs","Liver enzymes about three times the upper limit of normal; they were normal at the last check",true],["Assessment","Speech slower and harder to follow; he coughs after thin liquids",true]]},"stem":"His wife asks what the riluzole is doing for him. Which response by the nurse is accurate?","options":["It rebuilds the nerve cells that have been damaged, so some of his strength should come back","It slows the disease and can add several months; it does not restore what is already lost","It replaces a chemical his brain has stopped making, the way a Parkinson's drug does","It quiets the immune attack on the covering of the nerves, so that relapses come less often and less severely"],"answer":1,"why":"Riluzole reduces the release of glutamate and blocks the receptors glutamate acts on, which lessens the damage to the motor neurons; the honest promise is that it slows the disease and can extend survival by several months, and saying so plainly is what keeps a family from expecting a recovery that is not coming. Nothing in this therapy rebuilds a motor neuron that has already been lost, so strength does not come back. Replacing a chemical the brain no longer makes describes levodopa in Parkinson's disease, where the shortage is dopamine; the problem in amyotrophic lateral sclerosis is the death of the motor neuron itself. Quieting an immune attack on the covering of the nerves describes the disease-modifying therapies in multiple sclerosis, which is a different disease with a different target. The concept is that a drug which slows a course is not a drug that reverses one, and the family is told which it is.","up":{"stem":"How does riluzole act on the nervous system?","options":["It adds dopamine","It reduces glutamate activity","It blocks acetylcholinesterase","It replaces myelin"],"answer":1,"why":"Riluzole inhibits the release of glutamate and blocks the receptors it works on, reducing the excitotoxic damage to motor neurons. Adding dopamine is levodopa's work in Parkinson's disease. Blocking acetylcholinesterase is pyridostigmine's in myasthenia gravis. Nothing replaces myelin. One drug, one mechanism, one disease."}},{"k":"sata","cs":{"title":"Mr. Ellery, 61 — amyotrophic lateral sclerosis","n":3,"of":3,"chart":[["History","Diagnosed fourteen months ago; riluzole twice a day since then"],["Today","Clinic visit. His wife says he tires more easily and has lost nine pounds since the last visit",true],["Labs","Liver enzymes about three times the upper limit of normal; they were normal at the last check",true],["Assessment","Speech slower and harder to follow; he coughs after thin liquids",true]]},"stem":"Which nursing actions are appropriate for Mr. Ellery today? Select all that apply.","options":["Confirm that liver function is being drawn on the schedule that was ordered","Ask for the swallowing to be reassessed, given the cough after thin liquids","Teach the couple that the drug is taken on schedule and not stopped because he feels no different","Reassure them that his strength should return over the next few months as the drug takes full effect","Hold the riluzole until the weight loss has been investigated and explained at today's visit"],"answers":[0,1,2],"why":"Three of these belong in today's visit. Liver function is the monitoring the drug carries, and confirming it is being drawn is how the risk is managed rather than assumed. A cough after thin liquids is the sign of an unsafe swallow, and in this disease the airway and nutrition are watched above everything, so it earns a reassessment now rather than at the next visit. Teaching that the drug is taken on schedule and not stopped for lack of a felt change is the adherence point: a drug that slows a decline produces no sensation of improvement, and a client who waits for one will stop taking it. Reassuring them that strength will return promises something the drug does not do, and a family told that will measure the treatment against a recovery and call it a failure. Holding the drug for the weight loss treats a symptom of the disease as a side effect and stops a therapy on the nurse's own authority; the weight loss is reported, and any decision to hold belongs to the provider. The concept is that managing this drug is monitoring, swallowing and honest expectations, in that order.","up":{"stem":"A client on riluzole says the drug is not working because he feels no stronger. What is the nurse's best reply?","options":["Strength usually returns in the second year of treatment","You are right, and the dose will need to be raised","The drug slows the disease rather than producing a change you can feel","Stopping it for a week would be the way to find out whether it is helping"],"answers":null,"answer":2,"why":"A drug that slows a decline gives no sensation of improvement, and saying so keeps a client on a therapy that is working. Raising the dose is not the answer to an expectation that was wrong in the first place. Strength does not return in the second year or any other. Stopping for a week to test it puts the client off treatment for nothing, since there is no felt difference to compare. Expect this question in any disease where the win is a slower loss."}},{"k":"mc","cs":{"title":"Mrs. Sandoval, 79 — Lewy body dementia","n":1,"of":3,"chart":[["History","Lewy body dementia for three years; well-formed hallucinations of children in the house that do not frighten her; rigidity and a shuffling walk"],["Tonight","Shouting and thrashing in her sleep. She struck her husband in the night and bruised her own arm on the bed rail",true],["Family","Her husband has not slept properly in a month and asks for something to keep her still",true],["Medications","Donepezil daily. No antipsychotic",true]]},"stem":"Her husband asks what the shouting and thrashing at night is. Which response by the nurse is best?","options":["Waking her fully each time it happens is the safest way to bring the episode to an end","The hallucinations have moved into the night, which means an antipsychotic is now the next step in her treatment","She is acting out dreams, and melatonin or clonazepam treats it once the bedroom has been made safe","A soft restraint at night will keep them both safe until the behavior settles on its own"],"answer":2,"why":"Shouting and thrashing in sleep is REM sleep behavior disorder, one of the core features of Lewy body dementia: the muscle paralysis that normally holds the body still during dreaming is lost, so the dream is acted out. It is treated with melatonin or clonazepam, and the bedroom is made safe first, because the behavior injures people before any drug has had time to work. Calling it the hallucinations moved into the night misreads the problem and reaches for the one class that is most dangerous in this dementia. Waking her fully each time leaves them both awake all night and does nothing about the injuries. A restraint in a client with rigidity and poor balance adds a second danger to the first, and restraint is not the answer to a sleep disorder. The concept is that the night behavior in this dementia has a name and a treatment, and that safety in the room comes before the prescription.","up":{"stem":"Which finding is a core feature of Lewy body dementia?","options":["Craving salt","Hearing loss that comes on quickly","A rash across the cheeks","Acting out dreams in sleep"],"answer":3,"why":"REM sleep behavior disorder sits alongside the fluctuating attention, the well-formed hallucinations and the parkinsonian rigidity as a core feature, and it often appears before the rest. Sudden hearing loss, a facial rash and salt craving belong to other conditions entirely and none of them is part of this picture. Learn the four core features together, because a question about any one of them is usually asking you to name the dementia."}},{"k":"mc","cs":{"title":"Mrs. Sandoval, 79 — Lewy body dementia","n":2,"of":3,"chart":[["History","Lewy body dementia for three years; well-formed hallucinations of children in the house that do not frighten her; rigidity and a shuffling walk"],["Tonight","Shouting and thrashing in her sleep. She struck her husband in the night and bruised her own arm on the bed rail",true],["Family","Her husband has not slept properly in a month and asks for something to keep her still",true],["Medications","Donepezil daily. No antipsychotic",true]]},"stem":"The provider is considering quetiapine for the hallucinations. What should the nurse know before it is given?","options":["The sensitivity to antipsychotics applies to Alzheimer's disease, so this client carries no particular risk","Quetiapine is the first drug tried for hallucinations here because it is the best tolerated of its class","An antipsychotic is safe in this dementia as long as the donepezil is stopped on the day it begins","Up to half of these clients are extremely sensitive to antipsychotics, so it is a last resort"],"answer":3,"why":"Up to half of clients with Lewy body dementia have an extreme sensitivity to antipsychotic drugs, which can severely worsen both the movement and the thinking, and that is why quetiapine is a last resort here, reserved for hallucinations or agitation that are severe, distressing and unresponsive to other measures, and started at a low dose. Calling it the first drug tried inverts that rule and would have a nurse reach for it before the causes of agitation had been looked for. Stopping the donepezil does not make an antipsychotic safe; the sensitivity is to the antipsychotic itself, and removing the cholinesterase inhibitor takes away the drug that helps her thinking. Confining the sensitivity to Alzheimer's disease reverses where it belongs, and an antipsychotic raises mortality in older adults with any dementia-related psychosis, so no dementia is a free pass. The concept is that a drug can be both available and close to last on the list, and knowing where it sits is knowing the drug.","up":{"stem":"Why is an antipsychotic used only as a last resort in Lewy body dementia?","options":["Clients can be extremely sensitive to it","It has no effect on hallucinations","It interacts with the cholinesterase inhibitors","It cannot be given by mouth"],"answer":0,"why":"Up to half of these clients have an extreme sensitivity, and the reaction worsens the rigidity and the cognition severely. Antipsychotics do reduce hallucinations, which is exactly why the temptation exists. A class-wide interaction with every cholinesterase inhibitor is not the reason, and quetiapine is an oral drug. The rule is one of caution, not of ineffectiveness."}},{"k":"sata","cs":{"title":"Mrs. Sandoval, 79 — Lewy body dementia","n":3,"of":3,"chart":[["History","Lewy body dementia for three years; well-formed hallucinations of children in the house that do not frighten her; rigidity and a shuffling walk"],["Tonight","Shouting and thrashing in her sleep. She struck her husband in the night and bruised her own arm on the bed rail",true],["Family","Her husband has not slept properly in a month and asks for something to keep her still",true],["Medications","Donepezil daily. No antipsychotic",true]]},"stem":"Low-dose quetiapine is started. Which assessments should the nurse plan? Select all that apply.","options":["Blood pressure lying and standing","How sedated she is, and whether she can still get up safely","Any worsening of the rigidity or of the shuffling walk","A blood glucose taken before each dose and charted with the vital signs","A formal hearing test each week"],"answers":[0,1,2],"why":"Three of these follow from what the drug does. Orthostatic hypotension is one of its key effects, so the blood pressure is taken lying and standing in a client who already has a shuffling walk and has already fallen once. Sedation is the other key effect, and in an older adult it is measured by what she can still do rather than by a word in the chart, which is why it is paired with whether she can get up safely. Watching for worsening rigidity and gait is the specific vigilance this dementia demands, because that is what the antipsychotic sensitivity looks like when it appears. A glucose before every dose is not part of starting this drug, and it would delay doses for a number that is not being acted on. A weekly hearing test belongs with the drugs that are toxic to the ear, which this is not. The concept is that the monitoring plan comes from the drug's own effects and from the disease's own vulnerability, and nowhere else.","up":{"stem":"Which two effects should the nurse expect to watch for soon after quetiapine is started?","options":["Tinnitus and vertigo","Sedation and orthostatic hypotension","Bradycardia and drooling","Dry mouth, blurred vision and constipation"],"answer":1,"why":"Sedation and orthostatic hypotension are the key early effects, and together they are a fall. Ringing and spinning belong to the drugs toxic to the ear. A slow pulse with drooling is the cholinergic picture, which belongs to the cholinesterase inhibitors. Dry mouth with blurred vision is the anticholinergic picture. Sort the effect by the class it comes from."}},{"k":"mc","stem":"A client with Huntington's disease is starting tetrabenazine for chorea. Which statement explains how the drug works?","options":["It empties the presynaptic stores of dopamine by blocking the transporter that fills them","It replaces the dopamine the brain has stopped making, so that movement becomes smoother","It blocks the receptors that glutamate acts on, which reduces the damage to the nerve cells","It keeps acetylcholine available for longer at the junction between the nerve and the muscle"],"answer":0,"why":"Tetrabenazine inhibits vesicular monoamine transporter 2, the transporter that loads dopamine into the vesicles that store it, so less dopamine is available to be released, and the involuntary jerky movements of chorea are reduced. Replacing dopamine the brain no longer makes is levodopa's work, and it is the opposite intervention for the opposite problem: Parkinson's disease is too little dopamine, Huntington's chorea behaves like too much. Blocking glutamate receptors to protect nerve cells describes riluzole in amyotrophic lateral sclerosis. Keeping acetylcholine available at the neuromuscular junction describes pyridostigmine in myasthenia gravis. The concept is that two movement disorders sit at opposite ends of the same chemical, and the drug for each moves it in the opposite direction.","up":{"stem":"Tetrabenazine is approved for which condition?","options":["Epilepsy","Parkinson's disease","Chorea in Huntington's disease","Relapsing-remitting multiple sclerosis"],"answer":2,"why":"It is approved specifically for the chorea of Huntington's disease. In Parkinson's disease dopamine is already short, so depleting it further would worsen the illness. Epilepsy and multiple sclerosis are treated on entirely different lines. Tie the drug to the movement it suppresses."}},{"k":"mc","stem":"A client has taken tetrabenazine for six weeks. Which report from the family should the nurse act on most urgently?","options":["He is sleeping more in the afternoon than he did before the drug was started","He has said twice this week that his family would be better off without him","The jerky movements of his arms have become smaller and less frequent","He says that food does not taste the way it used to since he began taking it"],"answer":1,"why":"Depression can be severe on this drug, and the risk of suicide is the black box warning it carries, because depleting dopamine depletes mood along with movement; a statement that the family would be better off without him is the warning arriving in the room, and it is acted on now rather than noted for the next visit. Sleeping more in the afternoon is the sedation the drug is known to cause, which is assessed for its effect on function and safety but is not the emergency. Smaller and less frequent jerky movements is the drug doing what it was given to do, and it is the finding that says the therapy is working. A change in the way food tastes is worth reporting and worth watching against his weight, and it is not what this drug's warning is about. The concept is that screening for low mood and for suicidal thinking is a named nursing function on this drug, not an optional kindness.","up":{"stem":"Which effect carries the black box warning on tetrabenazine?","options":["A dangerously slow pulse that needs the dose held","Damage to the liver","Loss of hearing","Depression and suicidal thinking"],"answer":3,"why":"Depleting dopamine depletes mood, and depression with suicidal thinking is the warning that sits on this drug. Liver damage is riluzole's serious risk. Hearing loss belongs to the aminoglycosides and the other drugs toxic to the ear. A dangerously slow pulse belongs to the cholinesterase inhibitors. Match each drug to the one thing that can end its use."}},{"k":"sata","stem":"Which points should the nurse include when teaching a family about tetrabenazine? Select all that apply.","options":["Report any new or worsening low mood rather than waiting for the next visit","Expect drowsiness, and put the tasks that need attention earlier in the day","Understand that the drug reduces the involuntary movements rather than slowing the disease","Stop the drug for a few days when the movements improve, and restart when they return","Expect the drug to lift his mood, since it acts on the same chemicals an antidepressant acts on"],"answers":[0,1,2],"why":"Three of these are the teaching. Reporting low mood promptly is the family's part of the black box warning, and a family that knows what to watch for is the monitoring between visits. Planning around drowsiness is how sedation is managed without giving up the drug, and it keeps the effect from being mistaken for the disease. Understanding that the drug suppresses chorea rather than slowing Huntington's disease sets the expectation correctly, which is what keeps a family from calling a working drug a failure. Stopping and restarting on the movements invents a schedule nobody ordered and takes a drug with a mood warning on and off without supervision. Expecting a lift in mood inverts the drug: it depletes dopamine and serotonin, and depression is the risk rather than the benefit, so a family expecting an antidepressant effect will miss the very thing they were meant to watch for. The concept is that the teaching for this drug is built around its warning, not around its target symptom.","up":{"stem":"A family asks whether tetrabenazine will slow their relative's Huntington's disease. What is true?","options":["It reduces the involuntary movements without slowing the disease","It slows the disease itself but does not help the involuntary movements","It cures the chorea within several weeks","It works when it is combined with levodopa"],"answer":0,"why":"The drug suppresses chorea; nothing in it changes how the disease itself progresses. Saying it slows the disease without helping movement reverses both halves. No drug cures the chorea. Levodopa would add dopamine and work directly against it, so pairing them makes no sense. Separate what a drug treats from what it changes."}},{"k":"mc","stem":"Sertraline is prescribed for a client with frontotemporal dementia. Which change would tell the nurse it is having its intended effect?","options":["Slower progression of the disease when the next brain imaging study is compared","A measurable improvement in short-term memory at the next cognitive assessment","Fewer repeated, compulsive acts and less disinhibited behavior","Less rigidity and a steadier walk than the client had before it was started"],"answer":2,"why":"Frontotemporal dementia presents as behavior before memory, and sertraline is given for exactly that: the disinhibition, the apathy and the compulsive acts, with behavioral stabilization and fewer compulsive acts as the intended effect. Improvement in short-term memory is not what this drug is for, and it is not what this dementia takes first; expecting it would have the drug judged on the wrong outcome. Slower progression seen on imaging asks a behavioral drug to change the disease, which nothing in this class does. Less rigidity and a steadier walk describes what a dopamine drug does in Parkinson's disease, which is a different problem and a different chemical. The concept is that a drug given for behavior is evaluated on behavior, and the nurse who knows the target knows whether it is working.","up":{"stem":"Which symptoms of frontotemporal dementia is sertraline used for?","options":["Tremor and rigidity","Disinhibition, apathy and compulsive acts","Well-formed hallucinations of people and animals","Sudden loss of vision"],"answer":1,"why":"The behavioral cluster is the target, because behavior is what this dementia takes first while recall is still fair. Tremor and rigidity are the parkinsonian picture. Well-formed hallucinations of people and animals are a hallmark of Lewy body dementia. Sudden vision loss is not a feature of any of them. Match the drug to the symptom cluster of its own dementia."}},{"k":"mc","stem":"A student asks what SSRI stands for and how the class works. Which answer by the nurse is correct?","options":["Severe serotonin reduction inhibitor: it stops serotonin being broken down inside the nerve cell","Selective serotonin release initiator: it makes the nerve cell release more serotonin than it would","Specific serotonin receptor inactivator: it shuts down the receptors that serotonin acts on","Selective serotonin reuptake inhibitor: it keeps serotonin available in the synapse for longer"],"answer":3,"why":"The letters stand for selective serotonin reuptake inhibitor, and the mechanism is in the name: the drug blocks the reuptake of serotonin back into the nerve cell that released it, so more stays in the synapse and its effect is enhanced. Making the cell release more serotonin describes a different action altogether, and reuptake is about what happens after release, not before it. Shutting down the receptors serotonin acts on would reduce its effect rather than enhance it, which is the opposite of what the class is for. Stopping the breakdown of serotonin inside the cell describes what a monoamine oxidase inhibitor does, which is a different class and, combined with this one, a dangerous one. The concept is that the name of a drug class is usually a description of its mechanism, and reading it carefully answers the question.","up":{"stem":"Blocking the reuptake of serotonin has which result?","options":["Serotonin receptors are destroyed","Less serotonin is made by the nerve cell that released it","More serotonin stays available in the synapse","Serotonin is broken down more quickly"],"answer":2,"why":"Reuptake is the nerve cell taking its serotonin back; blocking it leaves more in the synapse to act. Production is not affected, receptors are not destroyed, and breakdown is the business of monoamine oxidase, not of reuptake. Read the class name as the mechanism."}},{"k":"mc","stem":"A client with Parkinson's disease takes a monoamine oxidase type B inhibitor. A provider is considering adding sertraline for behavioral symptoms. What is the nurse's concern?","options":["The combination can cause serotonin syndrome, with high fever, seizures and confusion","The combination blocks the absorption of levodopa, so the movement symptoms would return","The two drugs cancel each other, so neither the mood nor the movement would improve","The combination raises the risk of the extreme antipsychotic sensitivity seen in Lewy body dementia"],"answer":0,"why":"An SSRI keeps serotonin in the synapse and a monoamine oxidase inhibitor stops it being broken down, so putting the two together drives serotonin high enough to cause serotonin syndrome, which shows as high fever, seizures and confusion; that is the reason the combination is avoided, and the reason a fourteen-day gap is left when one is being replaced by the other. Blocking the absorption of levodopa is not what happens between these two, and it would be a different kind of problem with a different presentation. Saying the two cancel each other misreads the interaction entirely, since they act on serotonin in the same direction rather than opposite ones, which is precisely why it is dangerous. Antipsychotic sensitivity belongs to Lewy body dementia and to the antipsychotic class, and neither of these drugs is an antipsychotic. The concept is that two drugs pushing the same chemical the same way is an interaction to look for, and a client can easily be prescribed both by two different services.","up":{"stem":"Which set of findings suggests serotonin syndrome?","options":["Dry mouth, blurred vision and constipation","A slow pulse, drooling and cramping","Ringing in the ears and unsteadiness","High fever, seizures and confusion"],"answer":3,"why":"High fever with seizures and confusion is the picture, and it comes on within days of the second serotonin drug. A slow pulse with drooling and cramping is the cholinergic picture. Ringing with unsteadiness points to a drug toxic to the ear. Dry mouth, blurred vision and constipation is the anticholinergic picture. Each syndrome belongs to a chemical; learn them as sets."}},{"k":"mc","stem":"Two days after a second serotonin-acting drug was added, a client has a temperature of 103.1 F, new confusion and a brief seizure. Which action should the nurse take first?","options":["Give the scheduled dose and recheck the temperature in one hour","Hold both serotonin-acting drugs and notify the provider","Ask the family whether he has ever had a seizure disorder","Start fluids and a cooling blanket, and reassess at the end of the shift"],"answer":1,"why":"High fever, seizures and confusion two days after a second serotonin drug was added is serotonin syndrome until proven otherwise, and the treatment begins with stopping what is causing it, so both drugs are held and the provider is told now. Giving the scheduled dose adds to the problem the dose created, and an hour is a long time in a client who has already seized. Asking about a past seizure disorder is history-taking during an emergency, and it does not change the fact that two serotonin drugs went in two days ago. Cooling measures and fluids are part of the supportive care, but reassessing at the end of the shift postpones the one action that stops the process, and cooling a client who is still receiving the cause is treating the number rather than the syndrome. The concept is that when a drug is causing the emergency, holding the drug comes before treating the symptom.","up":{"stem":"How soon after a second serotonin-acting drug is started does serotonin syndrome usually appear?","options":["Within hours to a few days","Only after several months","Only after the drug is stopped","Only in clients over eighty"],"answer":0,"why":"It appears quickly, within hours to a few days of the drug being added or the dose raised, which is why the medication history of the last few days is the first thing to read. It is not a long-term effect, it does not appear on withdrawal, and it is not confined to the very old. Timing is part of the recognition."}},{"k":"mc","stem":"A client is beginning sertraline. Which assessment is the priority during the first weeks of therapy?","options":["Counting an apical pulse for one full minute before each dose","Weighing the client daily to detect fluid retention","Screening for thoughts of suicide","Drawing liver function tests at weekly intervals"],"answer":2,"why":"A high index of suspicion for suicide risk, especially while therapy is being started, is the named nursing vigilance on this drug, alongside close monitoring of mood; the early weeks are when the risk is greatest and when the screening matters most. Daily weights belong to fluid problems and to heart failure, and fluid retention is not what this drug does. Counting an apical pulse before every dose is the check that goes with a drug that slows the heart, such as a cholinesterase inhibitor, and sertraline is not one. Weekly liver function tests are the monitoring that belongs to riluzole, where damage to the liver is the serious risk. The concept is that each drug carries its own named vigilance, and giving a drug the wrong one leaves its real risk unwatched.","up":{"stem":"When is the risk of suicidal thinking greatest with an SSRI?","options":["Only after a year of treatment","As therapy is being started","Only when the drug is at its highest dose","Only in clients who have never been depressed"],"answer":1,"why":"Initiation is when the screening is tightest, and it is the period the nursing guidance names. It is not confined to long-term use, it is not tied to the top of the dose range, and a history of depression makes the risk higher rather than lower. Screen early and keep screening."}},{"k":"mc","stem":"A client has taken sertraline for two weeks. Which report matches a known effect of the drug?","options":["Involuntary jerking movements of the arms and face","A slow pulse and dizziness on standing","Ringing in the ears and unsteadiness on the feet","Stomach upset and trouble falling asleep"],"answer":3,"why":"Gastrointestinal upset and insomnia are the two side effects named for this drug, and both tend to show early, which is when a client is most likely to stop taking it without saying so. A slow pulse with dizziness on standing points elsewhere: bradycardia belongs to the cholinesterase inhibitors and orthostatic hypotension to drugs such as quetiapine and the Parkinson's drugs. Ringing in the ears with unsteadiness is the picture of a drug toxic to the ear, which this is not. Involuntary jerking of the arms and face describes dyskinesia from long-term levodopa, or the chorea that tetrabenazine is given to suppress, and neither belongs to an SSRI. The concept is that side effects sort by class, and a report that does not fit the class is a reason to look at the rest of the medication list.","up":{"stem":"Which two effects are named for sertraline?","options":["Hearing loss with ringing and vertigo","Bradycardia and drooling","Stomach upset and insomnia","Dyskinesia and rigidity"],"answer":2,"why":"Gastrointestinal upset and insomnia are the two to know. A slow pulse with drooling is cholinergic. Hearing loss with vertigo belongs to the drugs toxic to the ear. Dyskinesia and rigidity belong to the dopamine drugs. Keep each pair with its own class."}},{"k":"mc","stem":"A client with relapsing multiple sclerosis is starting natalizumab. Which statement describes how it works?","options":["It stops immune cells crossing out of the blood into the central nervous system","It replaces the myelin that has already been stripped from the nerve fibers","It suppresses inflammation quickly and shortens an attack that is already under way","It blocks the release of glutamate and so protects the nerve cells from damage"],"answer":0,"why":"Natalizumab is a monoclonal antibody that blocks the integrin on the surface of lymphocytes which lets them cross into the central nervous system, so the immune cells driving the attack never reach the myelin; it is an infused disease-modifying therapy, given when other disease-modifying therapy has not held. Replacing myelin is not something any of these drugs do, and a client told otherwise will expect a repair that is not coming. Suppressing inflammation quickly to shorten an attack under way describes high-dose methylprednisolone, which treats a relapse and changes nothing over the years. Blocking glutamate release to protect nerve cells describes riluzole in amyotrophic lateral sclerosis. The concept is that the multiple sclerosis drugs split into the ones that reduce relapses over time and the one that shortens the relapse in front of you, and natalizumab is firmly in the first group.","up":{"stem":"How is natalizumab given?","options":["By patch applied weekly","By mouth each morning","By subcutaneous injection at home","By intravenous infusion"],"answer":3,"why":"It is an infusion, which is why it is grouped with the infused disease-modifying therapies rather than the injectables or the oral agents. Interferon beta and glatiramer are the self-injected ones; fingolimod and dimethyl fumarate are the oral ones. There is no patch in this group. The routes are how the disease-modifying therapies are usually sorted."}},{"k":"mc","stem":"A client has been receiving natalizumab infusions for a year and telephones the clinic. Which report should the nurse act on immediately?","options":["Tiredness for a day after each infusion that settles by the next morning","New weakness on one side and trouble finding words since yesterday","A headache on the evening of the infusion that eases with the usual measures","A sore arm at the infusion site that has faded over the past three days"],"answer":1,"why":"The serious risk of this drug is progressive multifocal leukoencephalopathy, an infection of the brain, and it announces itself as new or worsening neurologic change: new weakness, a change in vision, confusion, a change in personality, or trouble with words. New one-sided weakness with word-finding difficulty since yesterday is that report, and it goes to the provider now rather than at the next scheduled visit, which is why the drug sits behind a monitoring program at all. Tiredness for a day after an infusion and a headache the same evening are the expected effects, and both settling on their own is what expected looks like. A sore infusion site that is fading is a local reaction resolving. The concept is that on this drug any new neurologic symptom is treated as the serious one until it has been ruled out, because the client cannot tell the difference and neither can the nurse over the telephone.","up":{"stem":"Which change should a client on natalizumab report without waiting?","options":["A new neurologic symptom such as confusion or new weakness","Mild tiredness on the day after an infusion that settles on its own","A bruise at the infusion site","Feeling warm during the infusion itself"],"answer":0,"why":"Any new or worsening neurologic change is the report, because that is how the brain infection behind the monitoring program presents. Tiredness the day after and a bruise at the site are ordinary. Feeling warm during the infusion is watched at the time by the nurse who is already there. New neurology on this drug is never filed for later."}},{"k":"mc","stem":"A client with myasthenia gravis asks why pyridostigmine was chosen rather than neostigmine, when both act on the same enzyme. Which answer is accurate?","options":["Pyridostigmine works within minutes, which is what makes it useful before meals","Pyridostigmine does not produce the cholinergic effects that the other drug produces","Pyridostigmine lasts longer, so the doses sit further apart and the schedule can be kept","Pyridostigmine is given by injection, which makes the dose more reliable than a tablet taken at home"],"answer":2,"why":"Both drugs inhibit acetylcholinesterase, so more acetylcholine reaches the receptors that remain at the neuromuscular junction; the difference is duration, and pyridostigmine's longer duration is what puts the doses far enough apart to give a client a schedule that can be kept for years, which matters in a disease where a late dose is a swallow that fails. Saying it avoids the cholinergic effects is the trap: diarrhea, a slow pulse and excessive salivation belong to the class rather than to the drug, so a drug in the same class carries the same effects. Working within minutes describes a fast onset, and speed is not the reason for the choice; the doses are timed thirty to sixty minutes before meals so the drug is working when the client eats, which is a matter of timing rather than of onset. Pyridostigmine for maintenance is an oral drug, so calling it an injection is wrong on the route and wrong on the reason. The concept is that when two drugs share a mechanism, the difference is usually in the pharmacokinetics, and duration is the one that decides which drug someone lives on.","up":{"stem":"Two drugs are in the same class. What follows about their side effects?","options":["One of them will have no side effects","They tend to share the effects that belong to the class","The newer one is always better tolerated than the older one","Side effects depend only on the route"],"answer":1,"why":"Effects that come from the mechanism follow every drug that uses that mechanism, which is why swapping within a class rarely escapes them. No drug has no side effects, newer does not mean cleaner, and the route changes how much reaches the body rather than which effects are possible. Escaping a class effect usually means leaving the class."}},{"k":"sata","stem":"A husband asks what can be done about his wife acting out her dreams at night. Which should the nurse include? Select all that apply.","options":["Clear the floor beside the bed, and pad or rail it","Explain that melatonin or clonazepam may be prescribed for this","Suggest that the two of them sleep apart until it is under control","Reassure him that an antipsychotic at bedtime is the usual treatment","Advise him to wake her fully each time, so that the dream stops"],"answers":[0,1,2],"why":"Three of these belong in the answer. Making the room safe comes first, because the injuries happen before any prescription has had time to work, and a cleared floor with a padded or railed bed is what prevents them tonight. Naming melatonin and clonazepam tells him there is a treatment and what to expect the provider to consider. Sleeping apart is a practical measure that protects the bed partner, which matters here because he has already been struck. Calling an antipsychotic the usual treatment reaches for the one class that is dangerous in this dementia, where up to half of clients are extremely sensitive to it. Waking her fully every time leaves them both awake and does nothing about the thrashing that has already bruised her. The concept is that a dream-enactment problem is managed with safety first, then a drug chosen to avoid the class this dementia cannot tolerate.","up":{"stem":"Which two drugs are named for REM sleep behavior disorder in Lewy body dementia?","options":["Donepezil and memantine","Quetiapine and haloperidol","Melatonin and clonazepam","Levodopa and carbidopa"],"answer":2,"why":"Melatonin and clonazepam are the two named for dream enactment. The antipsychotics are the class to avoid here. Donepezil and memantine are given for thinking rather than for sleep. Levodopa and carbidopa treat the movement, and can worsen the hallucinations. Sleep has its own answer in this dementia."}},{"k":"mc","stem":"Two clients on the unit take drugs that move dopamine in opposite directions. Which description is correct?","options":["Both drugs deplete dopamine, and they differ only in the disease each is approved for","Levodopa depletes dopamine for Parkinson's disease, and tetrabenazine adds it for chorea","Both drugs add dopamine, and they differ only in how quickly the effect arrives","Levodopa adds dopamine for Parkinson's disease; tetrabenazine depletes it for chorea"],"answer":3,"why":"Parkinson's disease is a shortage of dopamine, and levodopa crosses into the brain and is converted to dopamine to refill the supply, with carbidopa keeping that conversion from happening on the way. The chorea of Huntington's disease behaves like the opposite problem, and tetrabenazine reduces the dopamine available by blocking the transporter that loads it into its vesicles. Reversing the two gets both diseases wrong and would have a nurse giving a depleting drug to a client who is already short. Saying both add dopamine loses the reason tetrabenazine suppresses movement at all. Saying both deplete it loses the reason levodopa is the most effective drug in Parkinson's disease. The concept is that too little dopamine and too much of its effect are two ends of one axis, and knowing which end a client sits at tells you which drug belongs to them.","up":{"stem":"Which movement problem comes from too little dopamine?","options":["The relapses of multiple sclerosis","The chorea of Huntington's disease","The fatigable weakness of myasthenia gravis that worsens through the day","The rigidity, tremor and slowness of Parkinson's disease"],"answer":3,"why":"Parkinson's disease is the shortage, which is why the treatment adds dopamine. Chorea behaves as the excess. Fatigable weakness comes from antibodies blocking acetylcholine receptors, and the relapses of multiple sclerosis come from an immune attack on myelin. Place the disease on the chemical before you choose the drug."}},{"k":"mc","stem":"A client with Lewy body dementia becomes agitated in the late afternoon. What should the nurse do before an antipsychotic is considered?","options":["Look for pain, a full bladder, infection or too much noise, and settle what is found","Ask for a single dose to be written, to use while the cause is being looked into","Move her to a quiet room and leave her there alone until the agitation has passed","Explain each time she mentions them that the people she can see are not really there"],"answer":0,"why":"Agitation in a client with dementia usually has a cause that can be found and fixed, and pain, a full bladder, an infection and an overstimulating environment are the ones to look for first; in this dementia that search matters more than usual, because the drug at the end of the line can severely worsen her movement and her thinking. Asking for a single dose to cover the search reaches for the last resort before the first step has been taken. Leaving her alone in a quiet room removes the stimulation and the supervision together, and an agitated client with rigidity and poor balance is a client who falls. Correcting her about the hallucinations argues with someone who cannot be argued out of them, and repeated correction raises the distress rather than lowering it. The concept is that the drug of last resort stays last, and the assessment that keeps it there is the nursing work.","up":{"stem":"Which is the first step when a client with dementia becomes newly agitated?","options":["Look for a physical cause such as pain or infection","Request an antipsychotic","Restrain the client for safety","Leave the client alone in a quiet room until the agitation settles"],"answer":0,"why":"A physical cause is common and treatable, and a sudden change in someone whose dementia has been stable is investigated as a reversible cause first. An antipsychotic is a late step, restraint adds danger, and leaving the client alone removes the supervision at the moment it is most needed. Assess before you medicate."}},{"k":"mc","stem":"Which statement by a client starting riluzole shows correct understanding?","options":["I will stop the tablets if I feel no stronger after a month of taking them","I will have blood drawn for liver tests on the schedule I was given","I will have my hearing checked at three-month intervals while I am taking it","I will take an extra dose on the days when the weakness is worse"],"answer":1,"why":"Riluzole is an oral drug taken on a schedule, and the monitoring that goes with it is liver function, drawn at set intervals because damage to the liver is its serious risk; a client who states the plan back has understood the one thing that keeps the drug safe. Stopping after a month for lack of a felt change misunderstands what the drug does, since slowing a decline produces nothing to feel. Hearing tests belong to the drugs that are toxic to the ear, and this is not one of them. Taking an extra dose on a bad day treats the drug as a rescue medicine, and it is not; the weakness on any given day is the disease, not a dose that was too small. The concept is that teaching for this drug is a schedule, a blood test and an honest expectation.","up":{"stem":"Riluzole is usually taken by which route?","options":["By intravenous infusion","By mouth","By subcutaneous injection","Under the tongue"],"answer":1,"why":"It is an oral tablet taken on a regular schedule at home. Infusions belong to drugs such as natalizumab, self-injection to interferon beta and glatiramer, and there is no sublingual form. Knowing the route is knowing what the client's day looks like."}},{"k":"sata","stem":"A nurse is reviewing the serious risk that limits each of several drugs. Which pairings are correct? Select all that apply.","options":["Riluzole and damage to the liver","Tetrabenazine and depression with suicidal thinking","Quetiapine and a severe worsening of movement in Lewy body dementia","Sertraline and a slow pulse that requires the next dose to be held and reported","Natalizumab and permanent loss of hearing"],"answers":[0,1,2],"why":"Three of these pairings hold. Riluzole carries the risk of hepatotoxicity, which is why liver function is followed on a schedule. Tetrabenazine carries a black box warning for depression and suicidal thinking, because depleting dopamine depletes mood. Quetiapine in Lewy body dementia can severely worsen the movement and the cognition, since up to half of these clients have an extreme sensitivity to antipsychotics. Sertraline does not slow the heart; a slow pulse that has the dose held belongs to the cholinesterase inhibitors such as donepezil and pyridostigmine, where more acetylcholine means a slower heart. Natalizumab's serious risk is an infection of the brain rather than anything to do with hearing; hearing loss belongs to the aminoglycosides and the other drugs toxic to the ear. The concept is that each drug is remembered with the one problem that can end its use, and matching them wrongly leaves the real risk unwatched.","up":{"stem":"Which drug carries a risk of damage to the liver that is followed with scheduled blood tests?","options":["Natalizumab","Sertraline","Riluzole","Melatonin"],"answer":2,"why":"Riluzole is the one with liver function testing attached. Sertraline is followed for mood and for suicide risk. Natalizumab is followed for new neurologic symptoms. Melatonin carries no such monitoring. Pair the drug with its test."}},{"k":"mc","stem":"A provider explains that quetiapine acts on two different receptor groups. Which description is correct?","options":["It blocks the reuptake of serotonin, leaving the dopamine system untouched","It adds dopamine and serotonin together, so that both the movement and the mood improve at once","It blocks dopamine and serotonin receptors, which is what reduces the hallucinations","It empties the stores of dopamine, in the way that a drug for chorea does"],"answer":2,"why":"Quetiapine blocks dopamine receptors and serotonin receptors, and blocking dopamine is what reduces psychotic symptoms; it is also why the drug is dangerous in Lewy body dementia, where the movement already depends on a dopamine system that is failing, so the same action that quiets the hallucinations can worsen the rigidity severely. Adding dopamine and serotonin describes the opposite direction, and a drug that added dopamine would worsen hallucinations rather than settle them. Blocking the reuptake of serotonin alone describes an SSRI such as sertraline, which is a different class given for different symptoms. Emptying the stores of dopamine describes tetrabenazine in Huntington's chorea, which reaches the same end by a different route and is given for movement rather than for psychosis. The concept is that blocking a receptor and depleting the chemical that fills it are two different mechanisms with two different drugs, and the receptor being blocked is what explains both the benefit and the danger.","up":{"stem":"Blocking dopamine receptors in a client whose movement already depends on scarce dopamine produces what risk?","options":["No change in the movement either way","Faster movement and more tremor","Improved balance and a steadier walk","Worse rigidity and slower movement"],"answer":3,"why":"Taking away what little dopamine signal remains worsens the rigidity and the slowness, which is the antipsychotic sensitivity that makes this class a last resort in Lewy body dementia. It does not speed movement up, it does not steady the walk, and it is certainly not neutral. Read the mechanism and the danger follows from it."}},{"k":"mc","stem":"Melatonin is prescribed for a client with Lewy body dementia who acts out dreams at night. What should the nurse teach the family?","options":["Withhold it whenever she has had an afternoon nap, so that the effect is not doubled","Give it on the nights when the thrashing has already started","Expect it to sedate her heavily within twenty minutes of the dose","Give it at the same time each evening, since it works on the timing of sleep"],"answer":3,"why":"Melatonin supplements the hormone that signals night to the sleep and wake cycle, so its effect is on the timing of sleep rather than on sedation, and a dose given at the same time each evening is what lets that timing settle. Giving it only on nights when the thrashing has already begun treats it as a rescue drug, which it is not, and by then the injury it was meant to prevent may already have happened. Expecting heavy sedation within twenty minutes describes a sedative, and the reason melatonin is reached for in this dementia is precisely that it is mild compared with the drugs it replaces in a client who must not have an antipsychotic. Withholding it after an afternoon nap invents a rule nobody set and breaks the consistency the drug depends on. The concept is that a drug acting on the body clock is given by the clock, and is judged over nights rather than within an hour.","up":{"stem":"How does melatonin help in REM sleep behavior disorder?","options":["By helping reset the timing of the sleep and wake cycle","By restoring the muscle paralysis that normally holds the body still during dreaming","By preventing dreams from forming","By blocking the dopamine that drives the movement"],"answer":0,"why":"It supplements the hormone that signals night, which helps the sleep and wake cycle keep its timing. It does not restore the muscle paralysis of REM sleep directly, it does not stop dreams, and it has nothing to do with dopamine. Understanding it as a timing drug is what makes the every-evening schedule make sense."}}]}
 ];
 function quizFor(unit){return QUIZZES.find(q=>q.unit===unit)||null;}
 /* WHEN A MODULE QUIZ OPENS
@@ -6159,10 +6185,10 @@ const SEED_QUESTIONS=[
   stem:"A client with Huntington's disease is admitted to begin tetrabenazine for chorea that has become disabling. During the admission assessment the client says the movements are unbearable and adds, “Some days I think everybody would be better off if I were not here.” Which action should the nurse take?",
   options:["Give the first dose now and watch the client's mood closely from here", "Report what the client said and expect the dose to be held", "Ask the provider to lower the starting dose to protect the mood", "Give the dose at bedtime so the sedation helps with sleep"],answer:1,
   rationale:"Tetrabenazine depletes the presynaptic neuron of dopamine and serotonin, and depression that can be severe, along with suicidality, is its black box warning. Active suicidal ideation is therefore a contraindication rather than something to watch for once the drug is running, so what this client has just said is reported at once and the dose is held until the mood has been evaluated and treated. Giving the first dose and watching the mood closely treats a contraindication as a monitoring plan; close mood surveillance is right for a client already stabilized on the drug, not for one who has voiced the thought before it has ever been given. Lowering the starting dose does not make the drug safe here, because the risk is the drug's effect on mood at any dose, and a smaller dose of a contraindicated drug is still a contraindicated drug. Moving the dose to bedtime treats the sedation, which is a real adverse effect worth planning around once the drug is appropriate, but it does nothing about the reason this dose should not be given at all. The concept is that a black box warning names the client who should not receive the drug, and the nurse acts on what the client says before the first dose rather than after it."},
- {c:"NUR 314",qid:"314-m3-74",level:3,k:"mc",gate:"314-3997640035",errs:["pharm-specific", null, "knowledge", "pharm-specific"],unit:"Module 3 — Drugs for neurocognitive & neuromuscular disorders",type:"application",watch:"Which course the drug is written for",
-  stem:"A nurse in a neurology clinic is reviewing four clients with multiple sclerosis before the provider's session. For which client is interferon beta the expected therapy?",
-  options:["The client whose walking has worsened steadily since diagnosis, with no attacks", "The client whose attacks of weakness and blurred vision clear almost fully", "The client who had one episode of optic neuritis and nothing since", "The client whose early attacks have given way to a steady decline"],answer:1,
-  rationale:"Interferon beta is the disease-modifying therapy for relapsing-remitting multiple sclerosis, and what it is given to do is decrease the frequency and severity of relapses. The client with clearly defined attacks of weakness and blurred vision that clear almost fully, with recovery in between, is describing the relapsing-remitting pattern, so that is the client the drug is written for. Steadily worsening walking since diagnosis without any attacks is primary progressive disease: there are no relapses to reduce, so a drug whose effect is measured in relapses has nothing to act on. A single episode of optic neuritis with nothing since is a first event that has not yet declared itself, and the decision there belongs to the provider after further evaluation rather than to a pattern the nurse can name. Early attacks that have given way to a steady decline is secondary progressive disease, which begins as relapsing-remitting and then becomes steadily progressive; once the decline is the story rather than the relapses, the relapse count is no longer what the therapy is judged on. The concept is matching a disease-modifying drug to the pattern of the disease it was written for, because the intended effect only exists where relapses do."},
+ {c:"NUR 314",qid:"314-m3-74",level:3,k:"mc",gate:"314-3997640035",errs:[null, "knowledge", "knowledge", "safety"],unit:"Module 3 — Drugs for neurocognitive & neuromuscular disorders",type:"teaching",watch:"What a client says before the first shot",
+  stem:"A client is starting interferon beta for relapsing-remitting multiple sclerosis. Which statement by the client shows correct understanding?",
+  options:["I will rotate the injection sites, and may feel flu-like the night after a dose", "I can stop the injections once I have gone six months without an attack", "This will repair the covering of the nerves that the disease has already damaged", "If I feel low or hopeless, that is expected with this drug and will pass on its own"],answer:0,
+  rationale:"Interferon beta is self-injected, the sites are rotated, and flu-like symptoms the night after a dose are expected rather than a reason to stop, so a client who says both has understood what living with the drug involves. Stopping after six months without an attack misreads what the drug does: it reduces how often relapses come and how severe they are, and a quiet six months is the therapy working rather than a sign it is finished, so stopping removes the protection that produced the quiet. Expecting it to repair the covering of the nerves promises something no disease-modifying therapy does; these drugs act on the immune attack going forward and do not rebuild what has already been stripped. Treating low mood as expected and something to sit with is the dangerous one, because this drug can deepen depression and suicidal thinking, and screening for that is part of the therapy rather than an optional kindness, so a client who plans to say nothing needs that corrected before the first injection. The concept is that the teaching for an injected disease-modifying therapy covers the injection itself, an honest account of what the drug can and cannot do, and the one symptom that must always be reported."},
  {c:"NUR 314",qid:"314-m3-75",level:4,k:"mc",gate:"314-3997640035",errs:[null, "prioritization", "knowledge", "pharm-specific"],unit:"Module 3 — Drugs for neurocognitive & neuromuscular disorders",type:"application",watch:"Jittery is the drug, not the crisis",
   stem:"A client who has taken pyridostigmine for myasthenia gravis for two weeks tells the nurse she feels jittery and on edge most of the day, and her family says she has been more irritable than usual. Her hand grips are strong and equal, she has had no cramping or drooling, and her pulse is 76. How should the nurse interpret this?",
   options:["A mental effect of the raised acetylcholine, which is reported to the provider", "The opening of a cholinergic crisis, so the next dose is held and help is called", "Worry about the new diagnosis rather than anything to do with the drug", "A sign the dose is too low, since weakness leaves a client feeling on edge"],answer:0,
@@ -8352,7 +8378,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Sep 19, 4:37 PM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 19, 7:09 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -8584,13 +8610,30 @@ async function pullProgress(){
   if(!use)return false;
   /* The schedule first: a ticked item is keyed to the event it belongs to, so
      the events have to be in place before the ticks are laid over them. */
-  if(use===remote&&row.core)applyCore(row.core);
+  let reseeded=false;
+  if(use===remote&&row.core){
+    applyCore(row.core);
+    /* The account's calendar is only as new as the last device that wrote it,
+       so anything added to the shared schedule since then arrives missing -
+       which is how five graded case studies could be seeded at boot and then
+       quietly replaced by an older copy a second later. Seeding again fills
+       them back in: it is keyed by sid, so it adds what is absent, leaves a
+       row the student has edited alone, and respects anything they deleted.
+       It has to happen here, between the events landing and the ticks going
+       on, or a tick has no row to find. */
+    dropCourses();
+    reseeded=seedCourses();
+    repairEvents();
+  }
   applyMine(use);
   LS.set("cn_mine",use);
   /* the account may carry ids another device made before ids became canonical */
   if(canonCourseIds()){seedQuestions();dropRetiredQuestions();reapplyDone();}
-  /* if this device held the newer copy, hand it up so the account catches up */
+  /* if this device held the newer copy, hand it up so the account catches up -
+     and if the account was missing schedule rows, hand the repair up too, so
+     the next device does not have to make it again */
   if(use===local&&remote)pushProgress(true);
+  else if(reseeded)pushProgress(true);
   return true;
 }
 let pushT=null, pushing=false, pushAgain=false;
@@ -11726,11 +11769,18 @@ function avatarSetup(seed){
     const due=tiers.filter(t=>!got[t[1]]&&n>=t[0]).reduce((a,t)=>a+t[2],0);
     const nxt=tiers.find(t=>!got[t[1]]&&n<t[0]);
     const xp=$("#avXp");
-    if(xp)xp.innerHTML='<span class="avxpn"><b>'+n+'</b> of 20 changed</span>'+
-      '<span class="avxpb"><i style="width:'+Math.min(100,Math.round(n/20*100))+'%"></i></span>'+
-      '<span class="avxpt">'+(due?"+"+due+" XP when you save"
-        :nxt?"+"+nxt[2]+" XP at "+nxt[0]+" changed"
-        :"All 500 design XP earned")+'</span>';
+    if(xp){
+      /* Once all three tiers are paid there is nothing left to earn, so the bar
+         stops taking up the room under the portrait. Keeping a full bar and a
+         line saying it is full turns the reward into a nag. */
+      const done=!due&&!nxt;
+      xp.hidden=done;
+      xp.innerHTML=done?"":
+        '<span class="avxpn"><b>'+n+'</b> of 20 changed</span>'+
+        '<span class="avxpb"><i style="width:'+Math.min(100,Math.round(n/20*100))+'%"></i></span>'+
+        '<span class="avxpt">'+(due?"+"+due+" XP when you save"
+          :"+"+nxt[2]+" XP at "+nxt[0]+" changed")+'</span>';
+    }
     $$("#avFT .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ft===(pick.fit||"straight")));
     $$("#avSN .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sn===(pick.shoes||"runner")));
     $$("#avHC .swatch").forEach(b=>b.setAttribute("aria-pressed",b.dataset.hc===(pick.hcol||"slate")));
@@ -13090,15 +13140,58 @@ function roomRecap(b){
     '<b>'+esc(b.name)+'</b>'+(dx?'<i>'+esc(dx[0])+(b.tag?' \u00b7 '+esc(b.tag):'')+'</i>':(b.tag?'<i>'+esc(b.tag)+'</i>':''))+'</div>'+
     '<div class="rcgrid">'+cols+'</div></div>';
 }
-function takeawayCard(units,label,open,gated){
+/* The names a drug goes by, for finding it in a summary.
+
+   The drug table's row names carry brackets, arrows and lists of cousin drugs -
+   "Levodopa/Carbidopa", "Bevacizumab, ranibizumab, aflibercept, faricimab" - so
+   the row is broken back down into the individual names it mentions. */
+function drugNames(slug){
+  let nm=null;
+  for(const k in DRUG_SLUG){if(DRUG_SLUG[k]===slug){nm=k;break;}}
+  if(!nm)return [];
+  return nm.replace(/—.*$/,"")
+    .replace(/[()]/g," ")
+    .split(/[,;/]|→| and | with /i)
+    .map(s=>s.trim())
+    .filter(s=>s.length>=5&&!/^(ophthalmic|otic solution|systemic|drops|and)$/i.test(s));
+}
+/* What a round was actually about. Every drug question names its drug, so a
+   round spent entirely on donepezil can say so - and the summary underneath it
+   can be the three lines about donepezil rather than all twenty-three about the
+   module. A round that ranged over four or more drugs is a round about the
+   module, and gets the module's whole summary. */
+const FOCUS_MAX=3;
+function roundFocus(qs){
+  const slugs={};
+  (qs||[]).forEach(q=>{const d=q&&q.drug;
+    if(d&&/^[a-z][a-z0-9-]*$/.test(d))slugs[d]=1;});
+  const keys=Object.keys(slugs);
+  if(!keys.length||keys.length>FOCUS_MAX)return [];
+  const out=[];
+  keys.forEach(s=>drugNames(s).forEach(n=>{if(out.indexOf(n)<0)out.push(n);}));
+  return out;
+}
+function takeawayCard(units,label,open,gated,focus){
   const us=(units||[]).filter(u=>unitTakeaways(u).length);
   if(!us.length)return '';
   const ok=gated?us.filter(takeawayReady):us;
   const shut=gated?us.filter(u=>!takeawayReady(u)):[];
+  const F=(focus||[]).filter(Boolean);
+  /* Narrow to the lines that name one of the round's drugs. If none of them do,
+     the whole summary comes back - a card with nothing in it teaches less than
+     one with too much. */
+  const pts=u=>{
+    const all=unitTakeaways(u);
+    if(!F.length)return all;
+    const hit=all.filter(t=>{const s=t.toLowerCase();
+      return F.some(n=>s.indexOf(n.toLowerCase())>=0);});
+    return hit.length?hit:all;
+  };
+  const narrowed=F.length&&ok.some(u=>pts(u).length<unitTakeaways(u).length);
   const block=u=>{
     const P=unitParts(u), nm=P.leaf?P.leaf.charAt(0).toUpperCase()+P.leaf.slice(1):u;
     return '<div class="tkblock">'+(us.length>1?'<div class="tkh">'+esc(nm)+'</div>':'')+
-      '<ul class="tklist">'+unitTakeaways(u).map(t=>'<li>'+esc(t)+'</li>').join("")+'</ul></div>';
+      '<ul class="tklist">'+pts(u).map(t=>'<li>'+esc(t)+'</li>').join("")+'</ul></div>';
   };
   const locked=u=>{
     const P=unitParts(u), nm=P.leaf?P.leaf.charAt(0).toUpperCase()+P.leaf.slice(1):u;
@@ -13108,13 +13201,16 @@ function takeawayCard(units,label,open,gated){
       '<i>Opens once you have been through these questions — '+n+' still new. '+
       'The summary has the answers in it, so reading it first would only tell you what you already had in front of you.</i></div>';
   };
-  const n=ok.reduce((a,u)=>a+unitTakeaways(u).length,0);
+  const n=ok.reduce((a,u)=>a+pts(u).length,0);
   const state=shut.length&&!ok.length ? "locked \u00b7 "+us.length+" topic"+(us.length===1?"":"s")
             : shut.length ? ok.length+" of "+us.length+" topics open"
             : n+" point"+(n===1?"":"s");
+  const foot=narrowed
+    ? '<div class="tkall">Narrowed to what this round covered. The whole topic is under Study.</div>'
+    : '';
   return drawer("take",stk("book").replace(/^<span class="stk"[^>]*>|<\/span>$/g,''),
     label||"What you need to know",state,
-    '<div class="takeaway">'+ok.map(block).join("")+shut.map(locked).join("")+'</div>',
+    '<div class="takeaway">'+ok.map(block).join("")+shut.map(locked).join("")+foot+'</div>',
     !!open&&!!ok.length);
 }
 
@@ -13703,7 +13799,11 @@ function libOpenExam(map){
   const next=dated.find(x=>x.date>=t)||dated[dated.length-1];
   return next?next.exam:(map[0]?map[0].exam:null);
 }
-let LIB_SHUT=null;                       /* exam ids folded shut, once opened */
+/* The shelf is an accordion the whole way down: one exam open, and inside it
+   one module open. Pressing a heading that is already open shuts it, so it is
+   possible to see nothing but headings - which is the point on a phone. */
+let LIB_EX=null;                         /* the exam group standing open */
+let LIB_MOD=null;                        /* the module standing open inside it */
 function librarySection(course){
   if(!supaOn())return "";
   const code=String(course.code||course.name||"").replace(/^NUR\s*/,"");
@@ -13716,14 +13816,6 @@ function librarySection(course){
       '</div></div></div>';
   const mine=(LIB_ROWS||[]).filter(r=>String(r.course||"")===code);
   const map=libShelfMap(course);
-  if(LIB_SHUT===null){
-    /* first look: everything folded but the exam that is coming */
-    const open=libOpenExam(map);LIB_SHUT={};
-    map.forEach(x=>{if(x.exam!==open)LIB_SHUT[x.exam]=1;});
-    /* "Anything else" stays OPEN. It holds whatever did not match a module the
-       binder knows, which is exactly the pile that needs looking at - folding
-       it away would hide a mis-filed upload rather than surface it. */
-  }
   /* exam -> module -> rows, in the order the term runs */
   const tree={},order=[];
   mine.forEach(r=>{
@@ -13735,23 +13827,44 @@ function librarySection(course){
   });
   const rank={};map.forEach((x,i)=>{if(rank[x.exam]===undefined)rank[x.exam]=i;});
   order.sort((a,b)=>(rank[a]===undefined?9e9:rank[a])-(rank[b]===undefined?9e9:rank[b]));
-  order.forEach(k=>tree[k].order.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})));
+  /* the whole-exam shelf sits above the modules whatever the module is called -
+     "Content 1" would otherwise sort above "Exam 1" and put it at the bottom */
+  const shelfFirst=u=>/^(Exam\s*\d|Final exam)\b/.test(u)?0:1;
+  order.forEach(k=>tree[k].order.sort((a,b)=>
+    shelfFirst(a)-shelfFirst(b)||a.localeCompare(b,undefined,{numeric:true})));
+  /* First look, before anything has been pressed: the exam that is coming next
+     stands open, and inside it the whole-exam shelf, because in the week before
+     an exam that is the pile you want. If that shelf is empty the exam opens on
+     nothing but its module headings, which is a short list rather than a long
+     one. An exam with no rows at all is skipped, so the shelf never opens on a
+     group with nothing under it. */
+  if(LIB_EX===null&&order.length){
+    const want=libOpenExam(map);
+    LIB_EX=(want&&tree[want])?want:(order[0]||"");
+    const T=tree[LIB_EX];
+    LIB_MOD=T?(T.order.find(u=>/^Exam\s*\d|^Final exam/.test(u))||""):"";
+  }
   return '<div class="board lib">'+
     '<div class="boardtop"><span class="bt">'+stk("book")+'Exam Library</span>'+
       '<span class="btag">'+mine.length+'</span></div>'+
     (mine.length
       ? '<div class="liblist">'+order.map(k=>{
-          const T=tree[k], shut=!!LIB_SHUT[k];
-          return '<button type="button" class="libex'+(shut?'':' open')+'" data-libex="'+esc(k)+'" '+
-            'aria-expanded="'+(shut?'false':'true')+'">'+
+          const T=tree[k], open=(LIB_EX===k);
+          return '<button type="button" class="libex'+(open?' open':'')+'" data-libex="'+esc(k)+'" '+
+            'aria-expanded="'+(open?'true':'false')+'">'+
             '<span class="libexc" aria-hidden="true">\u203A</span>'+
             '<b>'+esc(T.name)+'</b><span class="libexn">'+T.n+'</span></button>'+
-            (shut?'':T.order.map(u=>{
+            (open?T.order.map(u=>{
               const P=unitParts(u);
               const leaf=P.leaf?P.leaf.charAt(0).toUpperCase()+P.leaf.slice(1):u;
-              return '<div class="libmod"><span class="eyebrow">'+esc(P.key||u)+
-                (P.key&&leaf&&leaf!==P.key?' <s>'+esc(leaf)+'</s>':'')+'</span></div>'+
-                T.mods[u].map(libRow).join("");}).join(""));
+              const mo=(LIB_MOD===u);
+              return '<button type="button" class="libmod'+(mo?' open':'')+'" '+
+                'data-libmod="'+esc(u)+'" aria-expanded="'+(mo?'true':'false')+'">'+
+                '<span class="libexc" aria-hidden="true">\u203A</span>'+
+                '<span class="eyebrow">'+esc(P.key||u)+
+                (P.key&&leaf&&leaf!==P.key?' <s>'+esc(leaf)+'</s>':'')+'</span>'+
+                '<span class="libexn">'+T.mods[u].length+'</span></button>'+
+                (mo?T.mods[u].map(libRow).join(""):"");}).join(""):"");
         }).join("")+'</div>'
       : '<div class="pad" style="padding:12px 16px"><div class="note">Nothing here for '+
         esc(code)+' yet.</div></div>')+
@@ -13876,6 +13989,12 @@ function libForm(course){
     btn.disabled=false;btn.textContent="Put it on the shelf";
     if(!r.ok)return say(r.err||"That did not save.");
     LIB_ROWS=[rec].concat(LIB_ROWS||[]);
+    /* Open the shelf it landed on. Everything is folded now, so without this a
+       successful upload would close the form onto a page that looks unchanged -
+       and the one thing a person wants to see after putting something up is
+       that it is there. It also shows a mis-filed one straight away. */
+    {const w=libExamOf(libShelfMap(course),rec.module);
+     LIB_EX=w.exam;LIB_MOD=w.unit||"Anything else";}
     LIB_ERR="";LIB_SAID="On the shelf.";
     closeModal();render();
   };
@@ -15310,6 +15429,43 @@ function fightStart(id){
      started from the Grove or a link has somewhere to return to. */
   FCOURSE=bossCourse(b);FWING=bossUnit(b)||null;
   fightBegin(b,bossRounds(b),bossHp(b),fightSecs(b));
+}
+/* The rooms of one floor in the order the corridor lays them out: the modules
+   as the term runs them, and inside each module the rooms in the order the
+   bank has them. The corridor builds this order for drawing; "Next patient"
+   needs the same order for walking, so it lives here where both can reach it. */
+function fightRoster(code){
+  const mine=BOSSES.filter(b=>bossCourse(b)===code);
+  const order=[],seen={};
+  mine.forEach(b=>{const u=bossUnit(b);if(!seen[u]){seen[u]=1;order.push(u);}});
+  const wr=u=>{const l=unitParts(u).leaf;return l===WING_LEAF.eye?0:l===WING_LEAF.ear?1:2;};
+  order.sort((a,b)=>baseUnit(a).localeCompare(baseUnit(b),undefined,{numeric:true})||(wr(a)-wr(b))||a.localeCompare(b));
+  const out=[];
+  order.forEach(u=>mine.forEach(b=>{if(bossUnit(b)===u)out.push(b);}));
+  return out;
+}
+/* Which door to walk into next when the fight is over.
+
+   It starts at the room you just left and goes on down the floor, wrapping to
+   the top, and takes the first room still unresolved - so a run through a
+   module is one button pressed over and over rather than a trip back to the
+   corridor to find your place each time. If every room on the floor is
+   resolved it hands back the next one anyway, because at that point you are
+   revising and the order is still the order. Coming out of a ward there is no
+   room to start from, so it starts at the top of that wing instead. */
+function nextPatient(){
+  const F=FIGHT, b0=F&&F.b;
+  const code=FCOURSE||(b0?bossCourse(b0):null);
+  if(!code)return null;
+  const list=fightRoster(code);
+  if(!list.length)return null;
+  let at=(b0&&!b0.ward)?list.findIndex(x=>x.id===b0.id):-1;
+  if(at<0&&FWING){const w=list.findIndex(x=>bossUnit(x)===FWING);if(w>=0)at=w-1;}
+  const rot=list.slice(at+1).concat(list.slice(0,at+1));
+  if(b0&&!b0.ward){const i=rot.findIndex(x=>x.id===b0.id);if(i>=0)rot.splice(i,1);}
+  if(!rot.length)return null;
+  const beaten=S.profile.beaten||{};
+  return rot.find(x=>!beaten[x.id])||rot[0];
 }
 function wardStart(courseId,unit){
   const rs=wardRounds(courseId,unit);
@@ -17781,7 +17937,16 @@ function viewFight(){
         '<div class="row" style="margin-top:16px;justify-content:center;flex-wrap:wrap">'+
           ((F.ouch||F.missed)?'<button class="btn" id="fRevBtn">Review what you got wrong</button>':'')+
           '<button class="btn primary" id="fAgain">'+(won?'Take it again':'Back on shift')+'</button>'+
-          (F.adv?'<button class="btn" id="fForest">Back to the forest</button>':'<button class="btn" id="fDone">Next patient</button>')+'</div>'+
+          (F.adv
+            ? '<button class="btn" id="fForest">Back to the forest</button>'
+            : (function(){
+                const nx=nextPatient();
+                /* the room number, never the name - the chart on a door you
+                   have not opened stays blank */
+                return (nx?'<button class="btn" id="fNextPt">Next patient — Room '+
+                          roomOf(nx)+'</button>':'')+
+                  '<button class="btn" id="fDone">Back to the corridor</button>';
+              })())+'</div>'+
         fightReview(F)+
       '</div>'+
       roomRecap(b)+
@@ -17852,6 +18017,12 @@ function studyDrugs(){
     '<div class="dtbar">'+
       '<div class="dtpills">'+units.map(u=>{const p=unitParts(u);return '<button type="button" class="dtpill'+(u===at?' on':'')+'" data-drug-unit="'+esc(u)+'">'+esc(p.key||u)+'</button>';}).join("")+'</div>'+
       '<input type="search" class="dtsearch" id="drugQ" placeholder="Search a drug, an effect, a word…" value="'+esc(DRUG_Q||"")+'" autocomplete="off">'+
+      (function(){
+        const R=examDrugPool(c,at);
+        if(R.pool.length<2)return '';
+        return '<button type="button" class="dtrand" id="drugRand">'+
+          'Random drug from '+esc(R.name)+'<i>'+R.pool.length+' to draw from</i></button>';
+      })()+
     '</div>'+
     '<div class="dtunit">'+esc(at)+' · '+show.length+' of '+rows.filter(d=>d.unit===at).length+'</div>'+
     (show.length? ((wings.length>1
@@ -17864,6 +18035,43 @@ function studyDrugs(){
 /* the headings that group a module's table into its territories */
 const WING_NAME={eye:"The eye",ear:"The ear & balance",dementia:"The dementias",movement:"Movement & motor neuron disorders",neuromuscular:"Neuromuscular & demyelinating disorders"};
 let DRUG_UNIT=null, DRUG_Q="";
+/* ---- RANDOM DRUG, WHOLE EXAM ---------------------------------------------
+   The table is a reference you read; this is the exam asking. It takes one drug
+   at random from everything the exam covers - not just the module on screen -
+   and asks the same five questions that drug's own button would.
+
+   Pressing it again never lands on a drug it has already served until every one
+   has had a turn, and the reshuffle after that will not open on the drug it
+   just closed with. A random button that gives you donepezil three times
+   running reads as broken, and worse, it leaves half the exam unasked. */
+let DRUG_SEEN=[];
+function examDrugPool(course,unit){
+  const map=libShelfMap(course);
+  const mine=libExamOf(map,unit).exam;
+  const rows=DRUGS.filter(d=>d.c===(course.code||""));
+  const pool=rows.filter(d=>{
+    const s=DRUG_SLUG[d.name];
+    return s&&drugQs(s).length&&libExamOf(map,d.unit).exam===mine;
+  });
+  const ev=map.find(x=>x.exam===mine);
+  /* "314 Exam 1" and "308 Exam 1 — Modules 1-4" both want to read "Exam 1" */
+  const nm=ev?String(ev.examName||"").replace(/^\d{3}\s*/,"").replace(/\s*[—–-].*$/,"").trim():"";
+  return {pool:pool,name:nm||"this exam"};
+}
+function drugRandom(course,unit){
+  const P=examDrugPool(course,unit);
+  if(!P.pool.length)return null;
+  let left=P.pool.filter(d=>DRUG_SEEN.indexOf(d.name)<0);
+  if(!left.length){
+    const last=DRUG_SEEN[DRUG_SEEN.length-1];
+    DRUG_SEEN=[];
+    left=P.pool.filter(d=>d.name!==last);
+    if(!left.length)left=P.pool;
+  }
+  const d=left[Math.floor(Math.random()*left.length)];
+  DRUG_SEEN.push(d.name);
+  return d;
+}
 function studyWeak(){
   const c=courseById(courseFilter)||{};
   const W=weakSets();
@@ -22057,7 +22265,8 @@ function renderSummary(){
      missed.map(a=>'<div style="padding:14px 18px;border-top:1px solid var(--line-soft)"><div style="font-weight:600;font-size:14px;margin-bottom:6px">'+esc(a.q.stem)+'</div>'+
        '<div class="note" style="margin-bottom:6px">You chose <b style="color:var(--crimson)">'+esc(chosePut(a).you)+'</b> &mdash; correct is <b style="color:var(--accent)">'+esc(chosePut(a).right)+'</b></div>'+
        '<div class="rationale" style="margin-top:0">'+esc(a.q.rationale)+'</div></div>').join("")+'</div>':'')+
-   takeawayCard(unitsOf(s.answers.map(a=>a.q)),"What this round was about",true)+
+   takeawayCard(unitsOf(s.answers.map(a=>a.q)),"What this round was about",true,false,
+     roundFocus(s.answers.map(a=>a.q)))+
    '<div class="row">'+
      (missed.length?'<button class="btn primary" id="redo">Redo the '+missed.length+' you missed</button>':'')+
      '<button class="btn'+(missed.length?'':' primary')+'" id="again">Another round</button>'+
@@ -22423,8 +22632,17 @@ function wire(){
   {const b=$("#libAdd");if(b)b.onclick=()=>{const c=courseById(courseFilter);if(c)libForm(c);};}
   $$("[data-libex]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.libex;
-    LIB_SHUT=LIB_SHUT||{};
-    if(LIB_SHUT[k])delete LIB_SHUT[k]; else LIB_SHUT[k]=1;
+    /* Pressing the open one shuts it. The open module is not cleared on the way
+       out: a module name belongs to exactly one exam, so a name left over from
+       another group simply matches nothing and that group opens on its
+       headings - while folding a group and coming back lands where you were. */
+    LIB_EX=(LIB_EX===k)?"":k;
+    LIB_PLAY=null;
+    render();});
+  $$("[data-libmod]").forEach(b=>b.onclick=()=>{
+    const u=b.dataset.libmod;
+    LIB_MOD=(LIB_MOD===u)?"":u;
+    LIB_PLAY=null;
     render();});
   $$("[data-libopen]").forEach(b=>b.onclick=()=>{
     const r=(LIB_ROWS||[]).find(x=>x.id===b.dataset.libopen);
@@ -22453,7 +22671,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 19, 4:37 PM":"This browser is not saving anything. Build Sep 19, 4:37 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 19, 7:09 PM":"This browser is not saving anything. Build Sep 19, 7:09 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -22550,6 +22768,17 @@ function wire(){
   $$("[data-drugs-open]").forEach(b=>b.onclick=()=>{studyAt="drugs";DRUG_Q="";render();window.scrollTo(0,0);});
   $$("[data-drug-unit]").forEach(b=>b.onclick=()=>{DRUG_UNIT=b.dataset.drugUnit;render();});
   $$("[data-drugq]").forEach(b=>b.onclick=()=>{const ids=drugQs(b.dataset.drugq).map(q=>q.id);if(ids.length)startSession("drug",b.dataset.drugq,ids);});
+  {const b=$("#drugRand");if(b)b.onclick=()=>{
+    const c=courseById(courseFilter)||{};
+    const units=[...new Set(DRUGS.filter(d=>d.c===(c.code||"")).map(d=>d.unit))];
+    const at=DRUG_UNIT&&units.indexOf(DRUG_UNIT)>=0?DRUG_UNIT:units[0];
+    const d=drugRandom(c,at);
+    if(!d)return toast("Nothing to draw from","No drug on this exam has questions behind it yet.");
+    const slug=DRUG_SLUG[d.name], ids=drugQs(slug).map(q=>q.id);
+    if(!ids.length)return;
+    toast("Drawn: "+d.name,unitParts(d.unit).key+" · "+ids.length+" questions.");
+    startSession("drug",slug,ids);
+  };}
   {const x=$("#drugQ");if(x){x.oninput=()=>{DRUG_Q=x.value;const pos=x.selectionStart;render();const y=$("#drugQ");if(y){y.focus();try{y.setSelectionRange(pos,pos);}catch(e){}}};}}
   const fl=$("#fLock"); if(fl)fl.onclick=()=>fightLock();
   fightScrollCue();
@@ -22563,6 +22792,14 @@ function wire(){
   const leaveFight=()=>{if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);FIGHT=null;render();window.scrollTo(0,0);};
   const fb=$("#fBack"); if(fb)fb.onclick=leaveFight;
   const fd=$("#fDone"); if(fd)fd.onclick=leaveFight;
+  const fnx=$("#fNextPt"); if(fnx)fnx.onclick=()=>{
+    const nx=nextPatient();                       // read it while FIGHT is still up
+    if(!nx)return leaveFight();
+    if(FIGHT&&FIGHT.timer)clearInterval(FIGHT.timer);
+    FIGHT=null;
+    fightStart(nx.id);
+    window.scrollTo(0,0);
+  };
   const rg2=$("#rGo"); if(rg2)rg2.onclick=()=>gaStart();
   $$("[data-gaunit]").forEach(b=>{b.onclick=()=>{gaToggleUnit(b.dataset.gaunit);render();};});
   $$("[data-gaall]").forEach(b=>{b.onclick=()=>{gaClearUnits();render();};});
@@ -22754,7 +22991,7 @@ function resetTab(name){
   if(name==="study"){
     if((GAME&&!GAME.over)||(QUIZ&&!QUIZ.done))return;   /* mid-run or mid-quiz: leave it be */
     GAME=null;QUIZ=null;                  /* a finished run: the tab is a way out */
-    studyAt="pick";studyExam=null;courseFilter="all";LIB_SHUT=null;DRUG_UNIT=null;DRUG_Q="";
+    studyAt="pick";studyExam=null;courseFilter="all";LIB_EX=null;LIB_MOD=null;DRUG_UNIT=null;DRUG_Q="";
   }else if(name==="fight"){
     if(FIGHT)return;
     FCOURSE=null;FWING=null;ADV_OPEN=false;ADV=null;
@@ -22973,7 +23210,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 19, 4:37 PM":"This browser is not saving anything. Build Sep 19, 4:37 PM");
+    (LS_OK?"Saved in this browser. Build Sep 19, 7:09 PM":"This browser is not saving anything. Build Sep 19, 7:09 PM");
 })();
 </script>
 
