@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Sep 25, 8:05 PM-->
+<!--TROPHOS-BUILD:!Sep 27, 9:17 AM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -759,6 +759,31 @@ div.qzcard{cursor:default}
 .qztop .btn{grid-column:3;grid-row:1/3}
 .qztop.no u{color:#B31F38}.qztop.part u{color:#9A4B07}.qztop.ok u{color:var(--accent-txt)}
 @media (max-width:520px){.qztop{grid-template-columns:1fr auto}.qztop .btn{grid-column:1/3;grid-row:3;justify-self:start}}
+.pulsebar{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px;font:600 12.5px "IBM Plex Mono",monospace;color:var(--muted)}
+.pulsesure{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--accent)}
+.pulsesure span{font-weight:650;font-size:14px;margin-right:auto}
+.pulsemap{padding:16px 18px;border-radius:16px;margin:0 0 14px;background:var(--surface);border:1px solid var(--line)}
+.pulsesum{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px}.pulsesum .note{margin-left:auto}
+.pulsegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.pulsecell{text-align:left;padding:9px 11px;border-radius:11px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;display:flex;flex-direction:column;gap:2px;min-height:58px}
+.pulsecell b{font-size:12.5px;line-height:1.3}.pulsecell i{font:600 11px "IBM Plex Mono",monospace;font-style:normal;color:var(--muted)}
+.pulsecell.solid{border-color:var(--accent);background:var(--accent-soft)}.pulsecell.solid i{color:var(--accent-txt)}
+.pulsecell.shaky{border-color:#9A4B0766;background:#FBF0E4}.pulsecell.shaky i{color:#9A4B07}
+.pulsecell.gap{border-color:#B31F3866;background:#FBE7EA}.pulsecell.gap i{color:#B31F38}
+.pulsecell.fs{box-shadow:0 0 0 2px #B31F38 inset}
+:root[data-theme="dark"] .pulsecell.shaky{background:#2E2214}:root[data-theme="dark"] .pulsecell.gap{background:#2B1218}
+.exstats{padding:16px 18px;border-radius:16px;margin:14px 0;background:var(--surface);border:1px solid var(--line)}
+.stathead{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;margin:8px 0 12px}
+.statbig b{display:block;font:700 40px/1 "IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--accent-txt)}
+.statbig i{display:block;font-style:normal;font-size:12.5px;color:var(--muted);margin-top:4px}
+.statline{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);padding-top:4px}
+.statbands{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.statband{padding:10px 12px;border-radius:12px;background:var(--surface-2);min-height:64px}
+.statband .eyebrow{display:block;margin-bottom:6px}.statband i{font-style:normal;font-size:12.5px;color:var(--muted)}
+.stpill{display:inline-block;margin:2px 4px 2px 0;padding:3px 9px;border-radius:999px;font:600 12.5px/1.4 "IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;border:1px solid var(--line)}
+.stpill.weak{color:#B31F38;border-color:#B31F3855}.stpill.hold{color:#9A4B07;border-color:#9A4B0755}.stpill.strong{color:var(--accent-txt);border-color:var(--accent)}
+.qztop.few u{color:var(--muted)}
+@media (max-width:640px){.statbands{grid-template-columns:1fr}}
 .qzwhy{margin-top:12px;padding:11px 13px;border-radius:11px;background:var(--surface-2);border-left:3px solid var(--accent)}
 .qzwhy i{display:block;font:700 10px "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;
   color:var(--accent);font-style:normal;margin-bottom:4px}
@@ -4471,6 +4496,86 @@ function sheetTally(code){
   mine.forEach(id=>all[id].rows.forEach(r=>{const k=r.wi+":"+r.ti;T[k]=T[k]||{wi:r.wi,ti:r.ti,t:REVIEW_SHEET.weeks[r.wi].topics[r.ti].t,n:0,pts:0,max:0};T[k].n+=r.n;T[k].pts+=r.pts;T[k].max+=r.max;}));
   const rows=Object.values(T).sort((a,b)=>(a.wi-b.wi)||(a.ti-b.ti));
   return {exams:mine.map(id=>all[id]),rows:rows,thin:rows.filter(t=>topicPct(t)<75)};
+}
+/* ---- Exam stats: strong and weak, from everything answered ----------------
+   Every answer in practice, the drills, the Gauntlet, the fights, the ward and
+   the practice exams lands here. A question's record is how many times it was
+   answered (seen) and how many times it was missed (the miss log), so a
+   module's accuracy is right answers over answers given. For 308 the practice
+   exams add their points on the review-sheet topics, week by week, and the
+   same topics give the finer grain under the modules. Under 75 with at least
+   five answers is weak, 85 and up is strong, in between is holding; fewer than
+   five answers is not enough to call. */
+const STAT_MIN=5;
+function statBand(pct,n){if(pct===null||n<STAT_MIN)return "few";return pct>=85?"strong":pct>=75?"hold":"weak";}
+function missCount(){const m={};(MINE.misses||[]).forEach(x=>{m[x.qid]=(m[x.qid]||0)+1;});return m;}
+function accOf(qs,MC){let seen=0,right=0;qs.forEach(q=>{const s=q.seen||0;if(!s)return;const w=Math.min(s,MC[q.id]||0);seen+=s;right+=s-w;});return {seen:seen,right:right};}
+function examStats(exKey){
+  const ex=binderTree()[exKey];if(!ex)return null;
+  const c=courseById(courseFilter)||{}, MC=missCount();
+  const sheet=(typeof REVIEW_SHEET!=="undefined"&&REVIEW_SHEET.course===c.code);
+  const quizzes=QUIZZES.filter(q=>q.c===(c.code||"")&&q.kind==="exam"&&q.exam===exKey);
+  const qt=S.profile.quizTopics||{};
+  const examPts=wi=>{let pts=0,max=0;if(!sheet)return {pts:0,max:0};quizzes.forEach(Q=>{const r=qt[Q.id];if(!r)return;r.rows.forEach(x=>{if(wi===null||x.wi===wi){pts+=x.pts;max+=x.max;}});});return {pts:pts,max:max};};
+  const mods=unitGroups(ex).map(g=>{
+    const qs=[].concat.apply([],g.rows.map(r=>r.qs));
+    const a=accOf(qs,MC), e=examPts(g.no!==null?g.no-1:-1);
+    const n=a.seen+e.max, pct=n?Math.round((a.right+e.pts)/n*100):null;
+    const rows=g.rows.map(r=>{const b=accOf(r.qs,MC);const p=b.seen?Math.round(b.right/b.seen*100):null;
+      return {unit:r.unit,leaf:r.leaf,qs:r.qs,n:b.seen,pct:p,band:statBand(p,b.seen),open:stillOpen(r.qs).length};});
+    return {key:g.key,title:g.title,no:g.no,qs:qs,n:n,pct:pct,band:statBand(pct,n),open:stillOpen(qs).length,rows:rows};
+  });
+  const all=exQs(ex), A=accOf(all,MC), E=examPts(null);
+  const N=A.seen+E.max, pct=N?Math.round((A.right+E.pts)/N*100):null;
+  const topics=sheet?reviewTopics().map(t=>{const b=accOf(t.qs,MC);let pts=0,max=0;quizzes.forEach(Q=>{const r=qt[Q.id];if(!r)return;r.rows.forEach(x=>{if(x.wi===t.wi&&x.ti===t.ti){pts+=x.pts;max+=x.max;}});});
+      const n=b.seen+max, p=n?Math.round((b.right+pts)/n*100):null;return {wi:t.wi,ti:t.ti,t:t.t,n:n,pct:p,band:statBand(p,n)};}):[];
+  const exams=quizzes.map(Q=>({id:Q.id,n:Q.n,st:quizState(Q.id)})).filter(x=>x.st.taken);
+  const cases=NGN_CASES.filter(x=>x.c===(c.code||"")&&!x.exam).map(x=>({id:x.id,title:x.title,st:ngnState(x.id)})).filter(x=>x.st.taken);
+  const pr=(sheet&&S.profile.pulse&&S.profile.pulse.runs&&S.profile.pulse.runs.length)?S.profile.pulse.runs[S.profile.pulse.runs.length-1]:null;
+  const pulse=pr?(function(){const rows=Object.keys(pr.res).map(k=>pr.res[k]);const c=l=>rows.filter(r=>r.label===l).length;return {at:pr.at,solid:c("solid"),shaky:c("shaky"),gap:c("gap"),fs:rows.filter(r=>r.falseSure).length};})():null;
+  return {answered:all.filter(q=>(q.seen||0)>0).length,total:all.length,seen:A.seen,n:N,pct:pct,band:statBand(pct,N),mods:mods,topics:topics,exams:exams,cases:cases,sheet:sheet,pulse:pulse};
+}
+let STAT_ALL=false;
+function examStatsHtml(exKey,title){
+  const T=examStats(exKey);if(!T)return '';
+  const word={strong:"Strong",hold:"Holding",weak:"Weak",few:"Too few to call"};
+  const pill=(b,txt)=>'<span class="stpill '+b+'">'+txt+'</span>';
+  if(!T.seen&&!T.exams.length)
+    return '<div class="exstats"><span class="eyebrow">'+esc(title)+' stats</span>'+
+      '<p class="qzlede">Nothing answered yet in this exam. Every question you answer anywhere — practice, drills, the Gauntlet, the fights, the practice exams — builds the picture here: which modules and topics are strong, and which need the work.</p></div>';
+  const byBand=b=>T.mods.filter(m=>m.band===b);
+  const line=(m,drill)=>'<div class="qztop '+(m.band==="weak"?"no":m.band==="hold"?"part":m.band==="strong"?"ok":"few")+'">'+
+    '<b>'+esc(m.title||m.leaf)+'</b><i>'+(m.n?m.n+' answer'+(m.n===1?'':'s')+' · ':'')+(m.open?m.open+' of '+m.qs.length+' still open':'all '+m.qs.length+' right')+(m.band==="few"&&m.n?' · too few to call':'')+'</i>'+
+    '<u>'+(m.pct===null?'—':m.pct+'%')+'</u>'+
+    '<button type="button" class="btn sm'+(m.band==="weak"?' primary':'')+'" data-stat-drill="'+esc(drill)+'">Drill it</button></div>';
+  const tline=t=>'<div class="qztop '+(t.band==="weak"?"no":t.band==="hold"?"part":t.band==="strong"?"ok":"few")+'"><b>'+esc(t.t)+'</b><i>'+t.n+' answer'+(t.n===1?'':'s')+(t.band==="few"?' · too few to call':'')+'</i><u>'+(t.pct===null?'—':t.pct+'%')+'</u>'+
+    '<button type="button" class="btn sm'+(t.band==="weak"?' primary':'')+'" data-reviewq="'+t.wi+':'+t.ti+'">Drill it</button></div>';
+  const weakT=T.topics.filter(t=>t.band==="weak"), strongT=T.topics.filter(t=>t.band==="strong"), holdT=T.topics.filter(t=>t.band==="hold"), fewT=T.topics.filter(t=>t.band==="few");
+  const sub=[]; T.mods.forEach(m=>{if(m.rows.length>1)m.rows.forEach(r=>sub.push(Object.assign({title:m.key+" · "+(r.leaf.charAt(0).toUpperCase()+r.leaf.slice(1)),drill:exKey+"||"+r.unit},r)));});
+  const weakS=sub.filter(r=>r.band==="weak");
+  return '<div class="exstats"><span class="eyebrow">'+esc(title)+' stats</span>'+
+    '<div class="stathead"><div class="statbig"><b>'+(T.pct===null?'—':T.pct+'%')+'</b><i>right, from everything answered</i></div>'+
+      '<div class="statline"><span>'+T.answered+' of '+T.total+' questions answered · '+T.seen+' answers given</span>'+
+      (T.exams.length?T.exams.map(x=>'<span>'+esc(x.n)+': best '+x.st.best+'%'+(x.st.first!==null&&x.st.first!==x.st.best?' · first try '+x.st.first+'%':'')+'</span>').join(''):'<span>No practice exam handed in yet</span>')+
+      (T.pulse?'<span>Pulse check '+esc(prettyDay(T.pulse.at))+': '+T.pulse.solid+' solid \u00b7 '+T.pulse.shaky+' shaky \u00b7 '+T.pulse.gap+' gap'+(T.pulse.gap===1?'':'s')+(T.pulse.fs?' \u00b7 '+T.pulse.fs+' sure and wrong':'')+'</span>':'')+
+      (T.cases.length?'<span>Case studies: '+T.cases.map(x=>esc(x.title.split(' — ')[0].split(',')[0])+' '+x.st.best+'%').join(', ')+'</span>':'')+
+      '</div></div>'+
+    '<div class="statbands">'+
+      '<div class="statband weak"><span class="eyebrow">Weak</span>'+(byBand("weak").length?byBand("weak").map(m=>pill("weak",esc(m.key)+' '+m.pct+'%')).join(''):'<i>none</i>')+'</div>'+
+      '<div class="statband hold"><span class="eyebrow">Holding</span>'+(byBand("hold").length?byBand("hold").map(m=>pill("hold",esc(m.key)+' '+m.pct+'%')).join(''):'<i>none</i>')+'</div>'+
+      '<div class="statband strong"><span class="eyebrow">Strong</span>'+(byBand("strong").length?byBand("strong").map(m=>pill("strong",esc(m.key)+' '+m.pct+'%')).join(''):'<i>none</i>')+'</div>'+
+    '</div>'+
+    '<span class="eyebrow" style="display:block;margin:12px 0 4px">By module</span>'+
+    T.mods.map(m=>line(m,exKey+"||"+m.key)).join('')+
+    (weakS.length?'<span class="eyebrow" style="display:block;margin:14px 0 4px">Weak inside a module</span>'+weakS.map(r=>line(r,r.drill)).join(''):'')+
+    (T.sheet?'<span class="eyebrow" style="display:block;margin:14px 0 4px">By review-sheet topic</span>'+
+      (weakT.length?'<p class="qzlede">Under 75 — study these first.</p>'+weakT.map(tline).join(''):'<p class="qzlede">No topic under 75% yet'+(fewT.length?', though '+fewT.length+' '+(fewT.length===1?'has':'have')+' too few answers to call':'')+'.</p>')+
+      (STAT_ALL?(holdT.length?'<span class="eyebrow" style="display:block;margin:12px 0 4px">Holding</span>'+holdT.map(tline).join(''):'')+
+                (strongT.length?'<span class="eyebrow" style="display:block;margin:12px 0 4px">Strong</span>'+strongT.map(tline).join(''):'')+
+                (fewT.length?'<span class="eyebrow" style="display:block;margin:12px 0 4px">Too few to call</span>'+fewT.map(tline).join(''):''):'')+
+      '<button type="button" class="btn sm ghost" id="statAll" style="margin-top:10px">'+(STAT_ALL?'Show only the weak topics':'Show all '+T.topics.length+' topics')+'</button>':'')+
+    '<p class="qzlede" style="margin-top:12px">Weak is under 75% with at least '+STAT_MIN+' answers; strong is 85% and up. Drilling a weak module serves its open questions first, then the ones you have missed.</p>'+
+  '</div>';
 }
 function quizTopicHtml(T,lede){
   if(!T||!T.length)return '';
@@ -10218,7 +10323,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Sep 25, 8:05 PM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 27, 9:17 AM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -12185,7 +12290,7 @@ function viewTitle(){
   if(session)return "Practice round";
   if(tab==="home")return "Home";
   if(tab==="calendar")return "Calendar";
-  if(tab==="study")return studyAt==="quiz"?((QUIZ&&(QUIZZES.find(x=>x.id===QUIZ.id)||{}).kind==="exam")?"Practice exam":"Weekly quiz"):studyAt==="ngn"?"Case studies":studyAt==="class"?"Class binder":studyAt==="emph"?(DIM==="degula"?"On the exam":"Highlighted by De Gula"):studyAt==="diff"?"Where the sections differ":studyAt==="review"?REVIEW_SHEET.title:studyAt==="drugs"?(courseDiseases((courseById(courseFilter)||{}).code).length?"Disease table":"Drug table"):"Study";
+  if(tab==="study")return studyAt==="quiz"?((QUIZ&&(QUIZZES.find(x=>x.id===QUIZ.id)||{}).kind==="exam")?"Practice exam":"Weekly quiz"):studyAt==="ngn"?"Case studies":studyAt==="class"?"Class binder":studyAt==="emph"?(DIM==="degula"?"On the exam":"Highlighted by De Gula"):studyAt==="diff"?"Where the sections differ":studyAt==="review"?REVIEW_SHEET.title:studyAt==="extras"?"Extras":studyAt==="pulse"?"Pulse check":studyAt==="drugs"?(courseDiseases((courseById(courseFilter)||{}).code).length?"Disease table":"Drug table"):"Study";
   if(tab==="nurse")return "Your nurse";
   if(tab==="fight")return FIGHT?"In a room":(ADV_OPEN?"Vaelith":"Journey or fight");
   return "Trophies";
@@ -14627,6 +14732,8 @@ function viewStudy(){
   if(studyAt==="emph")return studyEmph();
   if(studyAt==="diff")return studyDiff();
   if(studyAt==="review")return studyReview();
+  if(studyAt==="extras")return studyExtras();
+  if(studyAt==="pulse")return viewPulse();
   if(studyAt==="drugs")return courseDiseases((courseById(courseFilter)||{}).code).length?studyDiseases():studyDrugs();
   if(studyAt==="game")return studyGame();
   return studyPick(cs);
@@ -15954,6 +16061,7 @@ function studyClass(){
   librarySection(c)+
   (keys.length?'<span class="eyebrow" style="display:block;margin-bottom:8px">Your binder</span>'+
     '<div class="tiles" style="margin-bottom:18px">'+keys.map(divider).join("")+'</div>':'')+
+  ((c.code||"")===REVIEW_SHEET.course?pulseCard():'')+
   /* The weekly quiz: one per module, opening on the Tuesday after that
      module's week. Locked until then, so the page shows what is coming
      without pretending it is ready. */
@@ -16019,26 +16127,15 @@ function studyClass(){
       '<i>Mechanism, indication, side effects and nursing considerations for every medication the course names. One row per drug, by module.</i>'+
       '<u>'+mine.length+' drugs · '+units+' module'+(units===1?'':'s')+'</u></button></div>';
   })()+
-  /* the other section's emphasis map, for the course that has one */
+  /* Extras: the highlights, where the sections differ, the review sheet and
+     the diagrams live one tap away, so the binder itself stays short. */
   (function(){
     if((c.code||"")!==EMPH_COURSE)return '';
-    const n=EMPH.length, hot=EMPH.filter(e=>EMPH_HOT.indexOf(e.cue)>=0).length;
-    const nq=QS().filter(q=>Array.isArray(q.emph)&&q.emph.length).length;
-    const hi=hiQs().length, hiN=EMPH.filter(e=>EMPH_HI.indexOf(e.cue)>=0).length;
-    if(DIM==="degula")
-      return '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play hot" data-emph-open="1"><span class="plico">\u2605</span><b>On the exam</b>'+
-        '<i>'+(mySection()==="degula"?'What your lectures said to star, know, and skip \u2014 the shared exam\u2019s emphasis, item by item, with the other section\u2019s answer wherever the two differ.':'What the other section\u2019s lectures said to star, know, and skip \u2014 the shared exam\u2019s emphasis, item by item, with your instructor\u2019s answer wherever the two differ.')+'</i>'+
-        '<u>'+n+' cues \u00b7 '+hot+' flagged as exam material'+(nq?' \u00b7 '+nq+' questions':'')+'</u></button></div>';
-    /* Dr. Chory's dimension: the same map, framed as what the other section
-       said would be on the shared paper, and a drill of every question tied
-       to one of those highlights. */
-    return '<div class="plays two" style="margin-bottom:18px">'+
-      '<button type="button" class="play hot" data-emph-open="1"><span class="plico">\u2605</span><b>Highlighted by De Gula</b>'+
-        '<i>Both sections sit the same exam, and Prof. De Gula\u2019s lectures say out loud what is on it. Every highlight, item by item, with Dr. Chory\u2019s answer wherever the two differ.</i>'+
-        '<u>'+hiN+' highlights \u00b7 '+n+' cues in all</u></button>'+
-      '<button type="button" class="play warm" data-drill="hilite"'+(hi?'':' disabled')+'><span class="plico">\u2605</span><b>Highlighted by De Gula questions</b>'+
-        '<i>Every practice question written to something De Gula flagged as test material \u2014 stressed, starred, on the exam, know this, watch, remember. Each one carries the badge wherever it turns up.</i>'+
-        '<u>'+hi+' questions \u00b7 20 a round \u00b7 '+stillOpen(hiQs()).length+' still open</u></button></div>';
+    const parts=extrasParts(c,pool);
+    return '<span class="eyebrow" style="display:block;margin:4px 0 8px">More</span>'+
+      '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play deep" data-extras-open="1"><span class="plico">\uD83D\uDDC2</span><b>Extras</b>'+
+      '<i>'+parts.map(esc).join(' \u00b7 ')+'.</i>'+
+      '<u>'+parts.length+' things inside</u></button></div>';
   })()+
   /* every time limit and interval in the notes, one question each */
   (function(){
@@ -16048,33 +16145,12 @@ function studyClass(){
       '<i>Every time limit and interval in the notes, one question each \u2014 the minutes between eye drops, the 20-minute flush, the 5 days out of the sun, the 2 pounds in 24 hours, the 3 months that make an illness chronic. Numbers the exam can ask cold.</i>'+
       '<u>'+ck.length+' questions \u00b7 '+stillOpen(ck).length+' still open</u></button></div>';
   })()+
-  /* where the two sections differ - both dimensions */
-  (function(){
-    if((c.code||"")!==EMPH_COURSE)return '';
-    const items=diffItems(), keys=items.filter(x=>x.kind==="key").length;
-    return '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play deep" data-diff-open="1"><span class="plico">\u2194</span><b>Where the sections differ</b>'+
-      '<i>Every place Dr. Chory and Prof. De Gula teach something differently, side by side \u2014 and which of them changes an exam answer.</i>'+
-      '<u>'+items.length+' items \u00b7 '+keys+' with a different answer</u></button></div>';
-  })()+
-  /* her review sheet for the exam */
-  (function(){
-    if((c.code||"")!==REVIEW_SHEET.course)return '';
-    const all=reviewTopics(), gaps=all.filter(x=>!x.qs.length).length, total=all.reduce((n,x)=>n+x.qs.length,0);
-    return '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play deep" data-review-open="1"><span class="plico">\u2611</span><b>'+esc(REVIEW_SHEET.title)+'</b>'+
-      '<i>Her topic list for the exam, with what the bank holds on each one and a drill per topic.</i>'+
-      '<u>'+all.length+' topics \u00b7 '+total+' questions'+(gaps?' \u00b7 '+gaps+' still empty':'')+'</u></button></div>'+
-      /* the misses from the practice exams, laid on the same sheet */
-      (function(){
-        const T=sheetTally(c.code);if(!T)return '';
-        const when=T.exams.map(e=>e.n+' ('+prettyDay(e.at)+')').join(', ');
-        return quizTopicHtml(T.rows,'From '+(T.exams.length===1?'the practice exam':'the '+T.exams.length+' practice exams')+' you have handed in \u2014 '+esc(when)+'. Retaking one replaces its tally.');
-      })();
-  })()+
   /* the maps, for a class that has a body system to map */
   (function(){
     const units={};pool.forEach(q=>{units[q.unit||""]=1;});
     const kinds=[];Object.keys(units).forEach(u=>{terrainsFor(u).forEach(k=>{if(kinds.indexOf(k)<0)kinds.push(k);});});
     const organs=[];Object.keys(units).forEach(u=>{diagOrgansFor(u).forEach(o=>{if(organs.indexOf(o)<0)organs.push(o);});});
+    if((c.code||"")===EMPH_COURSE)return '';   /* 308 keeps these inside Extras */
     if(!kinds.length&&!organs.length)return '';
     return '<span class="eyebrow" style="display:block;margin:4px 0 8px">Diagrams</span>'+
       '<div class="plays" style="margin-bottom:18px">'+organs.map(o=>{const L=DIAGRAMS.filter(d=>d.organ===o);
@@ -16171,6 +16247,7 @@ function studyExamView(){
       ' · '+(left?left+' of '+all.length+' left':'all '+all.length+' right')+'</p></div>'+
     '<div class="row"><button class="btn primary" data-bex="'+esc(studyExam)+'">'+
       (left?'Study all '+left:'Review all '+all.length)+'</button></div></div>'+
+  examStatsHtml(studyExam,ex.ev?ex.ev.title:"Exam")+
   takeawayCard(Object.keys(ex.units||{}),"What you need to know",false,true)+
   '<span class="eyebrow" style="display:block;margin:14px 0 8px">What is in this exam</span>'+
   '<div class="tiles">'+groups.map(g=>{
@@ -20202,11 +20279,264 @@ function reviewTopicQs(tp){
     return tp.q.test(txt)&&(!tp.and||tp.and.test(txt));});
 }
 function reviewTopics(){const out=[];REVIEW_SHEET.weeks.forEach((w,wi)=>w.topics.forEach((tp,ti)=>out.push({w:w.w,wi:wi,ti:ti,t:tp.t,qs:reviewTopicQs(tp)})));return out;}
+/* ---- The Pulse check ------------------------------------------------------
+   Not a graded test: a map. Every topic on the review sheet gets two
+   questions on different angles - one recognition (what is this, which
+   finding fits), one application (what does the nurse do) - drawn from
+   questions this person has never seen, and after each answer a tap of
+   "sure" or "guessing" before the answer shows. Two right on two angles is
+   hard to guess; a split gets a third question to break the tie; two wrong
+   stops there. The labels are earned: solid is two right and sure on both,
+   shaky is right but guessed or a split, gap is wrong. A wrong answer marked
+   sure is false confidence and goes to the top of the start-here list. Every
+   answer counts in the record like any other, so the exam stats see it. */
+const PULSE_APP=/^(application|priority|teaching|safety|medication-safety|assessment-vs-action|evaluation|documentation)$/;
+const pulseAngle=q=>PULSE_APP.test(q.qtype||"")?"app":"rec";
+function pulseState(){const p=S.profile;if(!p.pulse)p.pulse={runs:[],used:[]};if(!p.pulse.used)p.pulse.used=[];if(!p.pulse.runs)p.pulse.runs=[];return p.pulse;}
+let PULSE=null;
+function pulsePick(P,t,angle){
+  let pool=t.qs.filter(q=>q.k==="mc"&&!P.taken[q.id]&&(angle?pulseAngle(q)===angle:true));
+  if(!pool.length)return null;
+  const used=pulseState().used;
+  const fresh=pool.filter(q=>used.indexOf(q.id)<0&&!(q.seen||0)), notUsed=pool.filter(q=>used.indexOf(q.id)<0);
+  const from=fresh.length?fresh:notUsed.length?notUsed:pool;
+  const q=from[Math.floor(Math.random()*from.length)];P.taken[q.id]=1;return q;
+}
+function pulseStart(){
+  const P={taken:{},topics:[],queue:[],i:0,cur:null,done:false,at:today()};
+  reviewTopics().filter(t=>t.qs.some(q=>q.k==="mc")).forEach(t=>{
+    const T={wi:t.wi,ti:t.ti,t:t.t,src:t,picks:[]};
+    const a=pulsePick(P,T.src,"rec")||pulsePick(P,T.src,null);
+    const b=pulsePick(P,T.src,"app")||pulsePick(P,T.src,null);
+    if(!a)return;T.first=a;T.second=b;P.topics.push(T);});
+  P.topics.forEach((T,i)=>P.queue.push({ti:i,q:T.first}));
+  P.topics.forEach((T,i)=>{if(T.second)P.queue.push({ti:i,q:T.second});});
+  PULSE=P;studyAt="pulse";render();window.scrollTo(0,0);
+}
+function pulseLabel(T){
+  const p=T.picks,n=p.length,r=p.filter(x=>x.ok).length;
+  if(!n)return "untested";
+  const guessRight=p.some(x=>x.ok&&!x.sure);
+  if(r===n&&n>=2)return guessRight?"shaky":"solid";
+  if(r===0)return "gap";
+  if(n>=3)return r>=2?"shaky":"gap";
+  return "shaky";
+}
+function pulseTopicResult(T){
+  const p=T.picks, label=pulseLabel(T);
+  const rec=p.filter(x=>x.angle==="rec"), app=p.filter(x=>x.angle==="app");
+  const pattern=(rec.length&&app.length&&rec.every(x=>x.ok)&&app.every(x=>!x.ok))?"rec"
+               :(rec.length&&app.length&&app.every(x=>x.ok)&&rec.every(x=>!x.ok))?"app":"";
+  return {wi:T.wi,ti:T.ti,t:T.t,label:label,n:p.length,r:p.filter(x=>x.ok).length,
+    falseSure:p.some(x=>!x.ok&&x.sure),guessRight:p.some(x=>x.ok&&!x.sure),pattern:pattern,slow:false};
+}
+function pulseFinish(){
+  const P=PULSE;if(!P||P.done)return;
+  P.done=true;
+  const run={at:P.at,res:{}};
+  P.topics.forEach(T=>{run.res[T.wi+":"+T.ti]=pulseTopicResult(T);});
+  const st=pulseState();st.runs.push(run);if(st.runs.length>6)st.runs=st.runs.slice(-6);
+  if(st.used.length>600)st.used=st.used.slice(-600);
+  saveCore();
+}
+function pulseAnswer(idx){const P=PULSE;if(!P||P.done||!P.cur||P.cur.pick!==null)return;P.cur.pick=idx;render();}
+function pulseSure(sure){
+  const P=PULSE;if(!P||P.done||!P.cur||P.cur.pick===null||P.cur.sure!==null)return;
+  const q=P.cur.q, ok=P.cur.pick===q.answer;
+  P.cur.sure=sure;P.cur.ok=ok;
+  /* counts like any other answer */
+  q.seen=(q.seen||0)+1;q.lastSeen=today();
+  if(ok)q.wrong=Math.max(0,(q.wrong||0)-1);else{q.wrong=(q.wrong||0)+1;logMiss(q,P.cur.pick);}
+  box(q,ok&&(q.wrong||0)===0);
+  S.profile.answered=(S.profile.answered||0)+1;if(ok)S.profile.correct=(S.profile.correct||0)+1;
+  if(typeof useBump==="function"){useBump("answered");if(ok)useBump("right");}
+  if(typeof bumpRun==="function")bumpRun(ok);
+  saveQuestions([q]);
+  const T=P.topics[P.cur.ti];T.picks.push({qid:q.id,ok:ok,sure:sure,angle:pulseAngle(q)});
+  pulseState().used.push(q.id);
+  render();
+}
+function pulseNext(){
+  const P=PULSE;if(!P||P.done)return;
+  P.cur=null;P.i++;
+  if(P.i>=P.queue.length){
+    /* tie-breakers for the split topics, once */
+    if(!P.tied){P.tied=true;
+      P.topics.forEach((T,i)=>{const r=T.picks.filter(x=>x.ok).length;if(T.picks.length===2&&r===1){const q=pulsePick(P,T.src,null);if(q)P.queue.push({ti:i,q:q});}});}
+    if(P.i>=P.queue.length){pulseFinish();render();window.scrollTo(0,0);return;}
+  }
+  render();window.scrollTo(0,0);
+}
+function pulseCueFacts(tp,max){
+  if(typeof EMPH==="undefined")return [];
+  return EMPH.filter(e=>tp.u.test(e.unit||"")&&tp.q.test((e.topic||"")+" "+(e.fact||""))&&e.cue!=="low-priority"&&e.cue!=="uncertain")
+    .map(e=>e.fact).filter(Boolean).slice(0,max||6);
+}
+function pulseTopicDef(wi,ti){return REVIEW_SHEET.weeks[wi].topics[ti];}
+const PULSE_WORD={solid:"Solid",shaky:"Shaky",gap:"Gap",untested:"Untested"};
+function pulseResultHtml(run,prev){
+  const rows=Object.keys(run.res).map(k=>run.res[k]);
+  const count=l=>rows.filter(r=>r.label===l).length;
+  const cell=r=>{const was=prev&&prev.res[r.wi+":"+r.ti];const mv=was&&was.label!==r.label?(({solid:3,shaky:2,gap:1,untested:0})[r.label]>({solid:3,shaky:2,gap:1,untested:0})[was.label]?' ↑':' ↓'):'';
+    return '<button type="button" class="pulsecell '+r.label+(r.falseSure?' fs':'')+'" data-reviewq="'+r.wi+':'+r.ti+'" title="'+esc(r.t)+'"><b>'+esc(r.t)+'</b><i>'+r.r+'/'+r.n+(r.falseSure?' · sure and wrong':r.guessRight&&r.label!=="solid"?' · guessed right':'')+mv+'</i></button>';};
+  const order=r=>(r.falseSure?0:r.label==="gap"?1:r.label==="shaky"?2:9);
+  const start=rows.filter(r=>r.label==="gap"||r.label==="shaky").sort((a,b)=>order(a)-order(b)||a.r/a.n-b.r/b.n);
+  const line=r=>{const note=r.falseSure?'Sure and wrong — false confidence, the kind that costs points without warning.':
+      r.pattern==="rec"?'Knows the condition, missed the nursing — drill the application questions.':
+      r.pattern==="app"?'Does the nursing, missed the recognition — drill the recognition questions.':
+      r.label==="gap"?'Wrong on both angles.':r.guessRight?'Right, but guessing.':'Split — one right, one wrong.';
+    const was=prev&&prev.res[r.wi+":"+r.ti];
+    return '<div class="qztop '+(r.label==="gap"?'no':'part')+'"><b>'+esc(r.t)+(r.falseSure?' <span class="stpill weak">sure &amp; wrong</span>':'')+'</b><i>'+esc(note)+(was?' Last time: '+PULSE_WORD[was.label].toLowerCase()+'.':'')+'</i><u>'+r.r+' of '+r.n+'</u>'+
+      '<button type="button" class="btn sm primary" data-pulse-drill="'+r.wi+':'+r.ti+':'+(r.pattern||"all")+'">Drill it</button></div>';};
+  return '<div class="pulsemap">'+
+    '<div class="pulsesum"><span class="stpill strong">'+count("solid")+' solid</span><span class="stpill hold">'+count("shaky")+' shaky</span><span class="stpill weak">'+count("gap")+' gap'+(count("gap")===1?'':'s')+'</span>'+
+      (rows.some(r=>r.falseSure)?'<span class="stpill weak">'+rows.filter(r=>r.falseSure).length+' sure &amp; wrong</span>':'')+
+      '<span class="note">'+esc(prettyDay(run.at))+(prev?' · arrows show the move since '+esc(prettyDay(prev.at)):'')+'</span></div>'+
+    '<div class="pulsegrid">'+rows.map(cell).join('')+'</div>'+
+    '<span class="eyebrow" style="display:block;margin:16px 0 4px">Start here</span>'+
+    (start.length?start.map(line).join(''):'<p class="qzlede">Every topic came back solid. Take it again in a few days and see whether it holds.</p>')+
+    '<div class="row" style="margin-top:14px"><button type="button" class="btn" id="pulsePrint">Print the fix</button><button type="button" class="btn" id="pulseAgain">Take it again</button><button type="button" class="btn primary" data-sback="class">Back to the binder</button></div>'+
+  '</div>';
+}
+function pulsePrint(run){
+  const rows=Object.keys(run.res).map(k=>run.res[k]).filter(r=>r.label==="gap"||r.label==="shaky")
+    .sort((a,b)=>((a.falseSure?0:a.label==="gap"?1:2)-(b.falseSure?0:b.label==="gap"?1:2)));
+  const body=rows.map(r=>{const tp=pulseTopicDef(r.wi,r.ti);const facts=pulseCueFacts(tp,6);
+    return '<section><h2>'+esc(r.t)+' <small>'+(r.falseSure?'sure and wrong':PULSE_WORD[r.label].toLowerCase())+' · '+r.r+' of '+r.n+'</small></h2>'+
+      (facts.length?'<ul>'+facts.map(f=>'<li>'+esc(f)+'</li>').join('')+'</ul>':'<p>No class cue on file for this topic; read its row in the Disease table.</p>')+'</section>';}).join('');
+  const html='<!doctype html><html><head><meta charset="utf-8"><title>The fix — '+esc(REVIEW_SHEET.title)+'</title>'+
+    '<style>body{font:14px/1.5 Georgia,serif;max-width:52em;margin:28px auto;padding:0 20px;color:#111}h1{font-size:22px;margin:0 0 2px}p.sub{margin:0 0 18px;color:#555}section{break-inside:avoid;margin:0 0 14px;padding-top:10px;border-top:1px solid #bbb}h2{font-size:16px;margin:0 0 4px}h2 small{font-weight:normal;color:#666;font-size:12px;margin-left:8px}ul{margin:0;padding-left:18px}li{margin:2px 0}@media print{body{margin:0}}</style></head><body>'+
+    '<h1>The fix</h1><p class="sub">'+esc(REVIEW_SHEET.title)+' · Pulse check of '+esc(prettyDay(run.at))+' · '+rows.length+' topic'+(rows.length===1?'':'s')+' to work, hardest first</p>'+
+    (body||'<p>Nothing to fix — every topic came back solid.</p>')+'</body></html>';
+  const w=window.open("","_blank");
+  if(!w){toast("Pop-up blocked","Allow pop-ups for this site to print the sheet.");return;}
+  w.document.open();w.document.write(html);w.document.close();
+  setTimeout(()=>{try{w.focus();w.print();}catch(e){}},400);
+}
+function pulseCard(){
+  const st=pulseState(), last=st.runs[st.runs.length-1];
+  const rows=last?Object.keys(last.res).map(k=>last.res[k]):[];
+  const count=l=>rows.filter(r=>r.label===l).length;
+  const live=PULSE&&!PULSE.done;
+  return '<span class="eyebrow" style="display:block;margin:4px 0 8px">Where you stand</span>'+
+    '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play hot" data-pulse-open="1"><span class="plico">🩺</span><b>Pulse check</b>'+
+    '<i>Not a grade — a map. Two questions on every review-sheet topic, on different angles and never ones you have seen, with a tap of sure or guessing before each answer shows. Twenty-five minutes, then the topics come back solid, shaky or gap, with a start-here list and a sheet to print.</i>'+
+    '<u>'+(live?'In progress · '+PULSE.i+' of '+PULSE.queue.length+' answered · pick it up':last?'Last: '+esc(prettyDay(last.at))+' · '+count("solid")+' solid · '+count("shaky")+' shaky · '+count("gap")+' gap'+(count("gap")===1?'':'s'):reviewTopics().length+' topics · about 25 minutes')+'</u></button></div>';
+}
+function viewPulse(){
+  const c=courseById(courseFilter)||{};
+  const head=(sub)=>'<div class="vhead" style="margin-bottom:12px"><div>'+studyCrumb(c.code||"Class","class")+'<h1 style="margin-top:6px">Pulse check</h1>'+(sub?'<p class="qzlede">'+sub+'</p>':'')+'</div></div>';
+  const st=pulseState();
+  const P=PULSE;
+  if(!P){
+    const last=st.runs[st.runs.length-1], prev=st.runs[st.runs.length-2];
+    return head('Two questions on every topic of the review sheet, on different angles, from questions you have not seen. After each answer, say whether you were sure or guessing — that is what turns a score into a map.')+
+      '<div class="row" style="margin-bottom:16px"><button type="button" class="btn primary" id="pulseGo">'+(last?'Take it again':'Start')+'</button></div>'+
+      (last?pulseResultHtml(last,prev):'');
+  }
+  if(P.done){const prev=st.runs[st.runs.length-2];return head('Your map. Solid is two right and sure; shaky is right but guessing, or a split; gap is wrong. Sure-and-wrong is marked, because that is the one that costs points without warning.')+pulseResultHtml(st.runs[st.runs.length-1],prev);}
+  if(!P.cur)P.cur={ti:P.queue[P.i].ti,q:P.queue[P.i].q,pick:null,sure:null,ok:null};
+  const cur=P.cur,q=cur.q,T=P.topics[cur.ti];
+  /* the module, not the topic: naming the topic would hint at the answer */
+  const bar='<div class="pulsebar"><span>'+(P.i+1)+' of '+P.queue.length+(P.tied?'':' + tie-breakers')+'</span><span class="note">'+esc(unitParts(q.unit||"").key||"")+'</span></div>';
+  const answered=cur.sure!==null;
+  return head('')+bar+
+    '<div class="qzcard q">'+
+      '<p class="qzstem">'+esc(q.stem)+'</p>'+
+      '<div class="qzopts'+(cur.pick===null?' pick':'')+'">'+q.options.map((o,oi)=>{
+        const on=cur.pick===oi, right=answered&&oi===q.answer, bad=answered&&on&&!right;
+        return '<button type="button" class="qzopt'+(on&&!answered?' on':'')+(right?' right':'')+(bad?' bad':'')+'" data-pulsepick="'+oi+'"'+(cur.pick!==null?' disabled':'')+'>'+
+          '<span class="qzlet">'+"ABCDE".charAt(oi)+'</span><span>'+esc(o)+'</span>'+(right?'<i>correct</i>':bad?'<i>you chose this</i>':'')+'</button>';}).join('')+'</div>'+
+      (cur.pick!==null&&!answered?'<div class="pulsesure"><span>Before it shows — were you</span><button type="button" class="btn primary" data-pulsesure="1">Sure</button><button type="button" class="btn" data-pulsesure="0">Guessing</button></div>':'')+
+      (answered?'<div class="qzwhy"><i>'+(cur.ok?'Right':'Not this one')+(cur.sure?' · you were sure':' · you were guessing')+'</i><p>'+esc(q.rationale||'')+'</p></div>'+
+        '<div class="row" style="margin-top:12px;justify-content:flex-end"><button type="button" class="btn primary" id="pulseNext">Next</button></div>':'')+
+    '</div>'+
+    '<p class="qznote">Every answer counts in your record. The map is drawn when the last topic is done.</p>';
+}
+/* ---- Extras: everything that used to crowd the 308 binder ---------------- */
+function extrasParts(c,pool){
+  const parts=[];
+  if((c.code||"")===EMPH_COURSE){parts.push("Highlighted by De Gula");parts.push("Highlighted by De Gula questions");parts.push("Where the sections differ");}
+  if((c.code||"")===REVIEW_SHEET.course)parts.push(REVIEW_SHEET.title+(sheetTally(c.code)?" with your misses on it":""));
+  const units={};pool.forEach(q=>{units[q.unit||""]=1;});
+  const organs=[];Object.keys(units).forEach(u=>{diagOrgansFor(u).forEach(o=>{if(organs.indexOf(o)<0)organs.push(o);});});
+  organs.forEach(o=>parts.push(DIAG_ORGAN[o].name+" diagrams"));
+  return parts;
+}
+function extrasCards(c,pool){
+  return ''+
+  /* the other section's emphasis map, for the course that has one */
+  (function(){
+    if((c.code||"")!==EMPH_COURSE)return '';
+    const n=EMPH.length, hot=EMPH.filter(e=>EMPH_HOT.indexOf(e.cue)>=0).length;
+    const nq=QS().filter(q=>Array.isArray(q.emph)&&q.emph.length).length;
+    const hi=hiQs().length, hiN=EMPH.filter(e=>EMPH_HI.indexOf(e.cue)>=0).length;
+    if(DIM==="degula")
+      return '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play hot" data-emph-open="1"><span class="plico">\u2605</span><b>On the exam</b>'+
+        '<i>'+(mySection()==="degula"?'What your lectures said to star, know, and skip \u2014 the shared exam\u2019s emphasis, item by item, with the other section\u2019s answer wherever the two differ.':'What the other section\u2019s lectures said to star, know, and skip \u2014 the shared exam\u2019s emphasis, item by item, with your instructor\u2019s answer wherever the two differ.')+'</i>'+
+        '<u>'+n+' cues \u00b7 '+hot+' flagged as exam material'+(nq?' \u00b7 '+nq+' questions':'')+'</u></button></div>';
+    /* Dr. Chory's dimension: the same map, framed as what the other section
+       said would be on the shared paper, and a drill of every question tied
+       to one of those highlights. */
+    return '<div class="plays two" style="margin-bottom:18px">'+
+      '<button type="button" class="play hot" data-emph-open="1"><span class="plico">\u2605</span><b>Highlighted by De Gula</b>'+
+        '<i>Both sections sit the same exam, and Prof. De Gula\u2019s lectures say out loud what is on it. Every highlight, item by item, with Dr. Chory\u2019s answer wherever the two differ.</i>'+
+        '<u>'+hiN+' highlights \u00b7 '+n+' cues in all</u></button>'+
+      '<button type="button" class="play warm" data-drill="hilite"'+(hi?'':' disabled')+'><span class="plico">\u2605</span><b>Highlighted by De Gula questions</b>'+
+        '<i>Every practice question written to something De Gula flagged as test material \u2014 stressed, starred, on the exam, know this, watch, remember. Each one carries the badge wherever it turns up.</i>'+
+        '<u>'+hi+' questions \u00b7 20 a round \u00b7 '+stillOpen(hiQs()).length+' still open</u></button></div>';
+  })()+
+  /* where the two sections differ - both dimensions */
+  (function(){
+    if((c.code||"")!==EMPH_COURSE)return '';
+    const items=diffItems(), keys=items.filter(x=>x.kind==="key").length;
+    return '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play deep" data-diff-open="1"><span class="plico">\u2194</span><b>Where the sections differ</b>'+
+      '<i>Every place Dr. Chory and Prof. De Gula teach something differently, side by side \u2014 and which of them changes an exam answer.</i>'+
+      '<u>'+items.length+' items \u00b7 '+keys+' with a different answer</u></button></div>';
+  })()+
+  /* her review sheet for the exam */
+  (function(){
+    if((c.code||"")!==REVIEW_SHEET.course)return '';
+    const all=reviewTopics(), gaps=all.filter(x=>!x.qs.length).length, total=all.reduce((n,x)=>n+x.qs.length,0);
+    return '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play deep" data-review-open="1"><span class="plico">\u2611</span><b>'+esc(REVIEW_SHEET.title)+'</b>'+
+      '<i>Her topic list for the exam, with what the bank holds on each one and a drill per topic.</i>'+
+      '<u>'+all.length+' topics \u00b7 '+total+' questions'+(gaps?' \u00b7 '+gaps+' still empty':'')+'</u></button></div>'+
+      /* the misses from the practice exams, laid on the same sheet */
+      (function(){
+        const T=sheetTally(c.code);if(!T)return '';
+        const when=T.exams.map(e=>e.n+' ('+prettyDay(e.at)+')').join(', ');
+        return quizTopicHtml(T.rows,'From '+(T.exams.length===1?'the practice exam':'the '+T.exams.length+' practice exams')+' you have handed in \u2014 '+esc(when)+'. Retaking one replaces its tally.');
+      })();
+  })()+
+  /* the maps, for a class that has a body system to map */
+  (function(){
+    const units={};pool.forEach(q=>{units[q.unit||""]=1;});
+    const kinds=[];Object.keys(units).forEach(u=>{terrainsFor(u).forEach(k=>{if(kinds.indexOf(k)<0)kinds.push(k);});});
+    const organs=[];Object.keys(units).forEach(u=>{diagOrgansFor(u).forEach(o=>{if(organs.indexOf(o)<0)organs.push(o);});});
+    if(!kinds.length&&!organs.length)return '';
+    return '<span class="eyebrow" style="display:block;margin:4px 0 8px">Diagrams</span>'+
+      '<div class="plays" style="margin-bottom:18px">'+organs.map(o=>{const L=DIAGRAMS.filter(d=>d.organ===o);
+        const C=[];L.forEach(d=>{if(C.indexOf(d.cond)<0)C.push(d.cond);});
+        return '<button type="button" class="play calm" data-diagrams-open="'+o+'"><span class="plico">'+DIAG_ORGAN[o].ico+'</span><b>'+DIAG_ORGAN[o].name+' diagrams</b>'+
+        '<i>Pictures by condition: '+C.map(esc).join(' \u00b7 ')+'. Tap a condition, then enlarge and pinch.</i><u>'+C.length+' condition'+(C.length===1?'':'s')+' \u00b7 '+L.length+' picture'+(L.length===1?'':'s')+'</u></button>';}).join("")+kinds.map(k=>
+        '<button type="button" class="play calm" data-terrain-open="'+k+'"><span class="plico">'+(k==="eye"?"\uD83D\uDC41":k==="ear"?"\uD83D\uDC42":"\uD83E\uDDE0")+'</span><b>'+esc(TERRAIN[k].title)+'</b>'+
+        '<i>Tap a structure, see what goes wrong there. Then follow the '+(k==="eye"?"fluid":k==="ear"?"sound":"signal")+'.</i><u>'+TERRAIN[k].parts.length+' structures</u></button>').join("")+'</div>';
+  })()+
+  '';
+}
+function studyExtras(){
+  const c=courseById(courseFilter)||{};
+  const pool=filteredQuestions();
+  return '<div class="vhead" style="margin-bottom:14px"><div>'+studyCrumb(c.code||"Class","class")+
+    '<h1 style="margin-top:6px">Extras</h1>'+
+    '<p class="qzlede">The rest of the binder: what De Gula highlighted and the questions on it, where the two sections differ, the review sheet with your misses laid on it, and the diagrams.</p></div></div>'+
+    extrasCards(c,pool);
+}
 let REVIEW_WEEK=null;
 function studyReview(){
   const c=courseById(courseFilter)||{};
   const all=reviewTopics(), gaps=all.filter(x=>!x.qs.length), total=all.reduce((n,x)=>n+x.qs.length,0);
-  return '<div class="vhead" style="margin-bottom:10px"><div>'+studyCrumb(c.code||"Class","class")+
+  return '<div class="vhead" style="margin-bottom:10px"><div>'+studyCrumb("Extras","extras")+
     '<h1 style="margin-top:6px">'+esc(REVIEW_SHEET.title)+'</h1>'+
     '<p class="qzlede">Her review sheet, topic by topic, with what the bank holds on each. '+esc(REVIEW_SHEET.note)+' '+all.length+' topics \u00b7 '+total+' matching questions'+(gaps.length?' \u00b7 <b>'+gaps.length+' topic'+(gaps.length>1?'s':'')+' with nothing yet</b>':'')+'.</p></div></div>'+
     REVIEW_SHEET.weeks.map((w,wi)=>{
@@ -20237,7 +20567,7 @@ function studyDiff(){
         (x.here.length?'<button type="button" class="dtq" data-emphq="'+esc(e.id)+'"><b>'+x.here.length+' question'+(x.here.length>1?'s':'')+' on this</b><i>keyed for '+esc(DIMS[DIM].label)+'</i></button>':
           (x.qs.length?'<p class="emsrc">The questions on this live in the other section’s dimension — step through the portal to drill them.</p>':''))+
       '</div>':'')+'</div>';};
-  return '<div class="vhead" style="margin-bottom:10px"><div>'+studyCrumb(c.code||"Class","class")+
+  return '<div class="vhead" style="margin-bottom:10px"><div>'+studyCrumb("Extras","extras")+
     '<h1 style="margin-top:6px">Where the sections differ</h1>'+
     '<p class="qzlede">The two sections share the exam, and nobody can tell which instructor wrote a given item. These are the '+items.length+' places the two teach something differently, sorted by what the difference does to an answer. '+(function(){const k=items.filter(x=>x.kind==="key").length;return k?(k===1?'The one with a different key is the one to know both ways.':'The '+k+' with a different key are the ones to know both ways.'):'';})()+'</p></div></div>'+
     order.map(k=>{const mine=items.filter(x=>x.kind===k);if(!mine.length)return '';
@@ -20271,7 +20601,7 @@ function studyEmph(){
     '</div>';
   };
   const hiQ=hiQsModule(at);
-  return '<div class="vhead" style="margin-bottom:10px"><div>'+studyCrumb(c.code||"Class","class")+
+  return '<div class="vhead" style="margin-bottom:10px"><div>'+studyCrumb("Extras","extras")+
     '<h1 style="margin-top:6px">'+(DIM==="degula"?'On the exam':'Highlighted by De Gula')+'</h1>'+
     (DIM==="degula"
       ?'<p class="qzlede">Both sections of this course sit what is, for the most part, the same exam. The other section’s lectures say out loud what to star and what to skip. Every cue is here, checked against the shared deck. Where the two instructors disagree, our own instructor’s answer is the one that counts.</p>'
@@ -25095,7 +25425,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 25, 8:05 PM":"This browser is not saving anything. Build Sep 25, 8:05 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 27, 9:17 AM":"This browser is not saving anything. Build Sep 27, 9:17 AM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -25209,7 +25539,9 @@ function wire(){
   $$("[data-boss]").forEach(b=>b.onclick=()=>openRoom(b,()=>fightStart(b.dataset.boss)));
   $$("[data-ward]").forEach(b=>b.onclick=()=>openRoom(b,()=>{const x=b.dataset.ward.split("||");wardStart(x[0],x[1]);}));
   $$("[data-energy]").forEach(b=>b.onclick=()=>{S.profile.energy=b.dataset.energy;saveCore();render();});
-  const es=$("#enShop"); if(es)es.onclick=()=>{shopBay="energy";tab="nurse";DRAWER.locker=true;render();window.scrollTo(0,0);};
+  const es=$("#enShop"); if(es)es.onclick=()=>{shopBay="energy";tab="nurse";DRAWER.locker=true;render();
+    /* straight to the locker, not the top of the Nurse tab */
+    const dw=document.querySelector('[data-dw="locker"]');if(dw)dw.scrollIntoView({block:"start"});else window.scrollTo(0,0);};
   $$("[data-fopt]").forEach(b=>b.onclick=()=>{if(!b.disabled)fightToggle(+b.dataset.fopt);});
   $$("[data-terrain-open]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTerrain(b.dataset.terrainOpen);});
   $$("[data-diagrams-open]").forEach(b=>b.onclick=e=>{e.stopPropagation();openDiagrams(b.dataset.diagramsOpen);});
@@ -25221,6 +25553,28 @@ function wire(){
   $$("[data-emph-mod]").forEach(b=>b.onclick=()=>{EMPH_MOD=+b.dataset.emphMod;EMPH_OPEN=null;render();});
   $$("[data-emphq]").forEach(b=>b.onclick=()=>{const ids=emphQs(b.dataset.emphq).map(q=>q.id);if(ids.length)startSession("emph",b.dataset.emphq,ids);});
   $$("[data-review-open]").forEach(b=>b.onclick=()=>{studyAt="review";render();window.scrollTo(0,0);});
+  $$("[data-extras-open]").forEach(b=>b.onclick=()=>{studyAt="extras";render();window.scrollTo(0,0);});
+  $$("[data-pulse-open]").forEach(b=>b.onclick=()=>{studyAt="pulse";render();window.scrollTo(0,0);});
+  {const g=$("#pulseGo");if(g)g.onclick=()=>pulseStart();
+   const ag=$("#pulseAgain");if(ag)ag.onclick=()=>pulseStart();
+   const pr=$("#pulsePrint");if(pr)pr.onclick=()=>{const st=pulseState();const run=st.runs[st.runs.length-1];if(run)pulsePrint(run);};
+   const nx=$("#pulseNext");if(nx)nx.onclick=()=>pulseNext();
+   $$("[data-pulsepick]").forEach(b=>b.onclick=()=>pulseAnswer(+b.dataset.pulsepick));
+   $$("[data-pulsesure]").forEach(b=>b.onclick=()=>pulseSure(b.dataset.pulsesure==="1"));
+   $$("[data-pulse-drill]").forEach(b=>b.onclick=()=>{const [wi,ti,ang]=b.dataset.pulseDrill.split(":");
+     let qs=reviewTopicQs(REVIEW_SHEET.weeks[+wi].topics[+ti]);
+     if(ang==="rec"||ang==="app"){const sub=qs.filter(q=>pulseAngle(q)===ang);if(sub.length)qs=sub;}
+     const ids=shuffle(qs).map(q=>q.id);if(ids.length)startSession("practice","review",ids);});}
+  $$("[data-stat-drill]").forEach(b=>b.onclick=()=>{
+    const [ex,key]=b.dataset.statDrill.split("||");const t=binderTree()[ex];if(!t)return;
+    let qs;const g=unitGroups(t).find(x=>x.key===key);
+    if(g)qs=[].concat.apply([],g.rows.map(r=>r.qs));else qs=t.units[key]||[];
+    if(!qs.length)return;
+    /* open first, then the ones missed most, then the rest */
+    const MC=missCount();const open=stillOpen(qs), rest=qs.filter(q=>open.indexOf(q)<0).sort((a,b)=>(MC[b.id]||0)-(MC[a.id]||0));
+    const ids=shuffle(open).concat(rest).map(q=>q.id);
+    startSession(open.length?"topic":"review",g?g.title:key,ids);});
+  const sa=$("#statAll");if(sa)sa.onclick=()=>{STAT_ALL=!STAT_ALL;render();};
   $$("[data-reviewq]").forEach(b=>b.onclick=()=>{const k=b.dataset.reviewq;let ids;
     if(k==="all"){const seen={};ids=[];reviewTopics().forEach(x=>x.qs.forEach(q=>{if(!seen[q.id]){seen[q.id]=1;ids.push(q.id);}}));ids=shuffle(ids);}
     else{const [wi,ti]=k.split(":").map(Number);ids=shuffle(reviewTopicQs(REVIEW_SHEET.weeks[wi].topics[ti]).map(q=>q.id));}
@@ -25674,7 +26028,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 25, 8:05 PM":"This browser is not saving anything. Build Sep 25, 8:05 PM");
+    (LS_OK?"Saved in this browser. Build Sep 27, 9:17 AM":"This browser is not saving anything. Build Sep 27, 9:17 AM");
 })();
 </script>
 
