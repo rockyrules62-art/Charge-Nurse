@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Sep 30, 10:08 PM-->
+<!--TROPHOS-BUILD:!Sep 30, 10:12 PM-->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
@@ -799,6 +799,59 @@ div.qzcard{cursor:default}
 .qzopts.pick{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:0;border:0;border-radius:0;
   background:none;overflow:visible;box-shadow:none;cursor:default;transition:none}
 .qzopts.pick:hover,.qzopts.pick:active{transform:none;box-shadow:none}
+.dz .opts{gap:12px}
+.dz .opt{display:grid!important;grid-template-columns:34px 1fr;column-gap:14px;align-items:start;padding:13px 15px;
+  border:1.5px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;font-size:15.5px;line-height:1.5;
+  box-shadow:0 1px 2px rgba(16,30,28,.06),0 2px 6px -2px rgba(16,30,28,.08);
+  transition:transform .14s cubic-bezier(.2,.8,.3,1),box-shadow .2s,border-color .2s,background .2s}
+.dz .opt>span:nth-of-type(2){padding-top:5px;min-width:0}
+.dz .opt .k,.dz .opt .tick2{width:34px;height:34px;display:grid;place-items:center;padding:0;border-radius:50%;
+  border:2px solid color-mix(in srgb,var(--ink) 24%,transparent);background:var(--surface);
+  font:600 13px "IBM Plex Mono",monospace;color:var(--muted)}
+.dz .opts.multi .opt .tick2{border-radius:9px}
+.dz .opt .omark{grid-column:2;display:block!important;margin:8px 0 0;text-align:left}
+@media (hover:hover){.dz .opt:not(:disabled):hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--ink) 24%,transparent);
+  box-shadow:0 2px 4px rgba(16,30,28,.08),0 10px 22px -10px rgba(16,30,28,.28)}}
+.dz .opt.press{transform:translateY(1px) scale(.985)}
+.dz .opt.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.dz .opt.on .tick2{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);animation:qzpop .32s cubic-bezier(.3,1.6,.5,1)}
+.dz .opt.right{border-color:#0F6B4F;background:#DCF0E7;box-shadow:none}
+.dz .opt.right .k,.dz .opt.right .tick2{background:#0F6B4F;border-color:#0F6B4F;color:#fff;font-size:15px}
+.dz .opt.right .omark{color:#0F6B4F}
+.dz .opt.wrong{border-color:#B31F38;background:#FBE7EA;box-shadow:none}
+.dz .opt.wrong .k,.dz .opt.wrong .tick2{background:#B31F38;border-color:#B31F38;color:#fff;font-size:15px}
+.dz .opt.wrong .omark{color:#B31F38}
+.dz .opt.right.missed{border-style:dashed;border-color:#B8770E;background:#FFF3DA}
+.dz .opt.right.missed .tick2{background:transparent;border-color:#B8770E;color:#8A5A05}
+.dz .opt.dim{box-shadow:none;border-color:color-mix(in srgb,var(--line) 62%,transparent)}
+.dz .opt.dim .k,.dz .opt.dim>span:nth-of-type(2){opacity:.62}
+:root[data-theme="dark"] .dz .opt.right{background:#0E2A21;border-color:#5FD9AC}
+:root[data-theme="dark"] .dz .opt.right .k,:root[data-theme="dark"] .dz .opt.right .tick2{background:#5FD9AC;border-color:#5FD9AC;color:#06261C}
+:root[data-theme="dark"] .dz .opt.right .omark{color:#5FD9AC}
+:root[data-theme="dark"] .dz .opt.wrong{background:#2B1218;border-color:#FF7A90}
+:root[data-theme="dark"] .dz .opt.wrong .k,:root[data-theme="dark"] .dz .opt.wrong .tick2{background:#FF7A90;border-color:#FF7A90;color:#2B1218}
+:root[data-theme="dark"] .dz .opt.wrong .omark{color:#FF7A90}
+:root[data-theme="dark"] .dz .opt.right.missed{background:#2E2210;border-color:#F0B84A}
+:root[data-theme="dark"] .dz .opt.right.missed .tick2{border-color:#F0B84A;color:#F0B84A;background:transparent}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .dz .opt.right{background:#0E2A21;border-color:#5FD9AC}
+  :root:not([data-theme="light"]) .dz .opt.right .k,:root:not([data-theme="light"]) .dz .opt.right .tick2{background:#5FD9AC;border-color:#5FD9AC;color:#06261C}
+  :root:not([data-theme="light"]) .dz .opt.right .omark{color:#5FD9AC}
+  :root:not([data-theme="light"]) .dz .opt.wrong{background:#2B1218;border-color:#FF7A90}
+  :root:not([data-theme="light"]) .dz .opt.wrong .k,:root:not([data-theme="light"]) .dz .opt.wrong .tick2{background:#FF7A90;border-color:#FF7A90;color:#2B1218}
+  :root:not([data-theme="light"]) .dz .opt.wrong .omark{color:#FF7A90}
+  :root:not([data-theme="light"]) .dz .opt.right.missed{background:#2E2210;border-color:#F0B84A}
+  :root:not([data-theme="light"]) .dz .opt.right.missed .tick2{border-color:#F0B84A;color:#F0B84A;background:transparent}}
+.dz .qzkind,.dz .sataflag{align-self:flex-start}
+.dz .q{font-size:18px;font-weight:500;line-height:1.5}
+.dzwave .u{opacity:0}
+.dzwave.go .u{animation:qzemerge .8s linear both}
+.dzwave.wall .u{opacity:1;animation:none}
+.fcrumb{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin:0 0 10px -8px;
+  padding:6px 12px 6px 8px;border-radius:999px;font:600 13.5px/1.2 "IBM Plex Sans",system-ui,sans-serif;color:var(--muted);
+  transition:color .15s,background .15s}
+.fcrumb:hover{color:var(--ink);background:var(--surface-2)}
+.fcrumb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .qznav .btn.qzflag{border:1.5px solid color-mix(in srgb,var(--ink) 22%,transparent)!important;padding-inline:16px}
 .qzcard.q .qzkind,.qzcard.q .qzsata,.qzres .qzsata{align-self:flex-start}
 .qzdots i.at{background:transparent;box-shadow:0 0 0 2px var(--ink)}
@@ -10616,7 +10669,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Sep 30, 10:08 PM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 30, 10:12 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -25585,6 +25638,8 @@ function renderSession(){
   const gotAll=multi&&sataFull(q,picks);
   const gotRight=multi?picks.filter(i=>q.answers.indexOf(i)>=0).length:0;
   const wrongPicked=multi?picks.length-gotRight:0;
+  /* the disease-table drills use the new question design (Oct 2026) */
+  const DZ=s.mode==="disease";
   $("#view").innerHTML=
     '<div class="vhead"><div><span class="eyebrow">'+label+((q.unit&&s.mode!=="topic"&&s.mode!=="review")?' &middot; '+esc(q.unit):'')+'</span><h1 style="font-size:22px;margin-top:4px">'+esc(courseName(q.courseId))+'</h1></div>'+
     '<div class="row">'+(s.endsAt?'<span class="chip mono" id="clock">'+fmtClock(s.endsAt-Date.now())+'</span>':'')+
@@ -25596,23 +25651,23 @@ function renderSession(){
       'aria-pressed="'+flagged+'">'+(flagged?"\u2691 Flagged":"\u2690 Flag")+'</button>'+
     '<button class="btn sm ghost" id="quit">End round</button></div></div>'+
     '<div class="prog"><i style="width:'+(s.i/s.qs.length*100)+'%"></i></div>'+
-    '<div class="card pad">'+
+    '<div class="card pad'+(DZ?' dz':'')+'">'+
       caseCard(q)+
       hiBadge(q)+
-      (multi?'<span class="sataflag">Select all that apply</span>':'')+
+      (multi?'<span class="sataflag">Select all that apply</span>':(DZ?'<span class="qzkind">Choose one</span>':''))+
       '<p class="q">'+esc(q.stem)+'</p><div class="opts'+(multi?' multi':'')+'">'+
       optOrder(s,q).map((idx,shown)=>{
         const o=q.options[idx];
         const chosen=multi?(picks.indexOf(idx)>=0):(s.picked===idx);
         const isAns=multi?(q.answers.indexOf(idx)>=0):(idx===q.answer);
         let cls="opt";
-        if(showFeedback){if(isAns)cls+=" right"+(multi&&!chosen?" missed":"");else if(chosen)cls+=" wrong";}
+        if(showFeedback){if(isAns)cls+=" right"+(multi&&!chosen?" missed":"");else if(chosen)cls+=" wrong";else if(DZ)cls+=" dim";}
         else if(chosen)cls+=multi?" on":" right";
         return '<button class="'+cls+'" data-opt="'+idx+'"'+(s.picked!==null?" disabled":"")+
           (multi?' aria-pressed="'+(chosen?'true':'false')+'"':'')+'>'+
           (multi?'<span class="tick2">'+
             (showFeedback?(isAns?'\u2713':chosen?'\u2715':''):(chosen?'\u2713':''))+'</span>'
-                :'<span class="k">'+"ABCDE"[shown]+'</span>')+
+                :'<span class="k">'+(DZ&&showFeedback&&(isAns||chosen)?(isAns?'\u2713':'\u2715'):"ABCDE"[shown])+'</span>')+
           '<span>'+esc(o)+'</span>'+
           (showFeedback&&multi
             ? (isAns?'<i class="omark">'+(chosen?'correct':'correct \u2014 missed')+'</i>'
@@ -25631,8 +25686,8 @@ function renderSession(){
       (showFeedback&&multi?'<div class="sataline'+(gotAll?' ok':'')+'">'+
         (gotAll?'All '+sataMax(q)+' right':earned+' of '+sataMax(q)+' points \u2014 '+
           gotRight+' of '+sataMax(q)+' right'+(wrongPicked?', '+wrongPicked+' wrong':''))+'</div>':'')+
-      (showFeedback?'<div class="rationale"><span class="eyebrow">'+
-        (multi?(gotAll?"Correct \u2014 why":"Why"):(s.picked===q.answer?"Correct \u2014 why":"Why"))+'</span>'+esc(q.rationale)+'</div>':'')+
+      (showFeedback?'<div class="rationale'+(DZ?' dzwave'+((s.waved||{})[q.id]||QZ_REDUCE?' wall':''):'')+'"><span class="eyebrow">'+
+        (multi?(gotAll?"Correct \u2014 why":"Why"):(s.picked===q.answer?"Correct \u2014 why":"Why"))+'</span>'+(DZ?qzWords(q.rationale):esc(q.rationale))+'</div>':'')+
       (s.picked!==null?'<div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn primary" id="next">'+(s.i+1>=s.qs.length?"Finish":"Next")+'</button></div>':'')+
     '</div>';
   $("#quit").onclick=()=>finishSession();
@@ -25641,10 +25696,17 @@ function renderSession(){
     if(MINE.flags[q.id])delete MINE.flags[q.id]; else MINE.flags[q.id]=Date.now();
     saveMine();render();
   };
-  $$(".opt").forEach(b=>b.onclick=()=>{
+  $$(".opt").forEach(b=>{b.onclick=()=>{
     const i=parseInt(b.dataset.opt,10);
     if(multi)sataToggle(i);else pick(i);
-  });
+  };
+    if(DZ){b.addEventListener("pointerdown",()=>{if(!b.disabled)b.classList.add("press");});
+      ["pointerup","pointerleave","pointercancel"].forEach(ev=>b.addEventListener(ev,()=>b.classList.remove("press")));}});
+  /* the explanation comes up word by word the first time it appears */
+  {const w=$(".rationale.dzwave:not(.wall)");
+    if(w){s.waved=s.waved||{};s.waved[q.id]=true;let t=80;
+      w.querySelectorAll(".u").forEach(u=>{u.style.animationDelay=t+"ms";t+=6;});
+      w.classList.add("go");$("#view").addEventListener("click",()=>w.classList.add("wall"),{once:true});}}
   {const g=$("#sataGo");if(g)g.onclick=()=>pick((session.multi||[]).slice());}
   const nx=$("#next");if(nx)nx.onclick=advance;
 }
@@ -26247,7 +26309,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 30, 10:08 PM":"This browser is not saving anything. Build Sep 30, 10:08 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 30, 10:12 PM":"This browser is not saving anything. Build Sep 30, 10:12 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -26859,7 +26921,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 30, 10:08 PM":"This browser is not saving anything. Build Sep 30, 10:08 PM");
+    (LS_OK?"Saved in this browser. Build Sep 30, 10:12 PM":"This browser is not saving anything. Build Sep 30, 10:12 PM");
 })();
 </script>
 
