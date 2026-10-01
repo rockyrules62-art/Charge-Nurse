@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Sep 29, 4:51 PM-->
+<!--TROPHOS-BUILD:!Sep 30, 9:12 PM-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -10521,7 +10521,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Sep 29, 4:51 PM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 30, 9:12 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -26136,7 +26136,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 30, 8:56 PM":"This browser is not saving anything. Build Sep 30, 8:56 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 30, 9:12 PM":"This browser is not saving anything. Build Sep 30, 9:12 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -26739,7 +26739,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 30, 8:56 PM":"This browser is not saving anything. Build Sep 30, 8:56 PM");
+    (LS_OK?"Saved in this browser. Build Sep 30, 9:12 PM":"This browser is not saving anything. Build Sep 30, 9:12 PM");
 })();
 </script>
 
