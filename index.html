@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Sep 30, 10:01 PM-->
+<!--TROPHOS-BUILD:!Sep 30, 10:08 PM-->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
@@ -794,6 +794,17 @@ div.qzcard{cursor:default}
   :root:not([data-theme="light"]) .qzopt.bad .qzlet{background:#FF7A90;border-color:#FF7A90;color:#2B1218}
   :root:not([data-theme="light"]) .qzopt.missed .qzlet{border-color:#F0B84A;color:#F0B84A}
   :root:not([data-theme="light"]) .qzflag.on{color:#F0B84A;border-color:#F0B84A;background:#2E2210}}
+/* .pick is also the class-picker door style; undo it on the answer list so the
+   options are separate cards with room between them, not one clipped box */
+.qzopts.pick{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:0;border:0;border-radius:0;
+  background:none;overflow:visible;box-shadow:none;cursor:default;transition:none}
+.qzopts.pick:hover,.qzopts.pick:active{transform:none;box-shadow:none}
+.qznav .btn.qzflag{border:1.5px solid color-mix(in srgb,var(--ink) 22%,transparent)!important;padding-inline:16px}
+.qzcard.q .qzkind,.qzcard.q .qzsata,.qzres .qzsata{align-self:flex-start}
+.qzdots i.at{background:transparent;box-shadow:0 0 0 2px var(--ink)}
+.qzdots i.on.at{background:var(--accent-soft)}
+.qzkind{display:inline-block;margin-bottom:9px;font:700 10px "IBM Plex Mono",monospace;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);padding:4px 9px;border-radius:99px}
 @media (prefers-reduced-motion:reduce){.qzopt,.qzlet{transition:none}.qzopt.on .qzlet{animation:none}.qzres .u{opacity:1!important;animation:none!important}}
 .qznote{margin:12px 0 0;font-size:12.5px;color:var(--faint);text-align:center}
 /* the answers */
@@ -10605,7 +10616,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Sep 30, 10:01 PM";              /* _dist.py stamps the shipped one */
+const BUILD="!Sep 30, 10:08 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -15848,7 +15859,7 @@ function viewQuiz(){
   return head+bar+
     '<div class="qzcard q">'+
       caseCard(q)+
-      (q.k==="sata"?'<span class="qzsata">Select all that apply</span>':'')+
+      (q.k==="sata"?'<span class="qzsata">Select all that apply</span>':'<span class="qzkind">Choose one</span>')+
       '<p class="qzstem">'+esc(q.stem)+'</p>'+
       '<div class="qzopts pick'+(q.k==="sata"?' sata':'')+'" role="'+(q.k==="sata"?'group':'radiogroup')+'">'+q.options.map((o,oi)=>
         '<button type="button" class="qzopt'+(pick.indexOf(oi)>=0?' on':'')+'" data-qzpick="'+i+'|'+oi+'" role="'+(q.k==="sata"?'checkbox':'radio')+'" aria-checked="'+(pick.indexOf(oi)>=0)+'">'+
@@ -23864,22 +23875,31 @@ const ACCCOL={teal:"#2F8C82",navy:"#31465F",wine:"#7A3A45",rose:"#C77E96",mustar
 
 /* the neckline of the scrub top: shape only, over the trunk color */
 function necklineFor(pres,build,kind,SKIN,SKIN_D){
-  if(!kind)return "";
   const P=trunkPts(pres,build), SH=P[0][1];
   const X=v=>+(65+v).toFixed(2);
-  const top=pres==="m"?83.6:84.4;
+  /* The opening starts right at the top edge of the shirt. It used to start a
+     few units lower, which left a band of scrub color wrapped round the base of
+     the neck above the opening. Scrub tops are V-necks, so "Standard" is a
+     shallow V rather than a crew collar. */
+  const topY=+(P[0][0]-5.6).toFixed(2), top=+(topY+1).toFixed(2), lift=+(topY-1.6).toFixed(2);
   const rim=(d,w)=>'<path d="'+d+'" fill="none" stroke="#000" stroke-width="'+w+'" opacity=".2"/>';
+  if(!kind){
+    const d='M'+X(-SH*0.36)+' '+top+'L65 '+(top+11)+'L'+X(SH*0.36)+' '+top+
+      'C'+X(SH*0.18)+' '+lift+' '+X(-SH*0.18)+' '+lift+' '+X(-SH*0.36)+' '+top+'Z';
+    return '<path d="'+d+'" fill="'+SKIN+'"/>'+
+      '<path d="M'+X(-SH*0.36)+' '+top+'L65 '+(top+11)+'L'+X(SH*0.36)+' '+top+'" fill="none" stroke="#000" stroke-width="1.6" opacity=".22"/>';
+  }
   if(kind==="v"){
     const d='M'+X(-SH*0.42)+' '+top+'L65 '+(top+16)+'L'+X(SH*0.42)+' '+top+
-      'C'+X(SH*0.2)+' '+(top-2.4)+' '+X(-SH*0.2)+' '+(top-2.4)+' '+X(-SH*0.42)+' '+top+'Z';
+      'C'+X(SH*0.2)+' '+lift+' '+X(-SH*0.2)+' '+lift+' '+X(-SH*0.42)+' '+top+'Z';
     return '<path d="'+d+'" fill="'+SKIN+'"/>'+
       '<path d="M'+X(-SH*0.42)+' '+top+'L65 '+(top+16)+'L'+X(SH*0.42)+' '+top+'" fill="none" stroke="'+SKIN_D+'" stroke-width="1.6" opacity=".55"/>'+
-      rim(d,1.4);
+      rim('M'+X(-SH*0.42)+' '+top+'L65 '+(top+16)+'L'+X(SH*0.42)+' '+top,1.4);
   }
   if(kind==="notch"){
     const d='M'+X(-SH*0.34)+' '+top+'v6.6h'+(SH*0.20).toFixed(2)+'v5.4h'+(SH*0.28).toFixed(2)+'v-5.4h'+(SH*0.20).toFixed(2)+'V'+top+
-      'C'+X(SH*0.16)+' '+(top-2.2)+' '+X(-SH*0.16)+' '+(top-2.2)+' '+X(-SH*0.34)+' '+top+'Z';
-    return '<path d="'+d+'" fill="'+SKIN+'"/>'+rim(d,1.4);
+      'C'+X(SH*0.16)+' '+lift+' '+X(-SH*0.16)+' '+lift+' '+X(-SH*0.34)+' '+top+'Z';
+    return '<path d="'+d+'" fill="'+SKIN+'"/>'+rim(d.split('C')[0],1.4);
   }
   if(kind==="mock"){
     // a wrap has no opening: it is a seam crossing the chest, so it reads as a line
@@ -23888,12 +23908,12 @@ function necklineFor(pres,build,kind,SKIN,SKIN_D){
       '<path d="M'+X(-SH*0.54)+' '+(top+0.6)+'C'+X(-SH*0.18)+' '+(top+10.4)+' '+X(SH*0.32)+' '+(top+15.4)+' '+X(SH*0.9)+' '+(top+21.6)+
       '" fill="none" stroke="#fff" stroke-width="1.2" opacity=".3"/>'+
       '<path d="M'+X(-SH*0.42)+' '+top+'C'+X(-SH*0.2)+' '+(top+5) +' '+X(SH*0.2)+' '+(top+5)+' '+X(SH*0.42)+' '+top+
-      'C'+X(SH*0.2)+' '+(top-2.4)+' '+X(-SH*0.2)+' '+(top-2.4)+' '+X(-SH*0.42)+' '+top+'Z" fill="'+SKIN+'"/>';
+      'C'+X(SH*0.2)+' '+lift+' '+X(-SH*0.2)+' '+lift+' '+X(-SH*0.42)+' '+top+'Z" fill="'+SKIN+'"/>';
   }
   // henley: a small opening with a buttoned placket below it
   const d='M'+X(-SH*0.30)+' '+top+'L65 '+(top+9)+'L'+X(SH*0.30)+' '+top+
-    'C'+X(SH*0.14)+' '+(top-2.2)+' '+X(-SH*0.14)+' '+(top-2.2)+' '+X(-SH*0.30)+' '+top+'Z';
-  return '<path d="'+d+'" fill="'+SKIN+'"/>'+rim(d,1.4)+
+    'C'+X(SH*0.14)+' '+lift+' '+X(-SH*0.14)+' '+lift+' '+X(-SH*0.30)+' '+top+'Z';
+  return '<path d="'+d+'" fill="'+SKIN+'"/>'+rim(d.split('C')[0],1.4)+
     '<path d="M'+X(-2.4)+' '+(top+8)+'h4.8v15h-4.8z" fill="#fff" opacity=".18"/>'+
     '<path d="M'+X(-2.4)+' '+(top+8)+'v15M'+X(2.4)+' '+(top+8)+'v15" stroke="#000" stroke-width=".8" opacity=".18"/>'+
     '<circle cx="65" cy="'+(top+12)+'" r="1.3" fill="#fff" opacity=".6"/>'+
@@ -26227,7 +26247,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 30, 10:01 PM":"This browser is not saving anything. Build Sep 30, 10:01 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Sep 30, 10:08 PM":"This browser is not saving anything. Build Sep 30, 10:08 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -26839,7 +26859,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Sep 30, 10:01 PM":"This browser is not saving anything. Build Sep 30, 10:01 PM");
+    (LS_OK?"Saved in this browser. Build Sep 30, 10:08 PM":"This browser is not saving anything. Build Sep 30, 10:08 PM");
 })();
 </script>
 
