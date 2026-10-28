@@ -1,5 +1,5 @@
 <!doctype html>
-<!--TROPHOS-BUILD:!Oct 27, 6:37 PM-->
+<!--TROPHOS-BUILD:!Oct 27, 7:03 PM-->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
@@ -3494,7 +3494,6 @@ body.dim-degula .advworld>svg.advsvg{filter:hue-rotate(150deg) saturate(.85) bri
     <button class="navbtn" data-nav="home"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.8 20v-5.4h4.4V20"/></svg><span>Home</span></button>
     <button class="navbtn" data-nav="calendar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Calendar</span></button>
     <button class="navbtn" data-nav="study"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".6"/></svg><span>Study</span></button>
-    <button class="navbtn" data-nav="fight"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 14 10"/><path d="M13 6l5 5"/><path d="M15 4l5 5"/><path d="M4 20l-1-1 2-4 3 3z"/><path d="M20 20l-8-8"/></svg><span>Fight</span></button>
     <button class="navbtn" data-nav="trophies"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 5.5H4.5V7a3.5 3.5 0 0 0 3 3.4M17 5.5h2.5V7a3.5 3.5 0 0 1-3 3.4"/><path d="M12 14v3M8.5 20h7l-.7-3h-5.6z"/></svg><span>Progress</span></button>
     <button class="navbtn" data-nav="nurse"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg><span>Nurse</span></button>
     <div class="railfoot">
@@ -5368,7 +5367,6 @@ function examStatsHtml(exKey,title){
     '<div class="stathead"><div class="statbig"><b>'+(T.pct===null?'—':T.pct+'%')+'</b><i>right, from everything answered</i></div>'+
       '<div class="statline"><span>'+T.answered+' of '+T.total+' questions answered · '+T.seen+' answers given</span>'+
       (T.exams.length?T.exams.map(x=>'<span>'+esc(x.n)+': best '+x.st.best+'%'+(x.st.first!==null&&x.st.first!==x.st.best?' · first try '+x.st.first+'%':'')+'</span>').join(''):'<span>No practice exam handed in yet</span>')+
-      (T.pulse?'<span>Pulse check '+esc(prettyDay(T.pulse.at))+': '+T.pulse.solid+' solid \u00b7 '+T.pulse.shaky+' shaky \u00b7 '+T.pulse.gap+' gap'+(T.pulse.gap===1?'':'s')+(T.pulse.fs?' \u00b7 '+T.pulse.fs+' sure and wrong':'')+'</span>':'')+
       (T.cases.length?'<span>Case studies: '+T.cases.map(x=>esc(x.title.split(' — ')[0].split(',')[0])+' '+x.st.best+'%').join(', ')+'</span>':'')+
       '</div></div>'+
     '<div class="statbands">'+
@@ -11875,7 +11873,7 @@ async function delQuestionsFor(materialId){
      row-level security in the database, which no request from a browser can
      talk its way past.
    ========================================================================== */
-const BUILD="!Oct 27, 6:37 PM";              /* _dist.py stamps the shipped one */
+const BUILD="!Oct 27, 7:03 PM";              /* _dist.py stamps the shipped one */
 
 /* The app is one file on a static host, so a browser that already has a copy
    can keep serving it long after a new one is up - the phone fetches fresh and
@@ -13958,6 +13956,7 @@ function render(){
      off screen for the length of any run, quiz, Gauntlet or fight. */
   document.body.classList.toggle("answering",!!(session||QUIZ||GAME||FIGHT));
   /* a fight takes the whole screen: nurse and patient stay in view while the answers scroll under them */
+  if(tab==="fight"&&!FIGHT)tab="home";   /* the Fight tab is hidden: nothing on the rail or in the tour leads to it */
   document.body.classList.toggle("fightfull",!!FIGHT&&tab==="fight");
   if(USE&&useTab!==tab)useTick();
   /* whatever the keyboard was on, before the view is thrown away */
@@ -14201,8 +14200,8 @@ const BAYS=[
  {id:"hair",  n:"Hair",       no:"106", items:["cuts","rainbow","hijabcol","hairacc"]},
  {id:"gowns", n:"Layers",     no:"107", items:["gown","jacket"]},
  {id:"kit",   n:"Kit",        no:"108", items:["scope","penlight","watch","badge"]},
- {id:"energy",n:"Energy",     no:"109", items:["en_solar","en_tide","en_scrub","en_star","en_nova"]},
- {id:"fkit",  n:"Fight kit",  no:"110", items:["k_cart","k_second","k_overtime"]}];
+ {id:"energy",n:"Energy",     no:"109", items:["en_solar","en_tide","en_scrub","en_star","en_nova"]}];
+/* bay 110, the Fight kit, is closed with the Fight tab */
 const bayState=b=>{
   const own=b.items.filter(owns).length;
   return {own:own,all:b.items.length,done:own===b.items.length,
@@ -17722,18 +17721,23 @@ function studyClass(){
   const bossReady=pool.length>=20;
   const divider=(k,i)=>{
     const ex=t[k], all=exQs(ex), left=stillOpen(all).length;
-    const pct=all.length?Math.round((all.length-left)/all.length*100):0;
     const units=unitGroups(ex).reduce((n,g)=>n+g.rows.length,0);
     const nm=ex.ev?ex.ev.title:"Not yet tied to an exam";
+    /* an exam whose material sits under the disease table is counted by its conditions and
+       their drills, with the binder's own questions folded in - not by the binder alone */
+    const dis=courseDiseases(c.code||"").filter(d=>!d.off&&libExamOf(libShelfMap(c),d.unit).exam===k);
+    const dq=[].concat.apply([],dis.map(d=>diseaseQs(DISEASE_SLUG[d.name])));
+    const every=dis.length?dq.concat(all.filter(q=>!dq.some(x=>x.id===q.id))):all;
+    const lf=stillOpen(every).length, pc=every.length?Math.round((every.length-lf)/every.length*100):0;
     return '<button type="button" class="tile wide" data-sexam="'+esc(k)+'">'+
-      coverArt(nm,all.length?(all.length-left)/all.length:0,"",examArtKind(ex))+
+      coverArt(nm,every.length?(every.length-lf)/every.length:0,"",examArtKind(ex))+
       '<span class="tileveil"></span>'+
       '<span class="tilenum">'+(i+1)+'</span>'+
       '<span class="tilet"><b>'+esc(nm)+'</b>'+
         conceptLine(conceptsOf(Object.keys(ex.units||{})),5)+
-        '<u>'+(ex.ev?prettyDay(ex.ev.date)+' \u00b7 ':'')+units+' topic'+(units===1?'':'s')+
-        ' \u00b7 '+(left?left+' left of '+all.length:'all '+all.length+' right')+'</u></span>'+
-      '<span class="tilepct">'+pct+'%</span></button>';
+        '<u>'+(ex.ev?prettyDay(ex.ev.date)+' \u00b7 ':'')+(dis.length?dis.length+' conditions':units+' topic'+(units===1?'':'s'))+
+        ' \u00b7 '+(lf?lf+' left of '+every.length:'all '+every.length+' right')+'</u></span>'+
+      '<span class="tilepct">'+pc+'%</span></button>';
   };
   return ''+
   '<div class="vhead" style="margin-bottom:14px"><div>'+studyCrumb("Study","pick")+
@@ -17741,7 +17745,6 @@ function studyClass(){
   librarySection(c)+
   ((keys.length||pastSummary)?'<span class="eyebrow" style="display:block;margin-bottom:8px">Your binder</span>'+
     '<div class="tiles" style="margin-bottom:18px">'+(pastSummary&&!pastOpen()?pastSummary:'')+keys.map((k,i)=>divider(k,allKeys.indexOf(k))).join("")+(pastSummary&&pastOpen()?pastSummary:'')+'</div>':'')+
-  ((c.code||"")===REVIEW_SHEET.course?pulseCard():'')+
   /* The weekly quiz: one per module, opening on the Tuesday after that
      module's week. Locked until then, so the page shows what is coming
      without pretending it is ready. */
@@ -17807,16 +17810,6 @@ function studyClass(){
       '<i>Mechanism, indication, side effects and nursing considerations for every medication the course names. One row per drug, by module.</i>'+
       '<u>'+mine.length+' drugs · '+units+' module'+(units===1?'':'s')+'</u></button></div>';
   })()+
-  /* Extras: the highlights, where the sections differ, the review sheet and
-     the diagrams live one tap away, so the binder itself stays short. */
-  (function(){
-    if((c.code||"")!==EMPH_COURSE)return '';
-    const parts=extrasParts(c,pool);
-    return '<span class="eyebrow" style="display:block;margin:4px 0 8px">More</span>'+
-      '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play deep" data-extras-open="1"><span class="plico">\uD83D\uDDC2</span><b>Extras</b>'+
-      '<i>'+parts.map(esc).join(' \u00b7 ')+'.</i>'+
-      '<u>'+parts.length+' things inside</u></button></div>';
-  })()+
   /* every time limit and interval in the notes, one question each */
   (function(){
     const ck=clockQs(); if(!ck.length)return '';
@@ -17825,7 +17818,7 @@ function studyClass(){
       : ck.some(q=>/^Module [5-8] /.test(q.unit||""))
       ? 'Every time limit and interval in the Modules 5\u20138 notes, one question each \u2014 the 3 hours upright after eating, the 2 hours between the acid drug and the rest, the 30 minutes before or after a meal for fluids, the 15 to 50 days of hepatitis A, the 1 to 6 months of B, the 4 to 6 weeks before the fat comes back. Numbers the exam can ask cold.'
       : 'Every time limit and interval in the notes, one question each \u2014 the minutes between eye drops, the 20-minute flush, the 5 days out of the sun, the 2 pounds in 24 hours, the 3 months that make an illness chronic. Numbers the exam can ask cold.';
-    return ((c.code||"")!==EMPH_COURSE?'<span class="eyebrow" style="display:block;margin:4px 0 8px">More</span>':'')+
+    return '<span class="eyebrow" style="display:block;margin:4px 0 8px">More</span>'+
       '<div class="plays one" style="margin-bottom:18px"><button type="button" class="play warm" data-drill="clock"><span class="plico">\u23F1</span><b>On the clock</b>'+
       '<i>'+blurb+'</i>'+
       '<u>'+ck.length+' questions \u00b7 '+stillOpen(ck).length+' still open</u></button></div>';
@@ -17835,7 +17828,7 @@ function studyClass(){
     const units={};pool.forEach(q=>{units[q.unit||""]=1;});
     const kinds=[];Object.keys(units).forEach(u=>{terrainsFor(u).forEach(k=>{if(kinds.indexOf(k)<0)kinds.push(k);});});
     const organs=[];Object.keys(units).forEach(u=>{diagOrgansFor(u).forEach(o=>{if(organs.indexOf(o)<0)organs.push(o);});});
-    if((c.code||"")===EMPH_COURSE)return '';   /* 308 keeps these inside Extras */
+    if((c.code||"")===EMPH_COURSE)return '';   /* the eye and brain diagrams are Exam 1; 308 does not list them */
     if(!kinds.length&&!organs.length)return '';
     return '<span class="eyebrow" style="display:block;margin:4px 0 8px">Diagrams</span>'+
       '<div class="plays" style="margin-bottom:18px">'+organs.map(o=>{const L=DIAGRAMS.filter(d=>d.organ===o);
@@ -17944,8 +17937,10 @@ function studyExamView(){
         '<div class="row"><button class="btn primary" data-bex="'+esc(studyExam)+'">'+(left?'Study all '+left:'Review all '+all.length)+'</button></div></div>';
       const mods=new Set(dis.map(d=>d.unit)).size;
       const qs=[].concat.apply([],dis.map(d=>diseaseQs(DISEASE_SLUG[d.name]))); const op=stillOpen(qs).length;
-      return '<p>'+(ex.ev?prettyDay(ex.ev.date)+' · ':'')+mods+' module'+(mods===1?'':'s')+' · '+dis.length+' conditions · '+qs.length+' questions'+(op<qs.length?' · '+op+' still open':'')+'</p></div>'+
-        '<div class="row"><button class="btn" data-bex="'+esc(studyExam)+'">Binder set · '+(left?left+' left':all.length)+'</button></div></div>';
+      /* the binder's own questions count with the conditions' drills: one number, one drill */
+      const allq=qs.concat(all.filter(q=>!qs.some(x=>x.id===q.id))), opn=stillOpen(allq).length;
+      return '<p>'+(ex.ev?prettyDay(ex.ev.date)+' · ':'')+mods+' module'+(mods===1?'':'s')+' · '+dis.length+' conditions · '+allq.length+' questions'+(opn<allq.length?' · '+opn+' still open':'')+'</p></div>'+
+        '<div class="row"><button class="btn primary" data-dis-drill="*">Drill 20 from the whole exam</button></div></div>';
     })()+
   /* WHERE YOU STAND, IN ONE LINE
      The full breakdown used to open the page, and a page that opens with a
@@ -17969,17 +17964,18 @@ function studyExamView(){
     return '<span class="eyebrow" style="display:block;margin:14px 0 8px">What is in this exam</span>'+
       '<div class="modcards">'+mods.map(u=>{
         const rows=dis.filter(d=>d.unit===u&&!d.off), P=unitParts(u);
-        const qs=[].concat.apply([],rows.map(d=>diseaseQs(DISEASE_SLUG[d.name])));
-        const open=stillOpen(qs).length, seen=qs.filter(q=>(q.seen||0)>0).length;
         const g=groups.find(x=>x.rows.some(r=>r.unit===u))||null;
         const pool=g?[].concat.apply([],g.rows.filter(r=>r.unit===u).map(r=>r.qs)):[];
+        /* the conditions' drills and the binder's own questions on this module, counted once */
+        const dq=[].concat.apply([],rows.map(d=>diseaseQs(DISEASE_SLUG[d.name])));
+        const qs=dq.concat(pool.filter(q=>!dq.some(x=>x.id===q.id)));
+        const open=stillOpen(qs).length, seen=qs.filter(q=>(q.seen||0)>0).length;
         return '<div class="modcard">'+
           '<div class="modhead"><b>'+esc(P.key||u)+'</b>'+(P.leaf&&P.leaf!==P.head?'<i>'+esc(P.leaf)+'</i>':'')+'</div>'+
           '<div class="modline">'+rows.length+' condition'+(rows.length===1?'':'s')+' \u00b7 '+qs.length+' questions'+(seen?' \u00b7 '+(open?open+' still open':'all answered right'):'')+'</div>'+
           '<div class="row" style="margin-top:8px">'+
-            '<button type="button" class="btn sm primary" data-dis-open="'+esc(u)+'">Open the conditions</button>'+
-            '<button type="button" class="btn sm" data-dis-drill="'+esc(u)+'">Drill a round of '+Math.min(20,open||qs.length)+'</button>'+
-            (pool.length?'<button type="button" class="btn sm ghost" data-bunit="'+esc(studyExam+"||"+u)+'">Binder set \u00b7 '+pool.length+'</button>':'')+
+            '<button type="button" class="btn sm primary" data-dis-module="'+esc(u)+'">Disease table</button>'+
+            '<button type="button" class="btn sm" data-dis-drill="'+esc(u)+'">Drill '+Math.min(20,open||qs.length)+'</button>'+
           '</div></div>';}).join("")+'</div>';
   })()+
   takeawayCard(Object.keys(ex.units||{}),"What you need to know",false,true)+
@@ -18059,10 +18055,15 @@ function gaToggleSheet(){
   p.gaSheet[courseFilter]=!p.gaSheet[courseFilter]; saveCore();
 }
 const gaHasSheet=()=>QS().some(q=>!q.prime&&q.nosheet&&(courseFilter==="all"||q.courseId===courseFilter));
+/* The Gauntlet's bag: the binder plus the drills under the disease table, because for
+   a class whose material lives under its conditions the binder alone is a thin bag. */
+function gaBag(id){
+  return QS().filter(q=>(!q.prime||(q.dis&&!q.off&&!q.extra))&&(id==="all"||q.courseId===id));
+}
 function gaUnitsOf(cid){
   const id=cid||courseFilter;
   const by={};
-  QS().filter(q=>!q.prime&&(id==="all"||q.courseId===id)).forEach(q=>{
+  gaBag(id).forEach(q=>{
     const u=q.unit||"Unsorted"; by[u]=(by[u]||0)+1;});
   return Object.keys(by).sort().map(u=>({unit:u,n:by[u]}));
 }
@@ -18085,7 +18086,7 @@ function gaClearUnits(){
 /* The pool the ladder is built from: the class, or the picked units of it. */
 function gaPool(){
   const pick=gaPicked();
-  let all=filteredQuestions();
+  let all=gaBag(courseFilter);
   if(gaSheetOnly()){const only=all.filter(q=>!q.nosheet); if(only.length)all=only;}
   if(!pick)return all;
   const set={}; pick.forEach(u=>{set[u]=1;});
@@ -23865,7 +23866,6 @@ const TOUR=[
  {nav:"home",t:"Home",d:"Your day at a glance: what is due next, the next exam, the day\u2019s target, and what to do right now. Anything late shows up here until it is ticked off."},
  {nav:"calendar",t:"Calendar",d:"Every due date for every course in one place. Tick the box when something is done \u2014 including the things you finished before you found Trophos \u2014 and you earn XP for it. Tap a day to see its details."},
  {nav:"study",t:"Study",d:"Practice questions written only from your own slides and lectures. Pick a class, run a practice round, take the module quiz, try the Gauntlet, and open \u201cWhat you need to work on\u201d to see what you keep missing."},
- {nav:"fight",t:"Fight",d:"Every disease is a patient. Journey walks you through Vaelith, the wood, door to door with a nurse angel beside you; or choose Just fight instead for the plain corridor. Healing a patient means answering their questions right."},
  {nav:"trophies",t:"Progress",d:"Your rank, your accuracy, your strengths by topic and by kind of question, and the trophies. Tap a kind of question to see every one you have answered in it."},
  {nav:"nurse",t:"Nurse",d:"Build a nurse who ranks up as you work. The locker is in here, and so are Settings \u2014 backups and the theme. The Tutorial button at the top of this tab runs this walkthrough again whenever you want it."}];
 let tourAt=-1, tourFrom=null;
@@ -27106,8 +27106,7 @@ function viewTrophies(){
      '<div class="stat"><div class="n">'+p.answered+'</div><div class="l">Answered</div></div>',
      '<div class="stat"><div class="n">'+acc+'%</div><div class="l">Accuracy</div></div>',
      '<div class="stat"><div class="n">'+(p.longest||0)+'</div><div class="l">Longest streak</div></div>',
-     '<div class="stat"><div class="n">'+(p.bestRun||0)+'</div><div class="l">Best run</div></div>',
-     '<div class="stat"><div class="n">'+(p.fightWins||0)+'</div><div class="l">Diseases beaten</div></div>'].join("")+'</div>'+
+     '<div class="stat"><div class="n">'+(p.bestRun||0)+'</div><div class="l">Best run</div></div>'].join("")+'</div>'+
   rankLadder()+
   strengthCard()+
   (PROG_KIND?kindReview(PROG_KIND):kindCard())+
@@ -28091,7 +28090,7 @@ function wire(){
   {const u2=$("#updBtn2");if(u2)u2.onclick=()=>updNow();}
   {const n2=$("#storeNote2");const n1=$("#storeNote");
     if(n2)n2.textContent=(n1&&n1.textContent)?n1.textContent:
-      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Oct 27, 6:37 PM":"This browser is not saving anything. Build Oct 27, 6:37 PM");}
+      (signedIn()?"Saved to your account.":LS_OK?"Saved in this browser. Build Oct 27, 7:03 PM":"This browser is not saving anything. Build Oct 27, 7:03 PM");}
   $$("[data-plan]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.plan;tab="study";render();});
   $$("[data-goto]").forEach(b=>b.onclick=()=>{tab=b.dataset.goto;render();});
   $$("[data-cf]").forEach(b=>b.onclick=()=>{courseFilter=b.dataset.cf;render();});
@@ -28223,9 +28222,15 @@ function wire(){
   $$("[data-drug-exam]").forEach(b=>b.onclick=()=>{DRUG_UNIT=b.dataset.drugExam;render();});
   $$("[data-pastopen]").forEach(b=>b.onclick=()=>{PAST_OPEN[courseFilter]=!PAST_OPEN[courseFilter];render();});
   $$("[data-statsopen]").forEach(b=>b.onclick=()=>{STATS_OPEN=!STATS_OPEN;render();});
-  $$("[data-dis-open]").forEach(b=>b.onclick=()=>{DIS_UNIT=b.dataset.disOpen;DIS_Q="";studyAt="drugs";render();window.scrollTo(0,0);});
-  $$("[data-dis-drill]").forEach(b=>b.onclick=()=>{const c=courseById(courseFilter)||{};const rows=courseDiseases(c.code||"").filter(d=>d.unit===b.dataset.disDrill&&!d.off);
-    let qs=[].concat.apply([],rows.map(d=>diseaseQs(DISEASE_SLUG[d.name])));const open=stillOpen(qs);if(open.length)qs=open;qs=shuffle(qs.slice());
+  /* data-dis-module, not data-dis-open: that name belongs to the table's own row toggle, and a second
+     handler on it silently replaced this one */
+  $$("[data-dis-module]").forEach(b=>b.onclick=()=>{DIS_UNIT=b.dataset.disModule;DIS_OPEN=null;DIS_Q="";studyAt="drugs";render();window.scrollTo(0,0);});
+  $$("[data-dis-drill]").forEach(b=>b.onclick=()=>{const c=courseById(courseFilter)||{};const u=b.dataset.disDrill;
+    const t=binderTree(),ex=t[studyExam]; const inEx=x=>libExamOf(libShelfMap(c),x).exam===studyExam;
+    const rows=courseDiseases(c.code||"").filter(d=>!d.off&&(u==="*"?inEx(d.unit):d.unit===u));
+    let qs=[].concat.apply([],rows.map(d=>diseaseQs(DISEASE_SLUG[d.name])));
+    const bq=ex?exQs(ex).filter(q=>(u==="*"||(q.unit||"")===u)&&!qs.some(x=>x.id===q.id)):[]; qs=qs.concat(bq);
+    const open=stillOpen(qs);if(open.length)qs=open;qs=shuffle(qs.slice());
     const ids=qs.slice(0,20).map(q=>q.id);if(!ids.length)return;startSession("disease","module",ids);});
   $$("[data-offunit]").forEach(b=>b.onclick=()=>{const ids=shuffle(offQuestions().filter(q=>(q.unit||"General")===b.dataset.offunit).slice()).map(q=>q.id);if(ids.length)startSession("offset","unit",ids);});
   $$("[data-dis-unit]").forEach(b=>b.onclick=()=>{DIS_UNIT=b.dataset.disUnit;DIS_OPEN=null;render();});
@@ -28728,7 +28733,7 @@ function firstRunAvatar(){
   window.addEventListener("pagehide",()=>useFlush(true));
   const n=$("#storeNote");
   if(n&&!DB)n.textContent=signedIn()?"Saved to your account.":
-    (LS_OK?"Saved in this browser. Build Oct 27, 6:37 PM":"This browser is not saving anything. Build Oct 27, 6:37 PM");
+    (LS_OK?"Saved in this browser. Build Oct 27, 7:03 PM":"This browser is not saving anything. Build Oct 27, 7:03 PM");
 })();
 </script>
 
